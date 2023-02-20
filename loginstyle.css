@@ -1,0 +1,19 @@
+.gradient-custom-2 {
+    background: rgb(2,0,36);
+    background: linear-gradient(280deg, rgba(2,0,36,1) 0%, rgba(14,72,73,1) 37%, rgba(0,212,255,1) 100%);
+    }
+    
+    /* @media (min-width: 768px) {
+    .gradient-form {
+    height: 100vh !important;
+    }
+    } */
+    @media (min-width: 769px) {
+    .gradient-custom-2 {
+    border-top-right-radius: .3rem;
+    border-bottom-right-radius: .3rem;
+    }
+    }
+    .text{
+        color: #f8f1da;
+    }
