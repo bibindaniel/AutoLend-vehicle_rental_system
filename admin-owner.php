@@ -39,10 +39,10 @@
                     <a href="adminpage.php" class="list-group-item list-group-item-action py-2 ripple " aria-current="true">
                         <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple active">
+                    <a href="admin-users.php" class="list-group-item list-group-item-action py-2 ripple ">
                         <i class="fas fa-users fa-fw me-3"></i><span>Users</span>
                     </a>
-                    <a href="admin-owner.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-user fa-fw me-3"></i><span>car owner</span></a>
+                    <a href="#" class="list-group-item list-group-item-action py-2 ripple active"><i class="fas fa-user fa-fw me-3"></i><span>car owner</span></a>
                 </div>
             </div>
         </nav>
@@ -100,7 +100,7 @@
                 <tbody>
                     <?php
                     $con = mysqli_connect("localhost", "root", "", "mini-prj");
-                    $query = "SELECT * FROM `tbl_user` where user_type =2";
+                    $query = "SELECT * FROM `tbl_user` where user_type =1";
                     $result = mysqli_query($con, $query);
                     while ($row = mysqli_fetch_array($result)) {
                     ?>
