@@ -90,27 +90,26 @@ $row2 = mysqli_fetch_array($result2);
                                             <p class="text-muted"><?php echo $row['location'] ?></p>
                                         </div>
                                     </div>
-                                    <!-- <h6>verify profile</h6>
-                                    <hr class="mt-0 mb-4">
-                                    <div class="row pt-1">
-                                        <div class="col-6 mb-3">
-
-                                        </div> -->
                                     <h6></h6>
                                     <hr class="mt-0 mb-4">
                                     <div class="row pt-1">
                                         <div class="col-6 mb-3">
-                                            <button type="button" class="btn btn-outline-primary" id="btn" data-mdb-ripple-color="dark" data-toggle="modal" data-target="#exampleModal">verify user</button>
+                                           <?php
+                                            $status=-1;
+                                            if($status==-1){
+                                               echo" <button type='button' class='btn btn-outline-primary' id='btn' data-mdb-ripple-color='dark' data-toggle='modal' data-target='#exampleModal'>verify user</button>";
+                                            }elseif($status==0){
+                                                echo" <button type='button' class='btn btn-outline-info' id='btn' data-mdb-ripple-color='dark' data-toggle='modal' data-target='#exampleModal' disabled>verifion pending</button>";
+
+                                            }else{
+                                                echo" <button type='button' class='btn btn-outline-success' id='btn' data-mdb-ripple-color='dark' data-toggle='modal' data-target='#exampleModal' disabled>verified</button>"; 
+                                            }
+                                           ?>
                                         </div>
                                         <div class="col-6 mb-3">
                                             <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark">Delete Account</button>
                                         </div>
                                     </div>
-                                    <!-- <div class="d-flex justify-content-start">
-                                        <a href="#!"><i class="fab fa-facebook-f fa-lg me-3"></i></a>
-                                        <a href="#!"><i class="fab fa-twitter fa-lg me-3"></i></a>
-                                        <a href="#!"><i class="fab fa-instagram fa-lg"></i></a>
-                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -123,11 +122,34 @@ $row2 = mysqli_fetch_array($result2);
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Verify your licence</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    poda
+                    <div class="row pt-1">
+                        <div class="col-6 mb-3">
+                            <div class="form-outline">
+                                <input type="text" id="licenceno" name="lno" class="form-control form-control-lg" value="" />
+                                <label class="form-label" for="licenceno">Licence No</label>
+                            </div>
+                            <div class="wr-msg" id="licenceno1"></div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="form-outline">
+                                <input type="date" id="expirydate" name="exdate" class="form-control form-control-lg" value="" />
+                                <label class="form-label" for="expirydate">Expiry Date</label>
+                            </div>
+                            <div class="wr-msg" id="expirydate"></div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label" for="licenceimg">Upload licence(.pdf format)</label>
+                            <div class="form-outline">
+                                <input type="file" id="licenceimg" name="limg" class="form-control form-control-lg" value="" accept=".pdf" onchange="fileValidation()" />
+                            </div>
+                            <div class="wr-msg" id="DOB1"></div>
+                        </div>
+
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -142,12 +164,44 @@ $row2 = mysqli_fetch_array($result2);
         $("#btn").click(function() {
             $('#exampleModal').modal('toggle')
         })
-        $("#btn-close").click(function() {
-            $('#exampleModal').modal('hide')
+        $("#licenceno").keyup(function() {
+            var mobile = document.getElementById("licenceno").value
+            var c_mobile = /^(([A-Z]{2}[0-9]{2})( )|([A-Z]{2}-[0-9]{2}))((19|20)[0-9][0-9])[0-9]{7}$/;
+            var r_mobile = c_mobile.test(mobile)
+            if (r_mobile == false) {
+                check4 = 1;
+                $("#licenceno1").text("*Enter a valid mobile number");
+            } else {
+                check4 = 0;
+                $("#licenceno1").text("");
+                $('#btn').attr("disabled", false);
+
+            }
         })
     })
 </script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<script>
+    function fileValidation() {
+        var fileInput =
+            document.getElementById('licenceimg');
+
+        var filePath = fileInput.value;
+
+        // Allowing file type
+        var allowedExtensions =
+            /(\.pdf)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            // $('#btn').attr("disabled", true);
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        } else {
+            // $('#btn').attr("disabled", false);
+        }
+    }
+</script>
 
 </html>
