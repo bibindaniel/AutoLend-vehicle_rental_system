@@ -89,9 +89,9 @@
                 <thead class="bg-light">
                     <tr>
                         <th>Name</th>
-                        <th>Title</th>
+                        <th>Verification</th>
                         <th>Status</th>
-                        <th>Position</th>
+                        <th>View</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -139,9 +139,7 @@
                         </td>
                         <td>Junior</td>
                         <td>
-                            <button type="button" class="btn btn-link btn-rounded btn-sm fw-bold" data-mdb-ripple-color="dark">
-                                Edit
-                            </button>
+                        <a href="" class="delete" title="Delete" data-toggle="tooltip"> <i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                     <tr>

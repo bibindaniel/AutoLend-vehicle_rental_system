@@ -119,9 +119,9 @@
                 <div class="col-md-6 mb-4">
                   <label class="">Choose option</label>
                   <select class="select form-control-lg" name="user_type">
-                    <option value="1" disabled>Choose option</option>
-                    <option value="2">Renter</option>
-                    <option value="3">vehicle Owner</option>
+                    <option value="-1" disabled>Choose option</option>
+                    <option value="1">Renter</option>
+                    <option value="2">vehicle Owner</option>
                   </select>
                   
 
@@ -166,7 +166,7 @@ $flag=0;
   $query1 ="INSERT INTO `tbl_login`(`user_name`,`password`) VALUES ('$user','$pass')";
   mysqli_query($con, $query1);
   $login_id = mysqli_insert_id($con);
-  $query2 ="INSERT INTO `tbl_user`(`login_id`, `first_name`, `dob`, `location`, `email`, `mobile`, `user_status`, `image`) VALUES ('$login_id','$name1','$dob','$loc','$mail','$mob','$utype','$photo')";
+  $query2 ="INSERT INTO `tbl_user`(`login_id`, `first_name`, `dob`, `location`, `email`, `mobile`, `user_type`, `image`) VALUES ('$login_id','$name1','$dob','$loc','$mail','$mob','$utype','$photo')";
   mysqli_query($con, $query2);
   $target = "Uploads/";
   $targetfilepath = $target . $photo;
