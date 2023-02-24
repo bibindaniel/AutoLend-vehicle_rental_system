@@ -23,6 +23,8 @@ if ($_SESSION['logout'] == "") {
     <link rel="stylesheet" href="registrationstyle.css">
     <!-- jquery cdn -->
     <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js" integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
+    <!-- icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!-- ajax -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 </head>
@@ -32,6 +34,102 @@ if ($_SESSION['logout'] == "") {
         height: 150px;
         border-radius: 50%;
     }
+
+    .modal-confirm {
+        color: #636363;
+        width: 400px;
+    }
+
+    .modal-confirm .modal-content {
+        padding: 20px;
+        border-radius: 5px;
+        border: none;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .modal-confirm .modal-header {
+        border-bottom: none;
+        position: relative;
+    }
+
+    .modal-confirm h4 {
+        text-align: center;
+        font-size: 26px;
+        margin: 30px 0 -10px;
+    }
+
+    .modal-confirm .close {
+        position: absolute;
+        top: -5px;
+        right: -2px;
+    }
+
+    .modal-confirm .modal-body {
+        color: #999;
+    }
+
+    .modal-confirm .modal-footer {
+        border: none;
+        text-align: center;
+        border-radius: 5px;
+        font-size: 13px;
+        padding: 10px 15px 25px;
+    }
+
+    .modal-confirm .modal-footer a {
+        color: #999;
+    }
+
+    .modal-confirm .icon-box {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto;
+        border-radius: 50%;
+        z-index: 9;
+        text-align: center;
+        border: 3px solid #f15e5e;
+    }
+
+    .modal-confirm .icon-box i {
+        color: #f15e5e;
+        font-size: 46px;
+        display: inline-block;
+        margin-top: 13px;
+    }
+
+    .modal-confirm .btn,
+    .modal-confirm .btn:active {
+        color: #fff;
+        border-radius: 4px;
+        background: #60c7c1;
+        text-decoration: none;
+        transition: all 0.4s;
+        line-height: normal;
+        min-width: 120px;
+        border: none;
+        min-height: 40px;
+        border-radius: 3px;
+        margin: 0 5px;
+    }
+
+    .modal-confirm .btn-secondary {
+        background: #c1c1c1;
+    }
+
+    .modal-confirm .btn-secondary:hover,
+    .modal-confirm .btn-secondary:focus {
+        background: #a8a8a8;
+    }
+
+    .modal-confirm .btn-danger {
+        background: #f15e5e;
+    }
+
+    .modal-confirm .btn-danger:hover,
+    .modal-confirm .btn-danger:focus {
+        background: #ee3535;
+    }
 </style>
 <?php
 $tmp_id = $_SESSION['id'];
@@ -40,8 +138,11 @@ $query = "SELECT * FROM `tbl_user` WHERE `login_id`='$tmp_id'";
 $result = mysqli_query($con, $query);
 $query1 = "SELECT * FROM `tbl_login` WHERE `login_id`='$tmp_id'";
 $result2 = mysqli_query($con, $query1);
+$query3 = "SELECT * FROM `tbl_verify_user` WHERE `user_id`='$tmp_id'";
+$result3 = mysqli_query($con, $query3);
 $row = mysqli_fetch_array($result);
 $row2 = mysqli_fetch_array($result2);
+$row3 = mysqli_fetch_array($result3);
 ?>
 
 <body>
@@ -95,18 +196,18 @@ $row2 = mysqli_fetch_array($result2);
                                     <div class="row pt-1">
                                         <div class="col-6 mb-3">
                                             <?php
-                                            $status = -1;
+                                            $status = $row3["verify_status"];
                                             if ($status == -1) {
                                                 echo " <button type='button' class='btn btn-outline-primary' id='btn' data-mdb-ripple-color='dark' data-toggle='modal' data-target='#exampleModal'>verify user</button>";
                                             } elseif ($status == 0) {
-                                                echo " <button type='button' class='btn btn-outline-info' id='btn' data-mdb-ripple-color='dark' data-toggle='modal' data-target='#exampleModal' disabled>verifion pending</button>";
+                                                echo " <button type='button' class='btn btn-outline-info' id='btn' data-mdb-ripple-color='dark' data-toggle='modal' data-target='#exampleModal' disabled>verification pending</button>";
                                             } else {
                                                 echo " <button type='button' class='btn btn-outline-success' id='btn' data-mdb-ripple-color='dark' data-toggle='modal' data-target='#exampleModal' disabled>verified</button>";
                                             }
                                             ?>
                                         </div>
                                         <div class="col-6 mb-3">
-                                            <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark">Delete Account</button>
+                                            <button type="button" id="btn2" class="btn btn-outline-danger" data-mdb-ripple-color="dark">Delete Account</button>
                                         </div>
                                     </div>
                                 </div>
@@ -126,37 +227,82 @@ $row2 = mysqli_fetch_array($result2);
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row pt-1">
-                        <div class="col-6 mb-3">
-                            <form action="#" method="POST" enctype="multipart/form-data">
+                    <div id="form">
+                        <div class="row pt-1">
+                            <div class="col-6 mb-3">
+                                <form action="#" method="POST" enctype="multipart/form-data">
+                                    <div class="form-outline">
+                                        <input type="text" id="licenceno" name="lno" class="form-control form-control-lg" value="" />
+                                        <label class="form-label" for="licenceno">Licence No</label>
+                                    </div>
+                                    <div class="wr-msg" id="licenceno1"></div>
+                            </div>
+                            <div class="col-6 mb-3">
                                 <div class="form-outline">
-                                    <input type="text" id="licenceno" name="lno" class="form-control form-control-lg" value="" />
-                                    <label class="form-label" for="licenceno">Licence No</label>
+                                    <input type="date" id="expirydate" name="exdate" class="form-control form-control-lg" value="" min='2020-01-01' />
+                                    <label class="form-label" for="expirydate">Expiry Date</label>
                                 </div>
-                                <div class="wr-msg" id="licenceno1"></div>
-                        </div>
-                        <div class="col-6 mb-3">
-                            <div class="form-outline">
-                                <input type="date" id="expirydate" name="exdate" class="form-control form-control-lg" value="" min='2020-01-01' />
-                                <label class="form-label" for="expirydate">Expiry Date</label>
+                                <div class="wr-msg" id="expirydate1"></div>
                             </div>
-                            <div class="wr-msg" id="expirydate1"></div>
-                        </div>
-                        <div class="col-6 mb-3">
-                            <label class="form-label" for="licenceimg">Upload licence(.pdf format)</label>
-                            <div class="form-outline">
-                                <input type="file" id="licenceimg" name="limg" class="form-control form-control-lg" value="" accept=".pdf" onchange="fileValidation()" />
+                            <div class="col-6 mb-3">
+                                <label class="form-label" for="licenceimg">Upload licence(.pdf format)</label>
+                                <div class="form-outline">
+                                    <input type="file" id="licenceimg" name="limg" class="form-control form-control-lg" value="" accept=".pdf" onchange="fileValidation()" />
+                                </div>
+                                <div class="wr-msg" id="DOB1"></div>
                             </div>
-                            <div class="wr-msg" id="DOB1"></div>
-                        </div>
 
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="btn1" class="btn btn-primary">Save changes</button>
+                    <button type="submit" id="btn1" name="sub" class="btn btn-primary">Save changes</button>
                 </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <?php
+    if (isset($_POST["sub"])) {
+        $lno = $_POST["lno"];
+        $exdate = $_POST["exdate"];
+        $limg =  $_FILES['limg']['name'];
+        $uid = $row["user_id"];
+        $con = mysqli_connect("localhost", "root", "", "mini-prj");
+        $query1 = "UPDATE `tbl_verify_user` SET `verify_status`='0',`licence_no`='$lno',`Expiry_date`='$exdate',`licence_file`='$limg' WHERE  `user_id`='$tmp_id'";
+        $result3 = mysqli_query($con, $query1);
+        $target = "Licence/";
+        $targetfilepath = $target . $limg;
+        move_uploaded_file($_FILES['limg']['tmp_name'], $targetfilepath);
+        if ($result3) {
+    ?>
+            <script>location.href='userprofile.php'</script>
+    <?php
+
+        }
+    }
+    ?>
+    <!-- account delete conformation modal -->
+    <div id="myModal" class="modal fade">
+        <div class="modal-dialog modal-confirm">
+            <div class="modal-content">
+                <div class="d-grid d-md-flex justify-content-md-end">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-header flex-column">
+                    <div class="icon-box">
+                        <i class="material-icons">&#xE5CD;</i>
+                    </div>
+                    <h4 class="modal-title w-100">Are you sure?</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Do you really want to delete this account?</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger">Delete</button>
+                </div>
             </div>
         </div>
     </div>
@@ -164,4 +310,5 @@ $row2 = mysqli_fetch_array($result2);
 <script src="userverification.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
 </html>

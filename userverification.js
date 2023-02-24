@@ -2,6 +2,9 @@ $(document).ready(function () {
     $("#btn").click(function () {
         $('#exampleModal').modal('toggle')
     })
+    $("#btn2").click(function () {
+        $('#myModal').modal('toggle')
+    })
     var check = 1;
     var check1 = 1;
     var check2 = 1;

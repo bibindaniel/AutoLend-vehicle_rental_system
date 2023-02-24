@@ -172,6 +172,10 @@ $flag=0;
   $targetfilepath = $target . $photo;
   move_uploaded_file($_FILES['myimage']['tmp_name'], $targetfilepath);
   $url = "login.php";
+  if($utype==1){
+    $query3 ="INSERT INTO `tbl_verify_user`(`user_id`, `verify_status`) VALUES ('$login_id','-1')";
+    mysqli_query($con, $query3);
+  }
  }
  if ($flag == 1) {
   echo ("<script>location.href='$url'</script>");
