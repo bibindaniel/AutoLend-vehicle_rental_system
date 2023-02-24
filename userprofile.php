@@ -94,17 +94,16 @@ $row2 = mysqli_fetch_array($result2);
                                     <hr class="mt-0 mb-4">
                                     <div class="row pt-1">
                                         <div class="col-6 mb-3">
-                                           <?php
-                                            $status=-1;
-                                            if($status==-1){
-                                               echo" <button type='button' class='btn btn-outline-primary' id='btn' data-mdb-ripple-color='dark' data-toggle='modal' data-target='#exampleModal'>verify user</button>";
-                                            }elseif($status==0){
-                                                echo" <button type='button' class='btn btn-outline-info' id='btn' data-mdb-ripple-color='dark' data-toggle='modal' data-target='#exampleModal' disabled>verifion pending</button>";
-
-                                            }else{
-                                                echo" <button type='button' class='btn btn-outline-success' id='btn' data-mdb-ripple-color='dark' data-toggle='modal' data-target='#exampleModal' disabled>verified</button>"; 
+                                            <?php
+                                            $status = -1;
+                                            if ($status == -1) {
+                                                echo " <button type='button' class='btn btn-outline-primary' id='btn' data-mdb-ripple-color='dark' data-toggle='modal' data-target='#exampleModal'>verify user</button>";
+                                            } elseif ($status == 0) {
+                                                echo " <button type='button' class='btn btn-outline-info' id='btn' data-mdb-ripple-color='dark' data-toggle='modal' data-target='#exampleModal' disabled>verifion pending</button>";
+                                            } else {
+                                                echo " <button type='button' class='btn btn-outline-success' id='btn' data-mdb-ripple-color='dark' data-toggle='modal' data-target='#exampleModal' disabled>verified</button>";
                                             }
-                                           ?>
+                                            ?>
                                         </div>
                                         <div class="col-6 mb-3">
                                             <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark">Delete Account</button>
@@ -118,6 +117,7 @@ $row2 = mysqli_fetch_array($result2);
             </div>
         </div>
     </section>
+    <!-- user verifiation modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -128,18 +128,19 @@ $row2 = mysqli_fetch_array($result2);
                 <div class="modal-body">
                     <div class="row pt-1">
                         <div class="col-6 mb-3">
-                            <div class="form-outline">
-                                <input type="text" id="licenceno" name="lno" class="form-control form-control-lg" value="" />
-                                <label class="form-label" for="licenceno">Licence No</label>
-                            </div>
-                            <div class="wr-msg" id="licenceno1"></div>
+                            <form action="#" method="POST" enctype="multipart/form-data">
+                                <div class="form-outline">
+                                    <input type="text" id="licenceno" name="lno" class="form-control form-control-lg" value="" />
+                                    <label class="form-label" for="licenceno">Licence No</label>
+                                </div>
+                                <div class="wr-msg" id="licenceno1"></div>
                         </div>
                         <div class="col-6 mb-3">
                             <div class="form-outline">
-                                <input type="date" id="expirydate" name="exdate" class="form-control form-control-lg" value="" />
+                                <input type="date" id="expirydate" name="exdate" class="form-control form-control-lg" value="" min='2020-01-01' />
                                 <label class="form-label" for="expirydate">Expiry Date</label>
                             </div>
-                            <div class="wr-msg" id="expirydate"></div>
+                            <div class="wr-msg" id="expirydate1"></div>
                         </div>
                         <div class="col-6 mb-3">
                             <label class="form-label" for="licenceimg">Upload licence(.pdf format)</label>
@@ -153,55 +154,14 @@ $row2 = mysqli_fetch_array($result2);
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" id="btn1" class="btn btn-primary">Save changes</button>
                 </div>
+                </form>
             </div>
         </div>
     </div>
 </body>
-<script>
-    $(document).ready(function() {
-        $("#btn").click(function() {
-            $('#exampleModal').modal('toggle')
-        })
-        $("#licenceno").keyup(function() {
-            var mobile = document.getElementById("licenceno").value
-            var c_mobile = /^(([A-Z]{2}[0-9]{2})( )|([A-Z]{2}-[0-9]{2}))((19|20)[0-9][0-9])[0-9]{7}$/;
-            var r_mobile = c_mobile.test(mobile)
-            if (r_mobile == false) {
-                check4 = 1;
-                $("#licenceno1").text("*Enter a valid mobile number");
-            } else {
-                check4 = 0;
-                $("#licenceno1").text("");
-                $('#btn').attr("disabled", false);
-
-            }
-        })
-    })
-</script>
+<script src="userverification.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-<script>
-    function fileValidation() {
-        var fileInput =
-            document.getElementById('licenceimg');
-
-        var filePath = fileInput.value;
-
-        // Allowing file type
-        var allowedExtensions =
-            /(\.pdf)$/i;
-
-        if (!allowedExtensions.exec(filePath)) {
-            // $('#btn').attr("disabled", true);
-            alert('Invalid file type');
-            fileInput.value = '';
-            return false;
-        } else {
-            // $('#btn').attr("disabled", false);
-        }
-    }
-</script>
-
 </html>
