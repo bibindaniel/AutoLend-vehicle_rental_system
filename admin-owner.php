@@ -23,11 +23,49 @@
 </head>
 
 <body>
-    <?php
-    ?>
     <script>
         $(document).ready(function() {
-            $('#mytable').DataTable();
+            var table = $('#mytable').DataTable({
+                "lengthChange": false,
+                pageLength: 6,
+                lengthMenu: [
+                    [5, 10, 20, -1],
+                    [5, 10, 20, 'Todos']
+                ]
+            })
+            $(document).ready(function() {
+                // toggle user status
+                $('.toggle-status').click(function(e) {
+                    e.preventDefault();
+                    var userId = $(this).data('user-id');
+                    var statusElm = $('.user-status[data-user-id="' + userId + '"]');
+                    var status = statusElm.text();
+
+                    // update user status and icon
+                    if (status == 'Active') {
+                        statusElm.text('Blocked').removeClass('badge-success').addClass('badge-danger');
+                        $(this).html('<i class="fa fa-times text-danger"></i>');
+                    } else if (status == 'Blocked') {
+                        statusElm.text('Active').removeClass('badge-danger').addClass('badge-success');
+                        $(this).html('<i class="fa fa-check text-success"></i>');
+                    }
+
+                    // send ajax request to update user status in database
+                    $.ajax({
+                        url: 'update_status.php',
+                        type: 'POST',
+                        data: {
+                            user_id: userId,
+                            status: statusElm.text()
+                        },
+                        success: function(response) {
+                            console.log(response);
+                        }
+                    });
+                });
+            });
+
+
         });
     </script>
     <!--Main Navigation-->
@@ -91,7 +129,7 @@
                 <thead class="bg-light">
                     <tr>
                         <th>Name</th>
-                        <th>Verification</th>
+                        <!-- <th>Verification</th> -->
                         <th>Status</th>
                         <th>View</th>
                         <th>Actions</th>
@@ -100,7 +138,7 @@
                 <tbody>
                     <?php
                     $con = mysqli_connect("localhost", "root", "", "mini-prj");
-                    $query = "SELECT * FROM `tbl_user` where user_type =1";
+                    $query = "SELECT * FROM `tbl_user` where user_type =2";
                     $result = mysqli_query($con, $query);
                     while ($row = mysqli_fetch_array($result)) {
                     ?>
@@ -114,19 +152,25 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>
+                            <!-- <td>
                                 <span class="badge badge-success rounded-pill d-inline">verified</span>
-                            </td>
+                            </td> -->
                             <td>
                                 <?php if ($row['user_status'] == 1) { ?>
-                                    <span class="badge badge-success rounded-pill d-inline">Active</span>
+                                    <span class="user-status badge badge-success rounded-pill d-inline" data-user-id="<?php echo $row['user_id']; ?>">Active</span>
                                 <?php } elseif ($row['user_status'] == 0) { ?>
-                                    <span class="badge badge-danger rounded-pill d-inline">Blocked</span>
+                                    <span class="user-status badge badge-danger rounded-pill d-inline" data-user-id="<?php echo $row['user_id']; ?>">Blocked</span>
                                 <?php } ?>
                             </td>
                             <td>Junior</td>
                             <td>
-                                <a href="" class="delete" title="Delete" data-toggle="tooltip"> <i class="fa fa-trash"></i></a>
+                                <a href="#" class="toggle-status" title="Toggle Status" data-user-id="<?php echo $row['user_id']; ?>" data-toggle="tooltip">
+                                    <?php if ($row['user_status'] == 1) { ?>
+                                        <i class="fa fa-check text-success"></i>
+                                    <?php } elseif ($row['user_status'] == 0) { ?>
+                                        <i class="fa fa-times text-danger"></i>
+                                    <?php } ?>
+                                </a>
                             </td>
                         </tr>
                     <?php } ?>
