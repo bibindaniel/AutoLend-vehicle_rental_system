@@ -34,6 +34,8 @@
                         <i class="fas fa-users fa-fw me-3"></i><span>Users</span>
                     </a>
                     <a href="admin-owner.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-user fa-fw me-3"></i><span>car owner</span></a>
+                    <a href="admin-verify.php" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-check-circle fa-fw me-3"></i><span>verify Users</span></a>
+
                 </div>
             </div>
         </nav>
@@ -53,11 +55,7 @@
                     <img src="images/Logo.png" height="45" alt="" loading="lazy" />
                     <small class="ms-2 text-light">AutoLend</small></a>
                 </a>
-                <!-- Search form -->
-                <form class="d-none d-md-flex input-group w-auto my-auto ">
-                    <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search (ctrl + "/" to focus)' style="min-width: 225px" />
-                    <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
-                </form>
+                <small class="h3 text-light font-weight-bold text-align-center">ADMIN PANEL</small></a>
                 <!-- Avatar -->
                     <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                         <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt="" loading="lazy" />

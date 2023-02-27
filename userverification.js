@@ -14,7 +14,7 @@ $(document).ready(function () {
         var r_mobile = c_mobile.test(mobile)
         if (r_mobile == false) {
             check = 1;
-            $("#licenceno1").text("*Enter a valid mobile number");
+            $("#licenceno1").text("*Enter a valid License number");
         } else {
             check = 0;
             $("#licenceno1").text("");

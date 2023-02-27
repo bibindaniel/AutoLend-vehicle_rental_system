@@ -168,12 +168,13 @@ $flag=0;
   $login_id = mysqli_insert_id($con);
   $query2 ="INSERT INTO `tbl_user`(`login_id`, `first_name`, `dob`, `location`, `email`, `mobile`, `user_type`, `image`) VALUES ('$login_id','$name1','$dob','$loc','$mail','$mob','$utype','$photo')";
   mysqli_query($con, $query2);
+  $user_id=mysqli_insert_id($con);
   $target = "Uploads/";
   $targetfilepath = $target . $photo;
   move_uploaded_file($_FILES['myimage']['tmp_name'], $targetfilepath);
   $url = "login.php";
   if($utype==1){
-    $query3 ="INSERT INTO `tbl_verify_user`(`user_id`, `verify_status`) VALUES ('$login_id','-1')";
+    $query3 ="INSERT INTO `tbl_verify_user`(`user_id`, `verify_status`) VALUES ('$user_id','-1')";
     mysqli_query($con, $query3);
   }
  }

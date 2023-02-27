@@ -21,10 +21,18 @@
     <!-- data table -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.css">
 </head>
-
+<style>
+    .gradient-custom {
+    background: rgb(2,0,36);
+    background: linear-gradient(280deg, rgba(2,0,36,1) 0%, rgba(14,72,73,1) 37%, rgba(0,212,255,1) 100%);
+    }
+</style>
 <body>
     <script>
         $(document).ready(function() {
+            $("#btn").click(function() {
+                $('#exampleModal').modal('toggle')
+            })
             var table = $('#mytable').DataTable({
                 "lengthChange": false,
                 pageLength: 6,
@@ -81,6 +89,7 @@
                         <i class="fas fa-users fa-fw me-3"></i><span>Users</span>
                     </a>
                     <a href="admin-owner.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-user fa-fw me-3"></i><span>car owner</span></a>
+                    <a href="admin-verify.php" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-check-circle fa-fw me-3"></i><span>verify Users</span></a>
                 </div>
             </div>
         </nav>
@@ -100,11 +109,7 @@
                     <img src="images/Logo.png" height="45" alt="" loading="lazy" />
                     <small class="ms-2 text-light">AutoLend</small></a>
                 </a>
-                <!-- Search form -->
-                <form class="d-none d-md-flex input-group w-auto my-auto ">
-                    <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search (ctrl + "/" to focus)' style="min-width: 225px" />
-                    <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
-                </form>
+                <small class="h3 text-light font-weight-bold text-align-center">ADMIN PANEL</small></a>
                 <!-- Avatar -->
                 <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                     <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt="" loading="lazy" />
@@ -152,9 +157,33 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>
+                            <!-- <td>
                                 <span class="badge badge-success rounded-pill d-inline">verified</span>
-                            </td>
+                            </td> -->
+                            <?php $id = $row['user_id'];
+                            $query1 = "SELECT `verify_status` FROM `tbl_verify_user` where `user_id` =$id";
+                            $result1 = mysqli_query($con, $query1);
+                            $row1 = mysqli_fetch_array($result1);
+                            if ($row1['verify_status'] == -1) {
+                            ?>
+                                <td>
+                                    <span class="badge badge-danger rounded-pill d-inline">Not verified</span>
+                                </td>
+                            <?php
+                            } elseif ($row1['verify_status'] == 0) {
+                            ?>
+                                <td>
+                                    <span class="badge badge-primary rounded-pill d-inline">verification Pending</span>
+                                </td>
+                            <?php
+                            } elseif ($row1['verify_status'] == 1) {
+                            ?>
+                                <td>
+                                    <span class="badge badge-success rounded-pill d-inline">verified</span>
+                                </td>
+                            <?php
+                            }
+                            ?>
                             <td>
                                 <?php if ($row['user_status'] == 1) { ?>
                                     <span class="user-status badge badge-success rounded-pill d-inline" data-user-id="<?php echo $row['user_id']; ?>">Active</span>
@@ -162,7 +191,9 @@
                                     <span class="user-status badge badge-danger rounded-pill d-inline" data-user-id="<?php echo $row['user_id']; ?>">Blocked</span>
                                 <?php } ?>
                             </td>
-                            <td>Junior</td>
+                            <td> <button type="button" class="btn btn-info" data-mdb-toggle="modal" data-mdb-target="#exampleModal">
+                                    View
+                                </button></td>
                             <td>
                                 <a href="#" class="toggle-status" title="Toggle Status" data-user-id="<?php echo $row['user_id']; ?>" data-toggle="tooltip">
                                     <?php if ($row['user_status'] == 1) { ?>
@@ -181,6 +212,55 @@
 
         </div>
     </main>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-0">
+                        <div class="col-md-4 gradient-custom text-center text-white" style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+                            <img src="images/users/aatik-tasneem-7omHUGhhmZ0-unsplash.jpg" alt="Avatar" class="img-fluid my-5 rounded-circle" style="width: 80px;" />
+                            <h5><?php echo $row['first_name'] ?></h5>
+                            <p><?php echo $row['email'] ?></p>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body p-4">
+                                <h6>Information</h6>
+                                <hr class="mt-0 mb-4">
+                                <div class="row pt-1">
+                                    <div class="col-6 mb-3">
+                                        <h6>Email</h6>
+                                        <p class="text-muted">info@example.com</p>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <h6>Phone</h6>
+                                        <p class="text-muted">123 456 789</p>
+                                    </div>
+                                </div>
+                                <h6>Projects</h6>
+                                <hr class="mt-0 mb-4">
+                                <div class="row pt-1">
+                                    <div class="col-6 mb-3">
+                                        <h6>Recent</h6>
+                                        <p class="text-muted">Lorem ipsum</p>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <h6>Most Viewed</h6>
+                                        <p class="text-muted">Dolor sit amet</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
     <!-- data table -->
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
     <!--Main layout-->

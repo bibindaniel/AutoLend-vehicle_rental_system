@@ -136,12 +136,13 @@ $tmp_id = $_SESSION['id'];
 $con = mysqli_connect("localhost", "root", "", "mini-prj");
 $query = "SELECT * FROM `tbl_user` WHERE `login_id`='$tmp_id'";
 $result = mysqli_query($con, $query);
+$row = mysqli_fetch_array($result);
 $query1 = "SELECT * FROM `tbl_login` WHERE `login_id`='$tmp_id'";
 $result2 = mysqli_query($con, $query1);
-$query3 = "SELECT * FROM `tbl_verify_user` WHERE `user_id`='$tmp_id'";
-$result3 = mysqli_query($con, $query3);
-$row = mysqli_fetch_array($result);
 $row2 = mysqli_fetch_array($result2);
+$id=$row['user_id'];
+$query3 = "SELECT * FROM `tbl_verify_user` WHERE `user_id`='$id'";
+$result3 = mysqli_query($con, $query3);
 $row3 = mysqli_fetch_array($result3);
 ?>
 
@@ -270,7 +271,7 @@ $row3 = mysqli_fetch_array($result3);
         $limg =  $_FILES['limg']['name'];
         $uid = $row["user_id"];
         $con = mysqli_connect("localhost", "root", "", "mini-prj");
-        $query1 = "UPDATE `tbl_verify_user` SET `verify_status`='0',`licence_no`='$lno',`Expiry_date`='$exdate',`licence_file`='$limg' WHERE  `user_id`='$tmp_id'";
+        $query1 = "UPDATE `tbl_verify_user` SET `verify_status`='0',`licence_no`='$lno',`Expiry_date`='$exdate',`licence_file`='$limg' WHERE  `user_id`='$id'";
         $result3 = mysqli_query($con, $query1);
         $target = "Licence/";
         $targetfilepath = $target . $limg;

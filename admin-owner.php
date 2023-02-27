@@ -81,6 +81,8 @@
                         <i class="fas fa-users fa-fw me-3"></i><span>Users</span>
                     </a>
                     <a href="#" class="list-group-item list-group-item-action py-2 ripple active"><i class="fas fa-user fa-fw me-3"></i><span>car owner</span></a>
+                    <a href="admin-verify.php" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-check-circle fa-fw me-3"></i><span>verify Users</span></a>
+
                 </div>
             </div>
         </nav>
@@ -100,11 +102,7 @@
                     <img src="images/Logo.png" height="45" alt="" loading="lazy" />
                     <small class="ms-2 text-light">AutoLend</small></a>
                 </a>
-                <!-- Search form -->
-                <form class="d-none d-md-flex input-group w-auto my-auto ">
-                    <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search (ctrl + "/" to focus)' style="min-width: 225px" />
-                    <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
-                </form>
+                <small class="h3 text-light font-weight-bold text-align-center">ADMIN PANEL</small></a>
                 <!-- Avatar -->
                 <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                     <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt="" loading="lazy" />
@@ -162,7 +160,7 @@
                                     <span class="user-status badge badge-danger rounded-pill d-inline" data-user-id="<?php echo $row['user_id']; ?>">Blocked</span>
                                 <?php } ?>
                             </td>
-                            <td>Junior</td>
+                            <td><button type="button" class="btn btn-info">View</button></td>
                             <td>
                                 <a href="#" class="toggle-status" title="Toggle Status" data-user-id="<?php echo $row['user_id']; ?>" data-toggle="tooltip">
                                     <?php if ($row['user_status'] == 1) { ?>
@@ -178,6 +176,25 @@
             </table>
         </div>
     </main>
+    <!-- user profile modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Verify your licence</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                         
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" id="btn1" name="sub" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- data table -->
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
     <!--Main layout-->
