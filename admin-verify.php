@@ -113,7 +113,7 @@
                 <p class="fw-normal mb-1"><?= $row["licence_no"] ?></p>
                 <p class="text-muted mb-0"><?= $row["Expiry_date"] ?></p>
               </td>
-              <td><button type="button" class="btn btn-info " onclick="location.href='Licence/<?php echo $row['licence_file']; ?>'">View</button></td>
+              <td><button type="button" class="btn btn-info " onclick="location.href='Licence/<?php echo $row['licence_file']; ?>'" target="_blank">View</button></td>
               <td>
               <a href="#" id="verify_appr"   data-user-id="<?php echo $row['user_id']; ?>"> <i class="fa fa-check text-success"></i></a>
               <a href="#" id="verify_decli" class="ms-2"  data-user-id="<?php echo $row['user_id']; ?>"  > <i class="fa fa-times text-danger"></i></a>

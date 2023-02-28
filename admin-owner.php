@@ -23,8 +23,17 @@
 </head>
 
 <body>
-    <script>
+<style>
+    .gradient-custom {
+        background: rgb(2, 0, 36);
+        background: linear-gradient(280deg, rgba(2, 0, 36, 1) 0%, rgba(14, 72, 73, 1) 37%, rgba(0, 212, 255, 1) 100%);
+    }
+</style>
+<script>
         $(document).ready(function() {
+            $("#btn").click(function() {
+                $('#exampleModal').modal('toggle')
+            })
             var table = $('#mytable').DataTable({
                 "lengthChange": false,
                 pageLength: 6,
@@ -64,7 +73,36 @@
                     });
                 });
             });
-
+            $('.view-btn').click(function(e) {
+                e.preventDefault();
+                var userId = $(this).data('user-id');
+                $.ajax({
+                    url: 'retrieve_data_owner.php',
+                    type: 'POST',
+                    data: {
+                        id: userId
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log("data: ", data)
+                        var name = '<p>' + data.value1 + '</p>';
+                        var email = '<p>' + data.value2 + '</p>';
+                        var mob = '<p>' + data.value3 + '</p>';
+                        var dob = '<p>' + data.value4 + '</p>';
+                        var image = data.value5;
+                        var loc = '<p>' + data.value8 + '</p>';
+                        $('#modal-name').html(name);
+                        $('#modal-email').html(email);
+                        $('#modal-mob').html(mob);
+                        $('#modal-dob').html(dob);
+                        $('#modal-loc').html(loc);
+                        $('#modal-image').attr('src','Uploads/'+image);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log("Catch", textStatus, errorThrown);
+                    }
+                });
+            });
 
         });
     </script>
@@ -160,7 +198,9 @@
                                     <span class="user-status badge badge-danger rounded-pill d-inline" data-user-id="<?php echo $row['user_id']; ?>">Blocked</span>
                                 <?php } ?>
                             </td>
-                            <td><button type="button" class="btn btn-info">View</button></td>
+                            <td> <button type="button" class="btn btn-info view-btn" data-mdb-toggle="modal" data-mdb-target="#exampleModal" data-user-id="<?php echo $row['user_id']; ?>">
+                                    View
+                                </button></td>
                             <td>
                                 <a href="#" class="toggle-status" title="Toggle Status" data-user-id="<?php echo $row['user_id']; ?>" data-toggle="tooltip">
                                     <?php if ($row['user_status'] == 1) { ?>
@@ -176,23 +216,51 @@
             </table>
         </div>
     </main>
-    <!-- user profile modal -->
+    <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Verify your licence</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="exampleModalLabel">User Profile</h5>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                         
+                    <div class="row g-0">
+                        <div class="col-md-4 gradient-custom text-center text-white d-flex" style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+                            <div class="my-auto mx-auto">
+                                <img src="images/users/aatik-tasneem-7omHUGhhmZ0-unsplash.jpg" id="modal-image" alt="Avatar" class="img-fluid my-4 rounded-circle " style="width: 80px;" />
+                                <h5 id="modal-name"></h5>
+                            </div>
+                            <p id="modal-uname"></p>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body p-4">
+                                <h6>Information</h6>
+                                <hr class="mt-0 mb-4">
+                                <div class="row pt-1">
+                                    <div class="col-6 mb-3">
+                                        <h6>Email</h6>
+                                        <p class="text-muted" id="modal-email">info@example.com</p>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <h6>Phone</h6>
+                                        <p class="text-muted" id="modal-mob">123 456 789</p>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <h6>DOB</h6>
+                                        <p class="text-muted" id="modal-dob">info@example.com</p>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <h6>Location</h6>
+                                        <p class="text-muted" id="modal-loc">123 456 789</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" id="btn1" name="sub" class="btn btn-primary">Save changes</button>
-                </div>
             </div>
+
         </div>
     </div>
     <!-- data table -->
