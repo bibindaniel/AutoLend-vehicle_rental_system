@@ -7,7 +7,7 @@ $(document).ready(function () {
   var check5 = 0;
   var check6 = 0;
   var check7 = 0;
-
+  $("#wr_icon").hide()
   $("#firstName").keyup(function () {
     var name = document.getElementById("firstName").value
     var c_name = /^[a-z ]{3,20}$/i;
@@ -125,10 +125,12 @@ $(document).ready(function () {
     var r_pass = c_pass.test(pswd);
     if (r_pass == false) {
       $("#Password1").text("*Enter strong Password");
+      $("#wr_icon").show()
       check6 = 1;
     } else {
       check6 = 0;
       $("#Password1").text("");
+      $("#wr_icon").hide()
       $('#btn').attr("disabled", false);
     }
   })

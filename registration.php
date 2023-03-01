@@ -101,6 +101,7 @@
                     <input type="password" id="Password" name="pass" class="form-control form-control-lg" />
                     <label class="form-label" for="Password">Password</label>
                   </div>
+                  <i id="wr_icon" class="fa fa-exclamation-triangle text-danger" data-mdb-container="body" data-mdb-toggle="popover" data-mdb-trigger="hover" data-mdb-placement="bottom" data-mdb-content="Password Must contain 8 digits with atleast one upper,one lower,numbers and special characters"></i>
                   <div class="wr-msg" id="Password1"></div>
                   
 

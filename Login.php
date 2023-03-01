@@ -3,6 +3,7 @@
 <?php
 session_start();
 ?>
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -29,8 +30,7 @@ session_start();
                                 <div class="card-body p-md-5 mx-md-4">
 
                                     <div class="text-center">
-                                        <img src="Images/Logo.png"
-                                            style="width: 185px;" alt="logo">
+                                        <img src="Images/Logo.png" style="width: 185px;" alt="logo">
                                         <h4 class="mt-1 mb-5 pb-1 small">YOUR RENTAL SOLUTIONS</h4>
                                     </div>
 
@@ -38,8 +38,7 @@ session_start();
                                         <p>Please login to your account</p>
 
                                         <div class="form-outline mb-4">
-                                            <input type="text" id="form2Example11" class="form-control"
-                                                placeholder="User Name" name="user" />
+                                            <input type="text" id="form2Example11" class="form-control" placeholder="User Name" name="user" />
                                             <label class="form-label" for="form2Example11">Username</label>
                                         </div>
 
@@ -49,10 +48,9 @@ session_start();
                                         </div>
 
                                         <div class="text-center pt-1 mb-5 pb-1">
-                                            <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                                type="submit" name="sub">Log
+                                            <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit" name="sub">Log
                                                 in</button>
-                                            <a class="text-muted" href="#!">Forgot password?</a>
+                                            <a class="text-muted" href="forgot_password.php">Forgot password?</a>
                                         </div>
 
                                         <div class="d-flex align-items-center justify-content-center pb-4">
@@ -81,32 +79,41 @@ session_start();
         </div>
     </section>
     <?php
-       if (isset($_POST["sub"])) {
+    if (isset($_POST["sub"])) {
         $uname = $_POST["user"];
         $pass = $_POST["pass"];
         if ($uname != null && $pass != null) {
             $con = mysqli_connect("localhost", "root", "", "mini-prj");
-            $query1 ="SELECT * FROM `tbl_login` ";
+            $query1 = "SELECT * FROM `tbl_login` ";
             $result = mysqli_query($con, $query1);
             while ($row = mysqli_fetch_array($result)) {
                 if ($uname == $row['user_name'] && $pass == $row['password']) {
-                  $flag = 1;
-                  $_SESSION['id'] = $row['login_id'];
-                  $_SESSION['logout'] = "yes";
-                  echo ("<script>location.href='lpage.php'</script>");
+                    $flag = 1;
+                    $id = $row['login_id'];
+                    $query2 = "SELECT * FROM `tbl_user` WHERE `login_id`=$id";
+                    $result1 = mysqli_query($con, $query2);
+                    $row1 = mysqli_fetch_array($result1);
+                    if ($row1["user_status"] == 1) {
+                        $_SESSION['id'] = $row['login_id'];
+                        $_SESSION['logout'] = "yes";
+                        if ($row1["user_type"] == 1) {
+                            echo ("<script>location.href='lpage.php'</script>");
+                        } elseif ($row1["user_type"] == 3) {
+                            echo ("<script>location.href='adminpage.php'</script>");
+                        }
+                    }else{
+                        echo ("<script>alert('your account is blocked ')</script>");
+                    }
                 }
-              }
-              if ($flag != 1) {
+            }
+            if ($flag != 1) {
                 echo ("<script>alert('Invalid username or password ')</script>");
-              }
+            }
         }
-       }
+    }
     ?>
     <!-- MDB -->
-<script
-type="text/javascript"
-src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"
-></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"></script>
 </body>
 
 </html>
