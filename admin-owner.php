@@ -23,13 +23,13 @@
 </head>
 
 <body>
-<style>
-    .gradient-custom {
-        background: rgb(2, 0, 36);
-        background: linear-gradient(280deg, rgba(2, 0, 36, 1) 0%, rgba(14, 72, 73, 1) 37%, rgba(0, 212, 255, 1) 100%);
-    }
-</style>
-<script>
+    <style>
+        .gradient-custom {
+            background: rgb(2, 0, 36);
+            background: linear-gradient(280deg, rgba(2, 0, 36, 1) 0%, rgba(14, 72, 73, 1) 37%, rgba(0, 212, 255, 1) 100%);
+        }
+    </style>
+    <script>
         $(document).ready(function() {
             $("#btn").click(function() {
                 $('#exampleModal').modal('toggle')
@@ -96,7 +96,7 @@
                         $('#modal-mob').html(mob);
                         $('#modal-dob').html(dob);
                         $('#modal-loc').html(loc);
-                        $('#modal-image').attr('src','Uploads/'+image);
+                        $('#modal-image').attr('src', 'Uploads/' + image);
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log("Catch", textStatus, errorThrown);
@@ -120,6 +120,7 @@
                     </a>
                     <a href="#" class="list-group-item list-group-item-action py-2 ripple active"><i class="fas fa-user fa-fw me-3"></i><span>car owner</span></a>
                     <a href="admin-verify.php" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-check-circle fa-fw me-3"></i><span>verify Users</span></a>
+                    <a href="admin-add-cat.php" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-solid fa-server fa-fw me-3"></i><span>Add category</span></a>
 
                 </div>
             </div>
