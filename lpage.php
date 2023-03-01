@@ -69,9 +69,6 @@ if ($_SESSION['logout'] == "") {
               <a class="nav-link" href="#!">Services</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#!">Attractions</a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link" href="#!">Opinions</a>
             </li>
             <li class="nav-item">
@@ -408,16 +405,16 @@ if ($_SESSION['logout'] == "") {
               style="width: 60px; background-color: #7c4dff; height: 2px"
               />
           <p>
-            <a href="#!" class="text-white">MDBootstrap</a>
+            <a href="#!" class="text-white">Home</a>
           </p>
           <p>
-            <a href="#!" class="text-white">MDWordPress</a>
+            <a href="#!" class="text-white">Services</a>
           </p>
           <p>
-            <a href="#!" class="text-white">BrandFlow</a>
+            <a href="#!" class="text-white">Opinions</a>
           </p>
           <p>
-            <a href="#!" class="text-white">Bootstrap Angular</a>
+            <a href="#!" class="text-white">contact us</a>
           </p>
         </div>
         <!-- Grid column -->
@@ -434,10 +431,10 @@ if ($_SESSION['logout'] == "") {
             <a href="#!" class="text-white">Your Account</a>
           </p>
           <p>
-            <a href="#!" class="text-white">Become an Affiliate</a>
+            <a href="#!" class="text-white">Add cars</a>
           </p>
           <p>
-            <a href="#!" class="text-white">Shipping Rates</a>
+            <a href="#!" class="text-white">Trending cars</a>
           </p>
           <p>
             <a href="#!" class="text-white">Help</a>

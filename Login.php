@@ -65,11 +65,7 @@ session_start();
                             <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
                                 <div class="text px-3 py-4 p-md-5 mx-md-4">
                                     <h4 class="mb-4">We are more than just a company</h4>
-                                    <p class="small mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                                        do eiusmod
-                                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                        quis nostrud
-                                        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                    <p class="small mb-0">Unlock your vehicle's potential and earn money while you're not using it. Our web-based rental platform connects vehicle owners with those in need, providing a hassle-free rental experience for all. Whether you're looking to rent or earn, our platform has you covered.</p>
                                 </div>
                             </div>
                         </div>
@@ -101,7 +97,7 @@ session_start();
                         } elseif ($row1["user_type"] == 3) {
                             echo ("<script>location.href='adminpage.php'</script>");
                         }
-                    }else{
+                    } else {
                         echo ("<script>alert('your account is blocked ')</script>");
                     }
                 }
