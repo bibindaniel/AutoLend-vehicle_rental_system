@@ -96,6 +96,8 @@ session_start();
                             echo ("<script>location.href='lpage.php'</script>");
                         } elseif ($row1["user_type"] == 3) {
                             echo ("<script>location.href='adminpage.php'</script>");
+                        }else{
+                            echo ("<script>location.href='l-car-owner-page.php'</script>");
                         }
                     } else {
                         echo ("<script>alert('your account is blocked ')</script>");

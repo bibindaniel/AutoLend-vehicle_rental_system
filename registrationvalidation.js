@@ -146,7 +146,7 @@ $(document).ready(function () {
       $('#btn').attr("disabled", false);
     }
   })
-  $("#btn").click(function () {
+  $("#btn").click(function (e) {
     var name1 = document.getElementById("firstName").value
     var name2 = document.getElementById("lastName").value
     var dob = document.getElementById("DOB").value
@@ -159,32 +159,41 @@ $(document).ready(function () {
     if (name1.length == 0) {
        $('#btn').attr("disabled", true);
       alert("Please fill all the fields");
+      e.preventDefault();
     } else if (name2.length == 0) {
        $('#btn').attr("disabled", true);
       alert("Please fill all the fields");
+      e.preventDefault();
     } else if (dob.length == 0) {
        $('#btn').attr("disabled", true);
       alert("Please fill all the fields");
+      e.preventDefault();
     } else if (loc.length == 0) {
        $('#btn').attr("disabled", true);
       alert("Please fill all the fields");
+      e.preventDefault();
     } else if (mail.length == 0) {
        $('#btn').attr("disabled", true);
       alert("Please fill all the fields");
+      e.preventDefault();
     }
     else if (mob.length == 0) {
        $('#btn').attr("disabled", true);
       alert("Please fill all the fields");
+      e.preventDefault();
     } else if (pass.length == 0) {
        $('#btn').attr("disabled", true);
       alert("Please fill all the fields");
+      e.preventDefault();
     } else if (cpass.length == 0) {
        $('#btn').attr("disabled", true);
       alert("Please fill all the fields");
+      e.preventDefault();
     }
     else if (fileInput.length == 0) {
        $('#btn').attr("disabled", true);
       alert("Please fill all the fields");
+      e.preventDefault();
 
     } else {
       $('#btn').attr("disabled", false);

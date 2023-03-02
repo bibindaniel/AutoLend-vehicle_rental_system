@@ -140,7 +140,7 @@ $row = mysqli_fetch_array($result);
 $query1 = "SELECT * FROM `tbl_login` WHERE `login_id`='$tmp_id'";
 $result2 = mysqli_query($con, $query1);
 $row2 = mysqli_fetch_array($result2);
-$id=$row['user_id'];
+$id = $row['user_id'];
 $query3 = "SELECT * FROM `tbl_verify_user` WHERE `user_id`='$id'";
 $result3 = mysqli_query($con, $query3);
 $row3 = mysqli_fetch_array($result3);
@@ -195,6 +195,7 @@ $row3 = mysqli_fetch_array($result3);
                                     <h6></h6>
                                     <hr class="mt-0 mb-4">
                                     <div class="row pt-1">
+                                    <?php if($row["user_type"]==1) { ?>
                                         <div class="col-6 mb-3">
                                             <?php
                                             $status = $row3["verify_status"];
@@ -207,6 +208,7 @@ $row3 = mysqli_fetch_array($result3);
                                             }
                                             ?>
                                         </div>
+                                        <?php } ?>
                                         <div class="col-6 mb-3">
                                             <button type="button" id="btn2" class="btn btn-outline-danger" data-mdb-ripple-color="dark">Delete Account</button>
                                         </div>
@@ -278,7 +280,9 @@ $row3 = mysqli_fetch_array($result3);
         move_uploaded_file($_FILES['limg']['tmp_name'], $targetfilepath);
         if ($result3) {
     ?>
-            <script>location.href='userprofile.php'</script>
+            <script>
+                location.href = 'userprofile.php'
+            </script>
     <?php
 
         }
