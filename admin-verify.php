@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+session_start();
+if ($_SESSION['logout'] == "") {
+  header("location:login.php");
+}
+?>
 
 <head>
   <meta charset="UTF-8">
@@ -24,6 +30,14 @@
 
 <body>
   <!--Main Navigation-->
+  <?php
+  $tmp_id = $_SESSION['id'];
+  $con = mysqli_connect("localhost", "root", "", "mini-prj");
+  $query = "SELECT `image` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
+  $result = mysqli_query($con, $query);
+  $row = mysqli_fetch_array($result);
+  $img = $row['image'];
+  ?>
   <header>
     <!-- Sidebar -->
     <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
@@ -61,14 +75,20 @@
         </a>
         <small class="h3 text-light font-weight-bold text-align-center">ADMIN PANEL</small></a>
         <!-- Avatar -->
-        <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-          <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt="" loading="lazy" />
-        </a>
+        <div class="dropdown ">
+          <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+            <img src="Uploads/<?php echo $row['image'] ?>" class="rounded-circle" height="25" alt="profile pic" loading="lazy" />
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+            <li>
+              <a class="dropdown-item" href="sessiondestroy.php">Logout</a>
+            </li>
+          </ul>
+        </div>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
           <li><a class="dropdown-item" href="#">My profile</a></li>
           <li><a class="dropdown-item" href="#">Settings</a></li>
           <li><a class="dropdown-item" href="#">Logout</a></li>
-        </ul>
         </ul>
       </div>
       <!-- Container wrapper -->
@@ -81,54 +101,54 @@
   <main style="margin-top: 58px">
     <div class="container pt-4">
       <?php
-                $con = mysqli_connect("localhost", "root","", "mini-prj");
-                $query = "SELECT tbl_user.first_name, tbl_user.email,tbl_user.image,tbl_user.user_id,tbl_verify_user.licence_no,tbl_verify_user.Expiry_date,tbl_verify_user.licence_file,tbl_verify_user.verify_status from tbl_user JOIN tbl_verify_user ON tbl_user.user_id=tbl_verify_user.user_id AND tbl_verify_user.verify_status = 0";
-                $result = mysqli_query($con, $query);
-                $count=mysqli_num_rows($result);
-                if($count > 0){
+      $con = mysqli_connect("localhost", "root", "", "mini-prj");
+      $query = "SELECT tbl_user.first_name, tbl_user.email,tbl_user.image,tbl_user.user_id,tbl_verify_user.licence_no,tbl_verify_user.Expiry_date,tbl_verify_user.licence_file,tbl_verify_user.verify_status from tbl_user JOIN tbl_verify_user ON tbl_user.user_id=tbl_verify_user.user_id AND tbl_verify_user.verify_status = 0";
+      $result = mysqli_query($con, $query);
+      $count = mysqli_num_rows($result);
+      if ($count > 0) {
       ?>
-      <table class="table align-middle mb-0 bg-white" id="mytable">
-        <thead class="bg-light">
-          <tr>
-            <th>Name</th>
-            <th>License Details</th>
-            <!-- <th>Status</th> -->
-            <th>View License</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php
-          while ($row = mysqli_fetch_array($result)) {
-          ?>
+        <table class="table align-middle mb-0 bg-white" id="mytable">
+          <thead class="bg-light">
             <tr>
-              <td>
-                <div class="d-flex align-items-center">
-                  <img src="uploads/<?= $row["image"] ?>" alt="" style="width: 45px; height: 45px" class="rounded-circle" />
-                  <div class="ms-3">
-                    <p class="fw-bold mb-1"><?= $row["first_name"] ?></p>
-                    <p class="text-muted mb-0"><?= $row["email"] ?></p>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <p class="fw-normal mb-1"><?= $row["licence_no"] ?></p>
-                <p class="text-muted mb-0"><?= $row["Expiry_date"] ?></p>
-              </td>
-              <td><button type="button" class="btn btn-info " onclick="location.href='Licence/<?php echo $row['licence_file']; ?>'" target="_blank">View</button></td>
-              <td>
-              <a href="#" id="verify_appr"   data-user-id="<?php echo $row['user_id']; ?>"> <i class="fa fa-check text-success"></i></a>
-              <a href="#" id="verify_decli" class="ms-2"  data-user-id="<?php echo $row['user_id']; ?>"  > <i class="fa fa-times text-danger"></i></a>
-              </td>
-            <?php } ?>
+              <th>Name</th>
+              <th>License Details</th>
+              <!-- <th>Status</th> -->
+              <th>View License</th>
+              <th>Actions</th>
             </tr>
-        </tbody>
-      </table>
-      <?php }else {?>
+          </thead>
+          <tbody>
+            <?php
+            while ($row = mysqli_fetch_array($result)) {
+            ?>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <img src="uploads/<?= $row["image"] ?>" alt="" style="width: 45px; height: 45px" class="rounded-circle" />
+                    <div class="ms-3">
+                      <p class="fw-bold mb-1"><?= $row["first_name"] ?></p>
+                      <p class="text-muted mb-0"><?= $row["email"] ?></p>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <p class="fw-normal mb-1"><?= $row["licence_no"] ?></p>
+                  <p class="text-muted mb-0"><?= $row["Expiry_date"] ?></p>
+                </td>
+                <td><button type="button" class="btn btn-info " onclick="location.href='Licence/<?php echo $row['licence_file']; ?>'" target="_blank">View</button></td>
+                <td>
+                  <a href="#" id="verify_appr" data-user-id="<?php echo $row['user_id']; ?>"> <i class="fa fa-check text-success"></i></a>
+                  <a href="#" id="verify_decli" class="ms-2" data-user-id="<?php echo $row['user_id']; ?>"> <i class="fa fa-times text-danger"></i></a>
+                </td>
+              <?php } ?>
+              </tr>
+          </tbody>
+        </table>
+      <?php } else { ?>
         <div class="de-flex align-items-center">
-        <p class="h2  text-center">No Request Pending</p>
+          <p class="h2  text-center">No Request Pending</p>
         </div>
-        <?php }?>
+      <?php } ?>
     </div>
   </main>
   <!-- data table -->
@@ -139,50 +159,50 @@
 <script src="adminpanel.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"></script>
 <script>
-   $(document).ready(function() {
+  $(document).ready(function() {
     var table = $('#mytable').DataTable({
-                "lengthChange": false,
-                pageLength: 6,
-                lengthMenu: [
-                    [5, 10, 20, -1],
-                    [5, 10, 20, 'Todos']
-                ]
-            })
-                // update verify_status
-                $('#verify_appr').click(function(e) {
-                    e.preventDefault();
-                    var userId = $(this).data('user-id');
+      "lengthChange": false,
+      pageLength: 6,
+      lengthMenu: [
+        [5, 10, 20, -1],
+        [5, 10, 20, 'Todos']
+      ]
+    })
+    // update verify_status
+    $('#verify_appr').click(function(e) {
+      e.preventDefault();
+      var userId = $(this).data('user-id');
 
-                    // send ajax request to update verify status in database
-                    $.ajax({
-                        url: 'accept_verify_status.php',
-                        type: 'POST',
-                        data: {
-                            user_id: userId
-                        },
-                        success: function(response) {
-                            console.log(response);
-                            location.reload(true);
-                        }
-                    });
-                });
-                $('#verify_decli').click(function(e) {
-                    e.preventDefault();
-                    var userId = $(this).data('user-id');
-                    // send ajax request to update verify status in database
-                    $.ajax({
-                        url: 'decline_verify_status.php',
-                        type: 'POST',
-                        data: {
-                            user_id: userId
-                        },
-                        success: function(response) {
-                            console.log(response);
-                            location.reload(true);
-                        }
-                    });
-                });
-            });
+      // send ajax request to update verify status in database
+      $.ajax({
+        url: 'accept_verify_status.php',
+        type: 'POST',
+        data: {
+          user_id: userId
+        },
+        success: function(response) {
+          console.log(response);
+          location.reload(true);
+        }
+      });
+    });
+    $('#verify_decli').click(function(e) {
+      e.preventDefault();
+      var userId = $(this).data('user-id');
+      // send ajax request to update verify status in database
+      $.ajax({
+        url: 'decline_verify_status.php',
+        type: 'POST',
+        data: {
+          user_id: userId
+        },
+        success: function(response) {
+          console.log(response);
+          location.reload(true);
+        }
+      });
+    });
+  });
 </script>
 
 </html>

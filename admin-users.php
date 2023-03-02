@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+session_start();
+if ($_SESSION['logout'] == "") {
+    header("location:login.php");
+}
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -101,7 +107,7 @@
                         $('#modal-lno').html(lno);
                         $('#modal-exdate').html(exdate);
                         $('#modal-loc').html(loc);
-                        $('#modal-image').attr('src','Uploads/'+image);
+                        $('#modal-image').attr('src', 'Uploads/' + image);
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log("Catch", textStatus, errorThrown);
@@ -112,6 +118,14 @@
         });
     </script>
     <!--Main Navigation-->
+    <?php
+    $tmp_id = $_SESSION['id'];
+    $con = mysqli_connect("localhost", "root", "", "mini-prj");
+    $query = "SELECT `image` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
+    $result = mysqli_query($con, $query);
+    $row = mysqli_fetch_array($result);
+    $img = $row['image'];
+    ?>
     <header>
         <!-- Sidebar -->
         <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
@@ -149,14 +163,20 @@
                 </a>
                 <small class="h3 text-light font-weight-bold text-align-center">ADMIN PANEL</small></a>
                 <!-- Avatar -->
-                <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                    <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt="" loading="lazy" />
-                </a>
+                <div class="dropdown ">
+                    <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                        <img src="Uploads/<?php echo $row['image'] ?>" class="rounded-circle" height="25" alt="profile pic" loading="lazy" />
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+                        <li>
+                            <a class="dropdown-item" href="sessiondestroy.php">Logout</a>
+                        </li>
+                    </ul>
+                </div>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                     <li><a class="dropdown-item" href="#">My profile</a></li>
                     <li><a class="dropdown-item" href="#">Settings</a></li>
                     <li><a class="dropdown-item" href="#">Logout</a></li>
-                </ul>
                 </ul>
             </div>
             <!-- Container wrapper -->
@@ -261,9 +281,10 @@
                 <div class="modal-body">
                     <div class="row g-0">
                         <div class="col-md-4 gradient-custom text-center text-white d-flex" style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
-                        <div class="my-auto mx-auto">
-                        <img src="images/users/aatik-tasneem-7omHUGhhmZ0-unsplash.jpg" id="modal-image" alt="Avatar" class="img-fluid my-4 rounded-circle " style="width: 80px;" />
-                         <h5 id="modal-name"></h5></div>
+                            <div class="my-auto mx-auto">
+                                <img src="images/users/aatik-tasneem-7omHUGhhmZ0-unsplash.jpg" id="modal-image" alt="Avatar" class="img-fluid my-4 rounded-circle " style="width: 80px;" />
+                                <h5 id="modal-name"></h5>
+                            </div>
                             <p id="modal-uname"></p>
                         </div>
                         <div class="col-md-8">

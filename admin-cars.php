@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+session_start();
+if ($_SESSION['logout'] == "") {
+    header("location:login.php");
+}
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -40,36 +46,43 @@
                 ]
             })
             $('.toggle-status').click(function(e) {
-                    e.preventDefault();
-                    var userId = $(this).data('user-id');
-                    var statusElm = $('.user-status[data-user-id="' + userId + '"]');
-                    var status = statusElm.text();
-                    // update user status and icon
-                    if (status == 'Active') {
-                        statusElm.text('Blocked').removeClass('badge-success').addClass('badge-danger');
-                        $(this).html('<i class="fa fa-times text-danger"></i>');
-                    } else if (status == 'Blocked') {
-                        statusElm.text('Active').removeClass('badge-danger').addClass('badge-success');
-                        $(this).html('<i class="fa fa-check text-success"></i>');
+                e.preventDefault();
+                var userId = $(this).data('user-id');
+                var statusElm = $('.user-status[data-user-id="' + userId + '"]');
+                var status = statusElm.text();
+                // update user status and icon
+                if (status == 'Active') {
+                    statusElm.text('Blocked').removeClass('badge-success').addClass('badge-danger');
+                    $(this).html('<i class="fa fa-times text-danger"></i>');
+                } else if (status == 'Blocked') {
+                    statusElm.text('Active').removeClass('badge-danger').addClass('badge-success');
+                    $(this).html('<i class="fa fa-check text-success"></i>');
+                }
+
+                // send ajax request to update user status in database
+                $.ajax({
+                    url: 'car_update.php',
+                    type: 'POST',
+                    data: {
+                        user_id: userId,
+                        status: statusElm.text()
+                    },
+                    success: function(response) {
+                        console.log(response);
                     }
-
-                    // send ajax request to update user status in database
-                    $.ajax({
-                        url: 'car_update.php',
-                        type: 'POST',
-                        data: {
-                            user_id: userId,
-                            status: statusElm.text()
-                        },
-                        success: function(response) {
-                            console.log(response);
-                        }
-                    });
                 });
+            });
         });
-
     </script>
     <!--Main Navigation-->
+    <?php
+    $tmp_id = $_SESSION['id'];
+    $con = mysqli_connect("localhost", "root", "", "mini-prj");
+    $query = "SELECT `image` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
+    $result = mysqli_query($con, $query);
+    $row = mysqli_fetch_array($result);
+    $img = $row['image'];
+    ?>
     <header>
         <!-- Sidebar -->
         <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
@@ -107,14 +120,20 @@
                 </a>
                 <small class="h3 text-light font-weight-bold text-align-center">ADMIN PANEL</small></a>
                 <!-- Avatar -->
-                <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                    <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt="" loading="lazy" />
-                </a>
+                <div class="dropdown ">
+                    <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                        <img src="Uploads/<?php echo $row['image'] ?>" class="rounded-circle" height="25" alt="profile pic" loading="lazy" />
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+                        <li>
+                            <a class="dropdown-item" href="sessiondestroy.php">Logout</a>
+                        </li>
+                    </ul>
+                </div>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                     <li><a class="dropdown-item" href="#">My profile</a></li>
                     <li><a class="dropdown-item" href="#">Settings</a></li>
                     <li><a class="dropdown-item" href="#">Logout</a></li>
-                </ul>
                 </ul>
             </div>
             <!-- Container wrapper -->
@@ -149,7 +168,7 @@
                                         <p class="fw-bold mb-1"><?php echo $row['model_name'] ?></p>
                                     </div>
                                 </div>
-                      
+
                             </td>
                             <td>
                                 <?php if ($row['status'] == 1) { ?>
