@@ -139,6 +139,8 @@
                     <a href="admin-owner.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-user fa-fw me-3"></i><span>car owner</span></a>
                     <a href="admin-verify.php" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-check-circle fa-fw me-3"></i><span>verify Users</span></a>
                     <a href="#" class="list-group-item list-group-item-action py-2 ripple active"><i class="fas fa-solid fa-server fa-fw me-3"></i><span>Add category</span></a>
+                    <a href="admin-cars.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-solid fa-car fa-fw me-3"></i><span>vehicles</span></a>
+
                 </div>
             </div>
         </nav>

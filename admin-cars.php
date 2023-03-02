@@ -21,35 +21,29 @@
     <!-- data table -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.css">
 </head>
+<style>
+    .gradient-custom {
+        background: rgb(2, 0, 36);
+        background: linear-gradient(280deg, rgba(2, 0, 36, 1) 0%, rgba(14, 72, 73, 1) 37%, rgba(0, 212, 255, 1) 100%);
+    }
+</style>
 
 <body>
-    <style>
-        .gradient-custom {
-            background: rgb(2, 0, 36);
-            background: linear-gradient(280deg, rgba(2, 0, 36, 1) 0%, rgba(14, 72, 73, 1) 37%, rgba(0, 212, 255, 1) 100%);
-        }
-    </style>
     <script>
         $(document).ready(function() {
-            $("#btn").click(function() {
-                $('#exampleModal').modal('toggle')
-            })
             var table = $('#mytable').DataTable({
                 "lengthChange": false,
-                pageLength: 6,
+                pageLength: 4,
                 lengthMenu: [
                     [5, 10, 20, -1],
                     [5, 10, 20, 'Todos']
                 ]
             })
-            $(document).ready(function() {
-                // toggle user status
-                $('.toggle-status').click(function(e) {
+            $('.toggle-status').click(function(e) {
                     e.preventDefault();
                     var userId = $(this).data('user-id');
                     var statusElm = $('.user-status[data-user-id="' + userId + '"]');
                     var status = statusElm.text();
-
                     // update user status and icon
                     if (status == 'Active') {
                         statusElm.text('Blocked').removeClass('badge-success').addClass('badge-danger');
@@ -61,7 +55,7 @@
 
                     // send ajax request to update user status in database
                     $.ajax({
-                        url: 'update_status.php',
+                        url: 'car_update.php',
                         type: 'POST',
                         data: {
                             user_id: userId,
@@ -72,39 +66,8 @@
                         }
                     });
                 });
-            });
-            $('.view-btn').click(function(e) {
-                e.preventDefault();
-                var userId = $(this).data('user-id');
-                $.ajax({
-                    url: 'retrieve_data_owner.php',
-                    type: 'POST',
-                    data: {
-                        id: userId
-                    },
-                    dataType: 'json',
-                    success: function(data) {
-                        console.log("data: ", data)
-                        var name = '<p>' + data.value1 + '</p>';
-                        var email = '<p>' + data.value2 + '</p>';
-                        var mob = '<p>' + data.value3 + '</p>';
-                        var dob = '<p>' + data.value4 + '</p>';
-                        var image = data.value5;
-                        var loc = '<p>' + data.value8 + '</p>';
-                        $('#modal-name').html(name);
-                        $('#modal-email').html(email);
-                        $('#modal-mob').html(mob);
-                        $('#modal-dob').html(dob);
-                        $('#modal-loc').html(loc);
-                        $('#modal-image').attr('src', 'Uploads/' + image);
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        console.log("Catch", textStatus, errorThrown);
-                    }
-                });
-            });
-
         });
+
     </script>
     <!--Main Navigation-->
     <header>
@@ -118,10 +81,10 @@
                     <a href="admin-users.php" class="list-group-item list-group-item-action py-2 ripple ">
                         <i class="fas fa-users fa-fw me-3"></i><span>Users</span>
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple active"><i class="fas fa-user fa-fw me-3"></i><span>car owner</span></a>
+                    <a href="admin-owner.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-user fa-fw me-3"></i><span>car owner</span></a>
                     <a href="admin-verify.php" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-check-circle fa-fw me-3"></i><span>verify Users</span></a>
-                    <a href="admin-add-cat.php" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-solid fa-server fa-fw me-3"></i><span>Add category</span></a>
-                    <a href="admin-cars.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-solid fa-car fa-fw me-3"></i><span>vehicles</span></a>
+                    <a href="admin-add-cat.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-solid fa-server fa-fw me-3"></i><span>Add category</span></a>
+                    <a href="#" class="list-group-item list-group-item-action py-2 ripple active"><i class="fas fa-solid fa-car fa-fw me-3"></i><span>vehicles</span></a>
 
                 </div>
             </div>
@@ -167,16 +130,14 @@
                 <thead class="bg-light">
                     <tr>
                         <th>Name</th>
-                        <!-- <th>Verification</th> -->
                         <th>Status</th>
-                        <th>View</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
                     $con = mysqli_connect("localhost", "root", "", "mini-prj");
-                    $query = "SELECT * FROM `tbl_user` where user_type =2";
+                    $query = "SELECT * FROM `tbl_vehicle`";
                     $result = mysqli_query($con, $query);
                     while ($row = mysqli_fetch_array($result)) {
                     ?>
@@ -185,29 +146,23 @@
                                 <div class="d-flex align-items-center">
                                     <img src="Uploads/<?php echo $row['image'] ?>" class="rounded-circle" alt="" style="width: 45px; height: 45px" />
                                     <div class="ms-3">
-                                        <p class="fw-bold mb-1"><?php echo $row['first_name'] ?></p>
-                                        <p class="text-muted mb-0"><?php echo $row['email'] ?></p>
+                                        <p class="fw-bold mb-1"><?php echo $row['model_name'] ?></p>
                                     </div>
                                 </div>
+                      
                             </td>
-                            <!-- <td>
-                                <span class="badge badge-success rounded-pill d-inline">verified</span>
-                            </td> -->
                             <td>
-                                <?php if ($row['user_status'] == 1) { ?>
-                                    <span class="user-status badge badge-success rounded-pill d-inline" data-user-id="<?php echo $row['user_id']; ?>">Active</span>
-                                <?php } elseif ($row['user_status'] == 0) { ?>
-                                    <span class="user-status badge badge-danger rounded-pill d-inline" data-user-id="<?php echo $row['user_id']; ?>">Blocked</span>
+                                <?php if ($row['status'] == 1) { ?>
+                                    <span class="user-status badge badge-success rounded-pill d-inline" data-user-id="<?php echo $row['vehicle_id']; ?>">Active</span>
+                                <?php } elseif ($row['status'] == 0) { ?>
+                                    <span class="user-status badge badge-danger rounded-pill d-inline" data-user-id="<?php echo $row['vehicle_id']; ?>">Blocked</span>
                                 <?php } ?>
                             </td>
-                            <td> <button type="button" class="btn btn-info view-btn" data-mdb-toggle="modal" data-mdb-target="#exampleModal" data-user-id="<?php echo $row['user_id']; ?>">
-                                    View
-                                </button></td>
                             <td>
-                                <a href="#" class="toggle-status" title="Toggle Status" data-user-id="<?php echo $row['user_id']; ?>" data-toggle="tooltip">
-                                    <?php if ($row['user_status'] == 1) { ?>
+                                <a href="#" class="toggle-status" title="Toggle Status" data-user-id="<?php echo $row['vehicle_id']; ?>" data-toggle="tooltip">
+                                    <?php if ($row['status'] == 1) { ?>
                                         <i class="fa fa-check text-success"></i>
-                                    <?php } elseif ($row['user_status'] == 0) { ?>
+                                    <?php } elseif ($row['status'] == 0) { ?>
                                         <i class="fa fa-times text-danger"></i>
                                     <?php } ?>
                                 </a>
@@ -218,53 +173,63 @@
             </table>
         </div>
     </main>
+
+    </div>
+    </main>
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">User Profile</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
                     <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row g-0">
-                        <div class="col-md-4 gradient-custom text-center text-white d-flex" style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
-                            <div class="my-auto mx-auto">
-                                <img src="images/users/aatik-tasneem-7omHUGhhmZ0-unsplash.jpg" id="modal-image" alt="Avatar" class="img-fluid my-4 rounded-circle " style="width: 80px;" />
-                                <h5 id="modal-name"></h5>
+                    <div id="form">
+                        <div class="row pt-1">
+                            <div class="col-6 mb-3">
+                                <form action="#" method="POST" enctype="multipart/form-data">
+                                    <label class="form-label" for="name">Category Name</label>
+                                    <div class="form-outline">
+                                        <input type="text" id="name" name="name" class="form-control form-control-lg" value="" oninput="this.value = this.value.toUpperCase()" required />
+                                    </div>
+                                    <div class="wr-msg text-danger" id="name1"></div>
                             </div>
-                            <p id="modal-uname"></p>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body p-4">
-                                <h6>Information</h6>
-                                <hr class="mt-0 mb-4">
-                                <div class="row pt-1">
-                                    <div class="col-6 mb-3">
-                                        <h6>Email</h6>
-                                        <p class="text-muted" id="modal-email">info@example.com</p>
-                                    </div>
-                                    <div class="col-6 mb-3">
-                                        <h6>Phone</h6>
-                                        <p class="text-muted" id="modal-mob">123 456 789</p>
-                                    </div>
-                                    <div class="col-6 mb-3">
-                                        <h6>DOB</h6>
-                                        <p class="text-muted" id="modal-dob">info@example.com</p>
-                                    </div>
-                                    <div class="col-6 mb-3">
-                                        <h6>Location</h6>
-                                        <p class="text-muted" id="modal-loc">123 456 789</p>
-                                    </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label" for="img">Upload image</label>
+                                <div class="form-outline">
+                                    <input type="file" id="img" name="img" class="form-control form-control-lg" value="" accept="image/png, image/gif, image/jpeg" onchange="fileValidation()" required />
                                 </div>
+                                <div class="wr-msg text-danger" id="img1"></div>
                             </div>
+
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                    <button type="submit" id="btn-modal" class="btn btn-primary" name="sub">Save changes</button>
+                </div>
+                </form>
             </div>
-
         </div>
     </div>
+    <?php
+    if (isset($_POST["sub"])) {
+        $name = $_POST["name"];
+        $img = $_FILES["img"]["name"];
+        $con = mysqli_connect("localhost", "root", "", "mini-prj");
+        $query1 = "INSERT INTO `tbl_vehicle_category`(`category_name`, `image`) VALUES ('$name','$img')";
+        $res = mysqli_query($con, $query1);
+        if ($res) {
+            $target = "Uploads/";
+            $targetfilepath = $target . $img;
+            move_uploaded_file($_FILES['img']['tmp_name'], $targetfilepath);
+            echo ("<script>location.href='admin-add-cat.php'</script>");
+        }
+        mysqli_close($con);
+    }
+    ?>
     <!-- data table -->
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
     <!--Main layout-->
