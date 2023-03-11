@@ -6,7 +6,6 @@ if ($_SESSION['logout'] == "") {
     header("location:login.php");
 }
 ?>
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -48,6 +47,38 @@ if ($_SESSION['logout'] == "") {
                     [5, 10, 20, 'Todos']
                 ]
             })
+            $(document).ready(function() {
+                // toggle user status
+                $('.toggle-status1').click(function(e) {
+                    e.preventDefault();
+                    var userId = $(this).data('user-id');
+                    var statusElm = $('.user-v-status[data-user-id="' + userId + '"]');
+                    var status = statusElm.text();
+                    // update user status and icon
+                    if (status == 'verified') {
+                        statusElm.text('Not verified').removeClass('badge-success').addClass('badge-danger');
+                        $(this).html('<i class="fa fa-times text-danger"></i>');
+                    } else if (status == 'verification Pending') {
+                        statusElm.text('verified').removeClass('badge-danger').addClass('badge-success');
+                        $(this).html('<i class="fa fa-check text-success"></i>');
+                    } else {
+                        $('#liveToastBtn').click();
+                    }
+
+                    // send ajax request to update user status in database
+                    $.ajax({
+                        url: 'update_status1.php',
+                        type: 'POST',
+                        data: {
+                            user_id: userId,
+                            status: statusElm.text()
+                        },
+                        success: function(response) {
+                            console.log(response);
+                        }
+                    });
+                });
+            });
             $(document).ready(function() {
                 // toggle user status
                 $('.toggle-status').click(function(e) {
@@ -100,6 +131,9 @@ if ($_SESSION['logout'] == "") {
                         var lno = '<p>' + data.value6 + '</p>';
                         var exdate = '<p>' + data.value7 + '</p>';
                         var loc = '<p>' + data.value8 + '</p>';
+                        var file = data.value9;
+                        var status = data.status;
+                        var id = data.id;
                         $('#modal-name').html(name);
                         $('#modal-email').html(email);
                         $('#modal-mob').html(mob);
@@ -108,6 +142,30 @@ if ($_SESSION['logout'] == "") {
                         $('#modal-exdate').html(exdate);
                         $('#modal-loc').html(loc);
                         $('#modal-image').attr('src', 'Uploads/' + image);
+                        if (status == '-1') {
+                            $('.modal-file1').hide()
+                            $('.modal-file2').show()
+                        } else {
+                            $('.modal-file1').show()
+                            $('.modal-file2').hide()
+                            $('.modal-file1').attr('href', 'Licence/' + file);
+                        }
+                        if (status == '-1') {
+                            $('#verify_btn').show()
+                            $('#verify_btn1').hide()
+                            $('#verify_btn2').hide()
+                        } else if (status == '0') {
+                            $('#verify_btn').hide()
+                            $('#verify_btn1').show()
+                            $('#verify_btn2').hide()
+                            $('#verify_btn1').attr('data-user-id', id)
+
+                        } else {
+                            $('#verify_btn').hide()
+                            $('#verify_btn1').hide()
+                            $('#verify_btn2').show()
+                            $('#verify_btn2').attr('data-user-id', id)
+                        }
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log("Catch", textStatus, errorThrown);
@@ -193,9 +251,10 @@ if ($_SESSION['logout'] == "") {
                     <tr>
                         <th>Name</th>
                         <th>Verification</th>
+                        <th>Action</th>
                         <th>Status</th>
+                        <th>Action</th>
                         <th>View</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -225,23 +284,37 @@ if ($_SESSION['logout'] == "") {
                             if ($row1['verify_status'] == -1) {
                             ?>
                                 <td>
-                                    <span class="badge badge-danger rounded-pill d-inline">Not verified</span>
+                                    <span class="user-v-status badge badge-danger rounded-pill d-inline" data-user-id="<?php echo $row['user_id']; ?>">Not verified</span>
+                                    <a href="#"><i class="fa fa-info-circle"></i></a>
                                 </td>
                             <?php
                             } elseif ($row1['verify_status'] == 0) {
                             ?>
                                 <td>
-                                    <span class="badge badge-primary rounded-pill d-inline">verification Pending</span>
+                                    <span class="user-v-status badge badge-primary rounded-pill d-inline" data-user-id="<?php echo $row['user_id']; ?>">verification Pending</span>
+                                    <a href="#"><i class="fa fa-info-circle"></i></a>
                                 </td>
                             <?php
                             } elseif ($row1['verify_status'] == 1) {
                             ?>
                                 <td>
-                                    <span class="badge badge-success rounded-pill d-inline">verified</span>
+                                    <span class="user-v-status badge badge-success rounded-pill d-inline" data-user-id="<?php echo $row['user_id']; ?>">verified</span>
+                                    <a href="#"><i class="fa fa-info-circle"></i></a>
                                 </td>
                             <?php
                             }
                             ?>
+                            <td>
+                                <a href="#" class="toggle-status1" title="Toggle Status" data-user-id="<?php echo $row['user_id']; ?>" data-toggle="tooltip">
+                                    <?php if ($row1['verify_status'] == -1) { ?>
+                                        <i class="fa fa-times text-danger "></i>
+                                    <?php } elseif ($row1['verify_status'] == 0) { ?>
+                                        <i class="fa fa-times text-danger"></i>
+                                    <?php } else { ?>
+                                        <i class="fa fa-check text-success"></i>
+                                    <?php } ?>
+                                </a>
+                            </td>
                             <td>
                                 <?php if ($row['user_status'] == 1) { ?>
                                     <span class="user-status badge badge-success rounded-pill d-inline" data-user-id="<?php echo $row['user_id']; ?>">Active</span>
@@ -249,9 +322,6 @@ if ($_SESSION['logout'] == "") {
                                     <span class="user-status badge badge-danger rounded-pill d-inline" data-user-id="<?php echo $row['user_id']; ?>">Blocked</span>
                                 <?php } ?>
                             </td>
-                            <td> <button type="button" class="btn btn-info view-btn" data-mdb-toggle="modal" data-mdb-target="#exampleModal" data-user-id="<?php echo $row['user_id']; ?>">
-                                    View
-                                </button></td>
                             <td>
                                 <a href="#" class="toggle-status" title="Toggle Status" data-user-id="<?php echo $row['user_id']; ?>" data-toggle="tooltip">
                                     <?php if ($row['user_status'] == 1) { ?>
@@ -261,18 +331,18 @@ if ($_SESSION['logout'] == "") {
                                     <?php } ?>
                                 </a>
                             </td>
+                            <td> <button type="button" class="btn btn-info view-btn" data-mdb-toggle="modal" data-mdb-target="#exampleModal" data-user-id="<?php echo $row['user_id']; ?>">
+                                    View
+                                </button></td>
                         </tr>
                     <?php } ?>
                 </tbody>
             </table>
-
-
-
         </div>
     </main>
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">User Profile</h5>
@@ -280,42 +350,49 @@ if ($_SESSION['logout'] == "") {
                 </div>
                 <div class="modal-body">
                     <div class="row g-0">
-                        <div class="col-md-4 gradient-custom text-center text-white d-flex" style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+                        <div class="col-md-12 gradient-custom text-center text-white d-flex" style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
                             <div class="my-auto mx-auto">
-                                <img src="images/users/aatik-tasneem-7omHUGhhmZ0-unsplash.jpg" id="modal-image" alt="Avatar" class="img-fluid my-4 rounded-circle " style="width: 80px;" />
+                                <img src="images/users/aatik-tasneem-7omHUGhhmZ0-unsplash.jpg" id="modal-image" alt="Avatar" class="img-fluid my-4 rounded-circle " style="width: 80px; height:80px;" />
                                 <h5 id="modal-name"></h5>
                             </div>
                             <p id="modal-uname"></p>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-12">
                             <div class="card-body p-4">
                                 <h6>Information</h6>
                                 <hr class="mt-0 mb-4">
                                 <div class="row pt-1">
                                     <div class="col-6 mb-3">
                                         <h6>Email</h6>
-                                        <p class="text-muted" id="modal-email">info@example.com</p>
+                                        <p class="text-muted" id="modal-email"></p>
                                     </div>
                                     <div class="col-6 mb-3">
                                         <h6>Phone</h6>
-                                        <p class="text-muted" id="modal-mob">123 456 789</p>
+                                        <p class="text-muted" id="modal-mob"></p>
                                     </div>
                                     <div class="col-6 mb-3">
                                         <h6>DOB</h6>
-                                        <p class="text-muted" id="modal-dob">info@example.com</p>
+                                        <p class="text-muted" id="modal-dob"></p>
                                     </div>
                                     <div class="col-6 mb-3">
                                         <h6>Location</h6>
-                                        <p class="text-muted" id="modal-loc">123 456 789</p>
+                                        <p class="text-muted" id="modal-loc"></p>
                                     </div>
                                     <div class="col-6 mb-3">
                                         <h6>Licence No</h6>
-                                        <p class="text-muted" id="modal-lno">info@example.com</p>
+                                        <p class="text-muted" id="modal-lno"></p>
                                     </div>
                                     <div class="col-6 mb-3">
                                         <h6>Expiry Date</h6>
-                                        <p class="text-muted" id="modal-exdate">123 456 789</p>
+                                        <p class="text-muted" id="modal-exdate"></p>
                                     </div>
+                                    <div class="col-12 mb-3">
+                                        <div class=" d-flex justify-content-center">
+                                            <a class="modal-file1" href="#" target="_blank" data-mdb-ripple-color="dark"><i class="fas fa-address-card fa-5x"></i></a>
+                                            <a class="modal-file2" data-mdb-toggle="popover" data-mdb-placement="top" data-mdb-content="licence not Uploaded" data-mdb-ripple-color="dark"><i class="fas fa-address-card fa-5x"></i></a>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

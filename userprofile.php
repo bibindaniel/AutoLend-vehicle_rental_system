@@ -153,7 +153,11 @@ $row3 = mysqli_fetch_array($result3);
                 <div class="col">
                     <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4 ">
                         <ol class="breadcrumb mb-0 ">
-                            <li class="breadcrumb-item"><a href="lpage.php">Home</a></li>
+                            <?php if ($row["user_type"]==1) { ?>
+                                <li class="breadcrumb-item"><a href="lpage.php">Home</a></li> 
+                            <?php } else{?>
+                            <li class="breadcrumb-item"><a href="l-car-owner-page.php">Home</a></li>
+                            <?php }?>
                             <!-- <li class="breadcrumb-item"><a href="#">User</a></li> -->
                             <li class="breadcrumb-item active" aria-current="page">User Profile</li>
                         </ol>

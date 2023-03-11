@@ -15,19 +15,24 @@ if (isset($_POST['id'])) {
   if($row1["verify_status"]==1){
     $lno=$row1["licence_no"];
     $exdate=$row1["Expiry_date"];
+    $file=$row1["licence_file"];
   }else{
     $lno="Not updated";
     $exdate="Not updated";
+    $file="Not updated";
   }
   echo json_encode(array(
+    'id' => $id,
     'value1' => $row["first_name"],
     'value2' => $row["email"],
     'value3' => $row["mobile"],
     'value4' => $row["dob"],
     'value5' => $row["image"],
+    'status' => $row1["verify_status"],
     'value6' => $lno,
     'value7' => $exdate,
-    'value8' => $row["location"]
+    'value8' => $row["location"],
+    'value9' => $file
 ));
   mysqli_close($con);
 

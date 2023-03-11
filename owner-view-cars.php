@@ -165,10 +165,10 @@ if ($_SESSION['logout'] == "") {
                     <a href="owner-dashboard.php" class="list-group-item list-group-item-action py-2 ripple " aria-current="true">
                         <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple active ">
+                    <a href="owner-add-car.php" class="list-group-item list-group-item-action py-2 ripple  ">
                         <i class="fas fa-plus-square fa-fw me-3"></i><span>Add cars</span>
                     </a>
-                    <a href="owner-view-cars.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas  fa-car fa-fw me-3"></i><span>View Cars</span></a>
+                    <a href="#" class="list-group-item list-group-item-action py-2 ripple active"><i class="fas  fa-car fa-fw me-3"></i><span>View Cars</span></a>
                     <a href="#" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-bell fa-fw me-3"></i><span>View Request</span></a>
                     <a href="#" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-address-book fa-fw me-3"></i><span>View Bookings</span></a>
                 </div>
@@ -218,121 +218,42 @@ if ($_SESSION['logout'] == "") {
         <!-- Navbar -->
     </header>
     <!--Main Navigation-->
-    <?php
-    $con = mysqli_connect("localhost", "root", "", "mini-prj");
-    $query1 = "SELECT * FROM `tbl_vehicle_category`";
-    $res = mysqli_query($con, $query1);
-    ?>
     <!--Main layout-->
     <main style="margin-top: 58px">
         <div class="container pt-4">
-            <div class="success-msg">
-                <i class="fa fa-check"></i>
-                Your data is sucessfully inserted
-            </div>
-            <div class="error-msg">
-                <i class="fa fa-times-circle"></i>
-                This is a error message.
-            </div>
-            <div class="container py-2 h-100">
-                <div class="row justify-content-center align-items-center h-100">
-                    <div class="col-12 col-lg-9 col-xl-7">
-                        <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
-                            <div class="card-body p-4 p-md-5">
-                                <!-- <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Registration Form</h3> -->
-                                <form action="#" method="POST" enctype="multipart/form-data">
+            <?php
+            $query1 = "SELECT * FROM `tbl_vehicle` WHERE `user_id` =  $tmp_id";
+            $result1 = mysqli_query($con, $query1);
+            ?>
+            <section>
+                <div class="container py-5">
+                    <h4 class="text-center mb-5"><strong>Cars list</strong></h4>
 
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4">
-
-                                            <div class="form-outline">
-                                                <input type="text" id="brand" name="bname" class="form-control form-control-lg" />
-                                                <label class="form-label" for="brand">Brand Name</label>
-                                            </div>
-                                            <div class="wr-msg text-danger" id="brand1"></div>
-
-
-                                        </div>
-                                        <div class="col-md-6 mb-4">
-
-                                            <div class="form-outline">
-                                                <input type="text" id="ModalName" name="mname" class="form-control form-control-lg" />
-                                                <label class="form-label" for="ModalName">Model Name</label>
-                                            </div>
-                                            <div class="wr-msg text-danger" id="ModalName1"></div>
+                    <div class="row">
+                        <?php
+                    while ($row1 = mysqli_fetch_array($result1)) { ?>
+                        <div class="col-lg-4 col-md-12 mb-4">
+                            <div class="bg-image hover-zoom ripple shadow-1-strong rounded" style="height: 200px; overflow: hidden;">
+                                <img src="vehicle/<?= $row1["image"] ?>" class="w-100" />
+                                <a href="#!">
+                                    <div class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
+                                        <div class="d-flex justify-content-start align-items-start h-100">
+                                            <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">$<?= $row1["rate"] ?></span></h5>
                                         </div>
                                     </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4">
-
-                                            <div class="form-outline">
-                                                <input type="text" id="year" name="year" pattern="[0-9]{4}" required class="form-control form-control-lg" />
-                                                <label class="form-label" for="year">year</label>
-                                            </div>
-                                            <div class="wr-msg text-danger" id="year1"></div>
-
-                                        </div>
-                                        <div class="col-md-6 mb-4">
-
-                                            <div class="form-outline">
-                                                <input type="text" id="Location" name="loc" class="form-control form-control-lg" />
-                                                <label class="form-label" for="Location">Location</label>
-                                            </div>
-                                            <div class="wr-msg text-danger" id="Location1"></div>
-
-                                        </div>
+                                    <div class="hover-overlay">
+                                        <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
                                     </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4 pb-2">
-
-                                            <div class="form-outline">
-                                                <input type="number" id="rate" min="100" name="rate" class="form-control form-control-lg" />
-                                                <label class="form-label" for="rate">Rate</label>
-                                            </div>
-                                            <div class="wr-msg text-danger" id="rate1"></div>
-
-                                        </div>
-                                        <div class="col-md-6 mb-4">
-                                            <select class="select form-control-lg" name="cate">
-                                                <option value="-1" disabled>Choose option</option>
-                                                <?php
-                                                while ($row = mysqli_fetch_array($res)) {
-                                                ?>
-                                                    <option value="<?= $row["category_id"] ?>"><?= $row["category_name"] ?></option>
-                                                <?php } ?>
-                                            </select>
-
-
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4">
-                                            <label class="" for="Image">image</label>
-                                            <div class="form-outline">
-                                                <input type="file" class="form-control" id="inputfileupload" name="myimage" accept="image/png, image/gif, image/jpeg" onchange="fileValidation()">
-
-                                            </div>
-                                            <div class="wr-msg" id="inputfileupload1"></div>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-4 pt-2">
-                                        <input class="btn btn-primary btn-block fa-lg gradient-custom mb-3" id="btn" type="submit" name="sub" value="Submit" />
-                                    </div>
-
-                                </form>
+                                </a>
                             </div>
                         </div>
+                        <?php } ?> 
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
     </main>
-     <?php include 'addcars.php' ?>
+    <?php include 'addcars.php' ?>
     <!--Main layout-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 </body>

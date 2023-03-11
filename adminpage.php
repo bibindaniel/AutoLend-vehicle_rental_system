@@ -6,6 +6,7 @@ if ($_SESSION['logout'] == "") {
     header("location:login.php");
 }
 ?>
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -218,7 +219,15 @@ if ($_SESSION['logout'] == "") {
         <!-- Navbar -->
     </header>
     <!--Main Navigation-->
-
+    <?php
+    $con = mysqli_connect("localhost", "root", "", "mini-prj");
+    $query = "SELECT * FROM `tbl_user` where user_type =1";
+    $result = mysqli_query($con, $query);
+    $count = mysqli_num_rows($result);
+    $query1 = "SELECT * FROM `tbl_user` where user_type =2";
+    $result1 = mysqli_query($con, $query1);
+    $count1 = mysqli_num_rows($result1);
+    ?>
     <!--Main layout-->
     <main style="margin-top: 58px">
         <div class="container pt-4">
@@ -230,7 +239,7 @@ if ($_SESSION['logout'] == "") {
                                 <i class="fa fa-users"></i>
                             </div>
                             <h3>Renters</h3>
-                            <span class="counter-value">17</span>
+                            <span class="counter-value"><?= $count ?></span>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 my-auto">
@@ -239,7 +248,7 @@ if ($_SESSION['logout'] == "") {
                                 <i class="fa fa-user"></i>
                             </div>
                             <h3>Car Owners</h3>
-                            <span class="counter-value">16</span>
+                            <span class="counter-value"><?= $count1 ?></span>
                         </div>
                     </div>
 

@@ -38,12 +38,12 @@ session_start();
                                         <p>Please login to your account</p>
 
                                         <div class="form-outline mb-4">
-                                            <input type="text" id="form2Example11" class="form-control" placeholder="User Name" name="user" />
+                                            <input type="text" id="form2Example11" class="form-control" placeholder="User Name" name="user" required />
                                             <label class="form-label" for="form2Example11">Username</label>
                                         </div>
 
                                         <div class="form-outline mb-4">
-                                            <input type="password" id="form2Example22" class="form-control" name="pass" />
+                                            <input type="password" id="form2Example22" class="form-control" name="pass" required/>
                                             <label class="form-label" for="form2Example22">Password</label>
                                         </div>
 
