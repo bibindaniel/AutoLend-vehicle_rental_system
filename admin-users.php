@@ -132,6 +132,7 @@ if ($_SESSION['logout'] == "") {
                         var exdate = '<p>' + data.value7 + '</p>';
                         var loc = '<p>' + data.value8 + '</p>';
                         var file = data.value9;
+                        alert(file);
                         var status = data.status;
                         var id = data.id;
                         $('#modal-name').html(name);

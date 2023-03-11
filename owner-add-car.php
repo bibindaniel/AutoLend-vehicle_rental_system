@@ -108,9 +108,28 @@ if ($_SESSION['logout'] == "") {
                 $('#btn').attr("disabled", false);
             }
         })
+
+        function fileValidation() {
+            // get the selected file
+            var fileInput = $(this);
+            var fileName = fileInput.val();
+            // check if the file is a pdf
+            if (fileName.lastIndexOf(".pdf") === -1) {
+                // show error message
+                fileInput.parent().next(".filemsg").html("Only PDF files are allowed.").show();
+                fileInput.val('');
+                return false;
+            } else {
+                // hide error message
+                fileInput.parent().next(".filemsg").html("").hide();
+                return true;
+            }
+        }
+        // call fileValidation function when file input changes
+        $(".file").change(fileValidation);
     })
 
-    function fileValidation() {
+    function fileValidation(ffileInput) {
         var fileInput =
             document.getElementById('inputfileupload');
         var filePath = fileInput.value;
@@ -127,23 +146,50 @@ if ($_SESSION['logout'] == "") {
             $('#btn').attr("disabled", false);
         }
     }
+
+    function previewImage(event) {
+        var input = event.target;
+        var id = input.id;
+        var img = document.getElementById('preview' + id.substr(id.length - 1));
+
+        if (input.files && input.files[0]) {
+            var fileType = input.files[0].type;
+            if (!fileType.startsWith('image/')) {
+                alert('Please upload an image file.');
+                input.value = '';
+                return;
+            } else if (!/\.(jpe?g|png|gif)$/i.test(input.files[0].name)) {
+                alert('Please upload a valid image file (JPEG, PNG or GIF).');
+                input.value = '';
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                img.setAttribute('src', e.target.result);
+                fileValidation(img);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
 <style>
-    .success-msg,
-    .error-msg {
-        margin: 10px 0;
-        padding: 10px;
-        border-radius: 3px 3px 3px 3px;
+    select {
+        width: 100%;
+        max-width: 300px;
     }
 
-    .success-msg {
-        color: #270;
-        background-color: #DFF2BF;
+    .image-upload {
+        position: relative;
     }
 
-    .error-msg {
-        color: #D8000C;
-        background-color: #FFBABA;
+    .image-upload input[type=file] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
     }
 </style>
 
@@ -226,113 +272,184 @@ if ($_SESSION['logout'] == "") {
     <!--Main layout-->
     <main style="margin-top: 58px">
         <div class="container pt-4">
-            <div class="success-msg">
-                <i class="fa fa-check"></i>
-                Your data is sucessfully inserted
-            </div>
-            <div class="error-msg">
-                <i class="fa fa-times-circle"></i>
-                This is a error message.
-            </div>
             <div class="container py-2 h-100">
                 <div class="row justify-content-center align-items-center h-100">
-                    <div class="col-12 col-lg-9 col-xl-7">
+                    <div class="col-12 col-lg-9 col-xl-12">
                         <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
                             <div class="card-body p-4 p-md-5">
                                 <!-- <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Registration Form</h3> -->
                                 <form action="#" method="POST" enctype="multipart/form-data">
-
                                     <div class="row">
-                                        <div class="col-md-6 mb-4">
+                                        <h6>Upload Images</h6>
+                                        <span class="text-muted">click on below images to upload your vehicle (altest one)</span>
+                                        <hr class="mt-0 mb-4">
+                                        <div class="col-md-3 mb-4">
+                                            <!-- <label class="" for="image1">Image 1</label> -->
+                                            <div class="form-outline image-upload">
+                                                <input type="file" class="form-control file" id="image1" name="image1" accept="image/*" onchange="previewImage(event)" required>
+                                                <img id="preview1" src="Images/carview1.png" alt="Preview" class="img-fluid">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-4">
+                                            <!-- <label class="" for="image2">Image 2</label> -->
+                                            <div class="form-outline image-upload">
+                                                <input type="file" class="form-control file" id="image2" name="image2" accept="image/*" onchange="previewImage(event)">
+                                                <img id="preview2" src="Images/carview2.png" alt="Preview" class="img-fluid">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-4">
+                                            <!-- <label class="" for="image3">Image 3</label> -->
+                                            <div class="form-outline image-upload">
+                                                <input type="file" class="form-control file" id="image3" name="image3" accept="image/*" onchange="previewImage(event)">
+                                                <img id="preview3" src="Images/carview3.png" alt="Preview" class="img-fluid">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-4">
+                                            <!-- <label class="" for="image4">Image 4</label> -->
+                                            <div class="form-outline image-upload">
+                                                <input type="file" class="form-control file" id="image4" name="image4" accept="image/*" onchange="previewImage(event)">
+                                                <img id="preview4" src="Images/carview4.png" alt="Preview" class="img-fluid">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h6>Vehicle Information</h6>
+                                    <hr class="mt-0 mb-4">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-4">
 
                                             <div class="form-outline">
-                                                <input type="text" id="brand" name="bname" class="form-control form-control-lg" />
+                                                <input type="text" id="brand" name="bname" class="form-control form-control-lg" required />
                                                 <label class="form-label" for="brand">Brand Name</label>
                                             </div>
                                             <div class="wr-msg text-danger" id="brand1"></div>
 
 
                                         </div>
-                                        <div class="col-md-6 mb-4">
+                                        <div class="col-md-4 mb-4">
 
                                             <div class="form-outline">
-                                                <input type="text" id="ModalName" name="mname" class="form-control form-control-lg" />
+                                                <input type="text" id="ModalName" name="mname" class="form-control form-control-lg" required />
                                                 <label class="form-label" for="ModalName">Model Name</label>
                                             </div>
                                             <div class="wr-msg text-danger" id="ModalName1"></div>
                                         </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4">
+                                        <div class="col-md-4 mb-4">
 
                                             <div class="form-outline">
-                                                <input type="text" id="year" name="year" pattern="[0-9]{4}" required class="form-control form-control-lg" />
-                                                <label class="form-label" for="year">year</label>
+                                                <input type="Number" id="Mileage" name="mileage" min="1" class="form-control form-control-lg" required />
+                                                <label class="form-label" for="Mileage">Mileage</label>
+                                            </div>
+                                            <div class="wr-msg text-danger" id="Mileage1"></div>
+                                        </div>
+                                        <div class="col-md-4 mb-4">
+                                            <div class="form-outline">
+                                                <input type="date" id="year" name="year" pattern="[0-9]{4}" required class="form-control form-control-lg" placeholder="YYYY-MM-DD" required />
+                                                <label class="form-label" for="year">Year</label>
                                             </div>
                                             <div class="wr-msg text-danger" id="year1"></div>
-
                                         </div>
-                                        <div class="col-md-6 mb-4">
-
-                                            <div class="form-outline">
-                                                <input type="text" id="Location" name="loc" class="form-control form-control-lg" />
-                                                <label class="form-label" for="Location">Location</label>
-                                            </div>
-                                            <div class="wr-msg text-danger" id="Location1"></div>
-
+                                        <div class="col-md-4 mb-4">
+                                            <select class="select form-control-lg" id="type" name="cate">
+                                                <option value="-1" selected disabled>Fuel Type</option>
+                                                <option value="petrol">Petrol</option>
+                                                <option value="Diseal"> Diseal</option>
+                                                <option value="Eletric"> Eletric</option>
+                                                <option value="CNG">CNG</option>
+                                            </select>
                                         </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4 pb-2">
-
-                                            <div class="form-outline">
-                                                <input type="number" id="rate" min="100" name="rate" class="form-control form-control-lg" />
-                                                <label class="form-label" for="rate">Rate</label>
-                                            </div>
-                                            <div class="wr-msg text-danger" id="rate1"></div>
-
-                                        </div>
-                                        <div class="col-md-6 mb-4">
+                                        <div class="col-md-4 mb-4">
                                             <select class="select form-control-lg" name="cate">
-                                                <option value="-1" disabled>Choose option</option>
+                                                <option value="-1" selected disabled>Transmission Type</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 mb-4">
+                                            <select class="select form-control-lg" name="cate">
+                                                <option value="-1" selected disabled>Category</option>
                                                 <?php
                                                 while ($row = mysqli_fetch_array($res)) {
                                                 ?>
                                                     <option value="<?= $row["category_id"] ?>"><?= $row["category_name"] ?></option>
                                                 <?php } ?>
                                             </select>
-
-
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <select class="select form-control-lg" name="cate">
+                                                <option value="-1" selected disabled>Seats</option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-md-6 mb-4">
-                                            <label class="" for="Image">image</label>
-                                            <div class="form-outline">
-                                                <input type="file" class="form-control" id="inputfileupload" name="myimage" accept="image/png, image/gif, image/jpeg" onchange="fileValidation()">
+                                        <h6>Rental Information</h6>
+                                        <hr class="mt-0 mb-4">
+                                        <div class="col-md-4 mb-4 pb-2">
 
+                                            <div class="form-outline">
+                                                <input type="number" id="rate" min="100" name="rate" class="form-control form-control-lg" required />
+                                                <label class="form-label" for="rate">Rate</label>
                                             </div>
-                                            <div class="wr-msg" id="inputfileupload1"></div>
+                                            <div class="wr-msg text-danger" id="rate1"></div>
+
+                                        </div>
+                                        <div class="col-md-4 mb-4">
+
+                                            <div class="form-outline">
+                                                <input type="text" id="Location" name="loc" class="form-control form-control-lg" required />
+                                                <label class="form-label" for="Location">Location</label>
+                                            </div>
+                                            <div class="wr-msg text-danger" id="Location1"></div>
 
                                         </div>
                                     </div>
-
-                                    <div class="mt-4 pt-2">
-                                        <input class="btn btn-primary btn-block fa-lg gradient-custom mb-3" id="btn" type="submit" name="sub" value="Submit" />
+                                    <div class="row">
+                                        <h6>Upload Documents</h6><span class="text-muted">(scanned or digital copies '.pdf format')</span>
+                                        <hr class="mt-0 mb-4">
+                                        <div class="col-md-6 mb-4">
+                                            <label class="" for="rcbook">RCBOOK</label>
+                                            <div class="form-outline">
+                                                <input type="file" class="form-control file" id="rcbook" name="rc" accept=".pdf" onchange="fileValidation()" required>
+                                            </div>
+                                            <div class="filemsg text-danger" id="inputfileupload1"></div>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <label class="" for="puc">PUC Certificate</label>
+                                            <div class="form-outline">
+                                                <input type="file" class="form-control file" id="puc" name="puc" accept=".pdf" onchange="fileValidation()" required>
+                                            </div>
+                                            <div class="filemsg text-danger" id="inputfileupload1"></div>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <label class="" for="insurance">Insurance</label>
+                                            <div class="form-outline">
+                                                <input type="file" class="form-control file" id="insurance" name="insurance" accept=".pdf" onchange="fileValidation()" required>
+                                            </div>
+                                            <div class="filemsg text-danger" id="inputfileupload1"></div>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <label class="" for="permit">Permit</label>
+                                            <div class="form-outline">
+                                                <input type="file" class="form-control file" id="permit" name="permit" accept=".pdf" onchange="fileValidation()" required>
+                                            </div>
+                                            <div class="filemsg text-danger" id="inputfileupload1"></div>
+                                        </div>
                                     </div>
-
-                                </form>
                             </div>
+
+                            <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                <div class="mt-4 pt-2">
+                                    <input class="btn btn-primary btn-block fa-lg gradient-custom mb-3" id="btn" type="submit" name="sub" value="Submit" />
+                                </div>
+                            </div>
+
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        </div>
     </main>
-     <?php include 'addcars.php' ?>
+    <?php include 'addcars.php' ?>
     <!--Main layout-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 </body>

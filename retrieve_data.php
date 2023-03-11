@@ -12,7 +12,7 @@ if (isset($_POST['id'])) {
   $retrieve_query1 = "SELECT * FROM `tbl_verify_user` WHERE `user_id` = '$id'";
   $result1=mysqli_query($con, $retrieve_query1);
   $row1=mysqli_fetch_array($result1);
-  if($row1["verify_status"]==1){
+  if($row1["verify_status"]==1 || $row1["verify_status"]==0){
     $lno=$row1["licence_no"];
     $exdate=$row1["Expiry_date"];
     $file=$row1["licence_file"];
