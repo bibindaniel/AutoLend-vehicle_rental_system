@@ -6,6 +6,7 @@ if ($_SESSION['logout'] == "") {
     header("location:login.php");
 }
 ?>
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -62,7 +63,14 @@ if ($_SESSION['logout'] == "") {
                         statusElm.text('verified').removeClass('badge-danger').addClass('badge-success');
                         $(this).html('<i class="fa fa-check text-success"></i>');
                     } else {
-                        $('#liveToastBtn').click();
+                        $(this).attr('data-mdb-toggle', 'popover');
+                        $(this).attr('data-mdb-container', 'body');
+                        $(this).attr('title', '');
+                        $(this).attr('data-mdb-content', 'Details Not Updated');
+                        $(this).popover({
+                            trigger: 'hover'
+                        });
+                        $(this).popover('show');
                     }
 
                     // send ajax request to update user status in database
@@ -132,7 +140,6 @@ if ($_SESSION['logout'] == "") {
                         var exdate = '<p>' + data.value7 + '</p>';
                         var loc = '<p>' + data.value8 + '</p>';
                         var file = data.value9;
-                        alert(file);
                         var status = data.status;
                         var id = data.id;
                         $('#modal-name').html(name);

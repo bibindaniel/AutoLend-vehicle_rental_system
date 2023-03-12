@@ -234,7 +234,7 @@ if ($_SESSION['logout'] == "") {
                     while ($row1 = mysqli_fetch_array($result1)) { ?>
                         <div class="col-lg-4 col-md-12 mb-4">
                             <div class="bg-image hover-zoom ripple shadow-1-strong rounded" style="height: 200px; overflow: hidden;">
-                                <img src="vehicle/<?= $row1["image"] ?>" class="w-100" />
+                                <img src="vehicle/<?= $row1["image1"] ?>" class="w-100" />
                                 <a href="#!">
                                     <div class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
                                         <div class="d-flex justify-content-start align-items-start h-100">
