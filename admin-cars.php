@@ -45,18 +45,15 @@ if ($_SESSION['logout'] == "") {
                     [5, 10, 20, 'Todos']
                 ]
             })
-            $('.toggle-status').click(function(e) {
+            $('.ver_btn').click(function(e) {
                 e.preventDefault();
-                var userId = $(this).data('user-id');
-                var statusElm = $('.user-status[data-user-id="' + userId + '"]');
-                var status = statusElm.text();
+                var userId = $(this).data('vehicle-id');
+                var status=$(this).text()
                 // update user status and icon
-                if (status == 'Active') {
-                    statusElm.text('Blocked').removeClass('badge-success').addClass('badge-danger');
-                    $(this).html('<i class="fa fa-times text-danger"></i>');
-                } else if (status == 'Blocked') {
-                    statusElm.text('Active').removeClass('badge-danger').addClass('badge-success');
-                    $(this).html('<i class="fa fa-check text-success"></i>');
+                if (status == 'Not verified') {
+                    $(this).removeClass('btn-outline-danger').addClass('btn-outline-success').text('verified');
+                } else if (status == 'verified') {
+                    $(this).removeClass('btn-outline-success').addClass('btn-outline-danger').text('Not verified');
                 }
 
                 // send ajax request to update user status in database
@@ -64,8 +61,7 @@ if ($_SESSION['logout'] == "") {
                     url: 'car_update.php',
                     type: 'POST',
                     data: {
-                        user_id: userId,
-                        status: statusElm.text()
+                        user_id: userId
                     },
                     success: function(response) {
                         console.log(response);
@@ -141,120 +137,69 @@ if ($_SESSION['logout'] == "") {
         <!-- Navbar -->
     </header>
     <!--Main Navigation-->
-
+     <?php
+       $query1="SELECT * FROM `tbl_vehicle`";
+       $result1 = mysqli_query($con, $query1);
+     ?>
     <!--Main layout-->
     <main style="margin-top: 58px">
         <div class="container pt-4">
-            <table class="table align-middle mb-0 bg-white table-hover" id="mytable">
-                <thead class="bg-light">
-                    <tr>
-                        <th>Name</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $con = mysqli_connect("localhost", "root", "", "mini-prj");
-                    $query = "SELECT * FROM `tbl_vehicle`";
-                    $result = mysqli_query($con, $query);
-                    while ($row = mysqli_fetch_array($result)) {
-                    ?>
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <img src="Uploads/<?php echo $row['image'] ?>" class="rounded-circle" alt="" style="width: 45px; height: 45px" />
-                                    <div class="ms-3">
-                                        <p class="fw-bold mb-1"><?php echo $row['model_name'] ?></p>
+            <?php while($row1=mysqli_fetch_array($result1)){ ?>
+            <div class="row row-cols-1 row-cols-md-3">
+                <div class="col mb-4">
+                    <div class="card h-100">
+                        <!--Card image-->
+                        <div class="bg-image hover-zoom ripple shadow-1-strong rounded" style="height: 200px; overflow: hidden;">
+                            <img src="vehicle/<?=$row1["image1"] ?>" class="w-100 h-100 object-fit-cover" />
+                            <a href="#!">
+                                <div class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
+                                    <div class="d-flex justify-content-start align-items-start h-100">
+                                        <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark"><?=$row1["rate"] ?></span></h5>
                                     </div>
                                 </div>
-
-                            </td>
-                            <td>
-                                <?php if ($row['status'] == 1) { ?>
-                                    <span class="user-status badge badge-success rounded-pill d-inline" data-user-id="<?php echo $row['vehicle_id']; ?>">Active</span>
-                                <?php } elseif ($row['status'] == 0) { ?>
-                                    <span class="user-status badge badge-danger rounded-pill d-inline" data-user-id="<?php echo $row['vehicle_id']; ?>">Blocked</span>
-                                <?php } ?>
-                            </td>
-                            <td>
-                                <a href="#" class="toggle-status" title="Toggle Status" data-user-id="<?php echo $row['vehicle_id']; ?>" data-toggle="tooltip">
-                                    <?php if ($row['status'] == 1) { ?>
-                                        <i class="fa fa-check text-success"></i>
-                                    <?php } elseif ($row['status'] == 0) { ?>
-                                        <i class="fa fa-times text-danger"></i>
-                                    <?php } ?>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-        </div>
-    </main>
-
-    </div>
-    </main>
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="form">
-                        <div class="row pt-1">
-                            <div class="col-6 mb-3">
-                                <form action="#" method="POST" enctype="multipart/form-data">
-                                    <label class="form-label" for="name">Category Name</label>
-                                    <div class="form-outline">
-                                        <input type="text" id="name" name="name" class="form-control form-control-lg" value="" oninput="this.value = this.value.toUpperCase()" required />
-                                    </div>
-                                    <div class="wr-msg text-danger" id="name1"></div>
-                            </div>
-                            <div class="col-6 mb-3">
-                                <label class="form-label" for="img">Upload image</label>
-                                <div class="form-outline">
-                                    <input type="file" id="img" name="img" class="form-control form-control-lg" value="" accept="image/png, image/gif, image/jpeg" onchange="fileValidation()" required />
+                                <div class="hover-overlay">
+                                    <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
                                 </div>
-                                <div class="wr-msg text-danger" id="img1"></div>
-                            </div>
+                            </a>
+                        </div>
 
+                        <!--Card content-->
+                        <div class="card-body">
+                            <!--Title-->
+                            <h4 class="card-title"><?=$row1["brand_name"] ?> <?=$row1["model_name"] ?></h4>
+                            <!--Text-->
+                            <div>
+                                <div><i class='fas fa-gas-pump'></i><span class="p-2"><?=$row1["fuel_type"] ?></span></div>
+                                <div><i class='fas fa-map-marker-alt'></i><span class="p-2"><?=$row1["location"] ?></span></div>
+                                <div><i class="fas fa-cog"></i><span class="p-2"><?=$row1["transmission_type"] ?></span></div>
+                            </div>
+                            <button type="button" class="btn btn-primary gradient-custom ">More Details</button>
+                            <?php
+                               if($row1["status"]== 0){?>
+                                  <button type="button" class="btn btn-outline-danger ver_btn w-50 w-md-auto"  data-vehicle-id="<?=$row1["vehicle_id"]?>">Not verified</button>
+                              <?php }else{
+                                ?>
+                                <button type="button" class="btn btn-outline-success ver_btn w-50 w-md-auto" data-vehicle-id="<?=$row1["vehicle_id"]?>">verified</button>
+                                <?php
+                              }
+                            ?>
+                           
                         </div>
                     </div>
+                    <!-- Close the card element -->
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
-                    <button type="submit" id="btn-modal" class="btn btn-primary" name="sub">Save changes</button>
-                </div>
-                </form>
             </div>
+            <?php }?>
         </div>
+    </main>
+
     </div>
-    <?php
-    if (isset($_POST["sub"])) {
-        $name = $_POST["name"];
-        $img = $_FILES["img"]["name"];
-        $con = mysqli_connect("localhost", "root", "", "mini-prj");
-        $query1 = "INSERT INTO `tbl_vehicle_category`(`category_name`, `image`) VALUES ('$name','$img')";
-        $res = mysqli_query($con, $query1);
-        if ($res) {
-            $target = "Uploads/";
-            $targetfilepath = $target . $img;
-            move_uploaded_file($_FILES['img']['tmp_name'], $targetfilepath);
-            echo ("<script>location.href='admin-add-cat.php'</script>");
-        }
-        mysqli_close($con);
-    }
-    ?>
+    </main>
     <!-- data table -->
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
     <!--Main layout-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 </body>
-<script src="adminpanel.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"></script>
 
 

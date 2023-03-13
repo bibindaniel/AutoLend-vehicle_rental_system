@@ -173,82 +173,86 @@ if ($_SESSION['logout'] == "") {
             reader.readAsDataURL(input.files[0]);
         }
     }
+
     function fileValidation1() {
-    var fileInput =
-        document.getElementById('rcbook');
+        var fileInput =
+            document.getElementById('rcbook');
 
-    var filePath = fileInput.value;
+        var filePath = fileInput.value;
 
-    // Allowing file type
-    var allowedExtensions =
-        /(\.pdf)$/i;
+        // Allowing file type
+        var allowedExtensions =
+            /(\.pdf)$/i;
 
-    if (!allowedExtensions.exec(filePath)) {
-        $('#btn1').prop("disabled", true);
-        alert('Invalid file type');
-        fileInput.value = '';
-        return false;
-    } else {
-        $('#btn').prop("disabled", false);
+        if (!allowedExtensions.exec(filePath)) {
+            $('#btn1').prop("disabled", true);
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        } else {
+            $('#btn').prop("disabled", false);
+        }
     }
-}
-function fileValidation2() {
-    var fileInput =
-        document.getElementById('puc');
 
-    var filePath = fileInput.value;
+    function fileValidation2() {
+        var fileInput =
+            document.getElementById('puc');
 
-    // Allowing file type
-    var allowedExtensions =
-        /(\.pdf)$/i;
+        var filePath = fileInput.value;
 
-    if (!allowedExtensions.exec(filePath)) {
-        $('#btn1').prop("disabled", true);
-        alert('Invalid file type');
-        fileInput.value = '';
-        return false;
-    } else {
-        $('#btn').prop("disabled", false);
+        // Allowing file type
+        var allowedExtensions =
+            /(\.pdf)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            $('#btn1').prop("disabled", true);
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        } else {
+            $('#btn').prop("disabled", false);
+        }
     }
-}
-function fileValidation3() {
-    var fileInput =
-        document.getElementById('insurance');
 
-    var filePath = fileInput.value;
+    function fileValidation3() {
+        var fileInput =
+            document.getElementById('insurance');
 
-    // Allowing file type
-    var allowedExtensions =
-        /(\.pdf)$/i;
+        var filePath = fileInput.value;
 
-    if (!allowedExtensions.exec(filePath)) {
-        $('#btn1').prop("disabled", true);
-        alert('Invalid file type');
-        fileInput.value = '';
-        return false;
-    } else {
-        $('#btn').prop("disabled", false);
+        // Allowing file type
+        var allowedExtensions =
+            /(\.pdf)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            $('#btn1').prop("disabled", true);
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        } else {
+            $('#btn').prop("disabled", false);
+        }
     }
-}
-function fileValidation4() {
-    var fileInput =
-        document.getElementById('permit');
 
-    var filePath = fileInput.value;
+    function fileValidation4() {
+        var fileInput =
+            document.getElementById('permit');
 
-    // Allowing file type
-    var allowedExtensions =
-        /(\.pdf)$/i;
+        var filePath = fileInput.value;
 
-    if (!allowedExtensions.exec(filePath)) {
-        $('#btn1').prop("disabled", true);
-        alert('Invalid file type');
-        fileInput.value = '';
-        return false;
-    } else {
-        $('#btn').prop("disabled", false);
+        // Allowing file type
+        var allowedExtensions =
+            /(\.pdf)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            $('#btn1').prop("disabled", true);
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        } else {
+            $('#btn').prop("disabled", false);
+        }
     }
-}
 </script>
 <style>
     select {
@@ -488,6 +492,15 @@ function fileValidation4() {
                                             <div class="wr-msg text-danger" id="Location1"></div>
 
                                         </div>
+                                        <div class="col-md-6 mb-4">
+
+                                            <div class="form-outline">
+                                                <textarea type="text" id="features" name="fea" class="form-control form-control-lg" required ></textarea>
+                                                <label class="form-label" for="features">Features</label>
+                                            </div>
+                                            <div class="wr-msg text-danger" id="Location1"></div>
+
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <h6>Upload Documents</h6><span class="text-muted">(scanned or digital copies '.pdf format')</span>
@@ -561,8 +574,8 @@ function fileValidation4() {
             </div>
         </div>
     </div>
-        <!-- Modal del -->
-        <div id="delModal" class="modal fade">
+    <!-- Modal del -->
+    <div id="delModal" class="modal fade">
         <div class="modal-dialog modal-confirm">
             <div class="modal-content">
                 <div class="modal-header">
@@ -629,17 +642,17 @@ function fileValidation4() {
                             $("#modal-btn").click();
                         })
                     </script>
-    <?php
+            <?php
                 }
             }
         } else {
             ?>
-              <script>
-                        $(document).ready(function() {
-                            $("#modal-btn1").click();
-                        })
-                    </script>
-            <?php
+            <script>
+                $(document).ready(function() {
+                    $("#modal-btn1").click();
+                })
+            </script>
+    <?php
         }
     }
 
