@@ -27,17 +27,16 @@ if ($_SESSION['logout'] == "") {
 </head>
 <style>
     .gradient-custom {
-    background-color: rgb(2,0,36);
-    background: linear-gradient(280deg, rgba(2,0,36,1) 0%, rgba(14,72,73,1) 37%, rgba(0,212,255,1) 100%);
+        background-color: rgb(2, 0, 36);
+        background: linear-gradient(280deg, rgba(2, 0, 36, 1) 0%, rgba(14, 72, 73, 1) 37%, rgba(0, 212, 255, 1) 100%);
     }
 </style>
 <?php
 $tmp_id = $_SESSION['id'];
 $con = mysqli_connect("localhost", "root", "", "mini-prj");
-$query = "SELECT `image` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
-$result = mysqli_query($con, $query);
-$row = mysqli_fetch_array($result);
-$img = $row['image'];
+$query3 = "SELECT `image` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
+$result3 = mysqli_query($con, $query3);
+$row3 = mysqli_fetch_array($result3);
 ?>
 
 <body>
@@ -59,13 +58,13 @@ $img = $row['image'];
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link active"href="lpage.php">Home</a>
+                            <a class="nav-link active" href="lpage.php">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#!">About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link"  aria-current="page"  href="#!">Services</a>
+                            <a class="nav-link" aria-current="page" href="#!">Services</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#!">Opinions</a>
@@ -80,7 +79,7 @@ $img = $row['image'];
                     <!-- Avatar -->
                     <div class="dropdown ">
                         <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                            <img src="Uploads/<?php echo $row['image'] ?>" class="rounded-circle" height="25" alt="profile pic" loading="lazy" />
+                            <img src="Uploads/<?php echo $row3['image'] ?>" class="rounded-circle" height="25" alt="profile pic" loading="lazy" />
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                             <li>
@@ -101,54 +100,185 @@ $img = $row['image'];
     </nav>
     <!-- Navbar -->
     <?php
-    $query1 = "SELECT * FROM `tbl_vehicle`";
-    $result1 = mysqli_query($con, $query1);
+    $results_per_page = 9;
+
+    //find the total number of results stored in the database  
+    $query = "select *from `tbl_vehicle` WHERE `status`= 1";
+    $result = mysqli_query($con, $query);
+    $number_of_result = mysqli_num_rows($result);
+
+    //determine the total number of pages available  
+    $number_of_page = ceil($number_of_result / $results_per_page);
+
+    //determine which page number visitor is currently on  
+    if (!isset($_GET['page'])) {
+        $page = 1;
+    } else {
+        $page = $_GET['page'];
+    }
+
+    //determine the sql LIMIT starting number for the results on the displaying page  
+    $page_first_result = ($page - 1) * $results_per_page;
+
+    //retrieve the selected results from database   
+    $query = "SELECT *FROM `tbl_vehicle` where `status`= 1  LIMIT " . $page_first_result . ',' . $results_per_page;
+    $result = mysqli_query($con, $query);
     ?>
     <main>
-        <section style="background-color: #eee;">
-            <div class="container py-5">
-                <div class="row">
-                    <?php
-                    while ($row1 = mysqli_fetch_array($result1)) {
-                    ?>
-                        <div class="col-md-12 col-lg-4 mb-4 mb-lg-0">
-                            <div class="card text-center ">
-                                <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light" style="height: 300px; overflow: hidden;">
-                                    <img src="vehicle/<?= $row1["image"] ?>" class="img-fluid" />
-                                    <a href="#!">
-                                        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15)"></div>
-                                    </a>
-                                </div>
+        <div class="container m-0">
+            <div class="row">
+                <aside class="col-md-3">
+                    <div class="card">
+                        <article class="filter-group">
+                            <header class="card-header">
+                                <a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true" class="">
+                                    <i class="icon-control fa fa-chevron-down"></i>
+                                    <h6 class="title">Product type</h6>
+                                </a>
+                            </header>
+                        </article> <!-- filter-group  .// -->
+                        <article class="filter-group">
+                            <header class="card-header">
+                                <a href="#" data-toggle="collapse" data-target="#collapse_2" aria-expanded="true" class="">
+                                    <i class="icon-control fa fa-chevron-down"></i>
+                                    <h6 class="title">Brands </h6>
+                                </a>
+                            </header>
+                            <div class="filter-content collapse show" id="collapse_2">
                                 <div class="card-body">
-                                    <div class="text-center">
-                                        <h5 class="card-title"><?= $row1["model_name"] ?></h5>
-                                        <p class="text-muted mb-4"><?= $row1["year"] ?></p>
-                                    </div>
-                                    <div>
-                                        <div class="d-flex justify-content-between">
-                                            <span><?= $row1["brand_name"] ?></span><span>$<?= $row1["rate"] ?></span>
+                                    <label class="custom-control custom-checkbox">
+                                        <input type="checkbox" checked="" class="custom-control-input">
+                                        <div class="custom-control-label">Mercedes
+                                            <b class="badge badge-pill badge-light float-right">120</b>
                                         </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span><?= $row1["location"] ?></span>
+                                    </label>
+                                    <label class="custom-control custom-checkbox">
+                                        <input type="checkbox" checked="" class="custom-control-input">
+                                        <div class="custom-control-label">Toyota
+                                            <b class="badge badge-pill badge-light float-right">15</b>
                                         </div>
-                                    </div>
-                                    <button class="btn btn-primary gradient-custom  btn-sm" type="button">BOOK NOW</button>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="ms-auto text-warning">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
-                                </div>
+                                    </label>
+                                    <label class="custom-control custom-checkbox">
+                                        <input type="checkbox" checked="" class="custom-control-input">
+                                        <div class="custom-control-label">Mitsubishi
+                                            <b class="badge badge-pill badge-light float-right">35</b>
+                                        </div>
+                                    </label>
+                                    <label class="custom-control custom-checkbox">
+                                        <input type="checkbox" checked="" class="custom-control-input">
+                                        <div class="custom-control-label">Nissan
+                                            <b class="badge badge-pill badge-light float-right">89</b>
+                                        </div>
+                                    </label>
+                                    <label class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input">
+                                        <div class="custom-control-label">Honda
+                                            <b class="badge badge-pill badge-light float-right">30</b>
+                                        </div>
+                                    </label>
+                                </div> <!-- card-body.// -->
                             </div>
-                        </div>
-                    <?php } ?>
-                </div>
+                        </article> <!-- filter-group .// -->
+                        <article class="filter-group">
+                            <header class="card-header">
+                                <a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
+                                    <i class="icon-control fa fa-chevron-down"></i>
+                                    <h6 class="title">Price range </h6>
+                                </a>
+                            </header>
+                            <div class="filter-content collapse show" id="collapse_3">
+                                <div class="card-body">
+                                    <input type="range" class="custom-range" min="0" max="100" name="">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label>Min</label>
+                                            <input class="form-control" placeholder="$0" type="number">
+                                        </div>
+                                        <div class="form-group text-right col-md-6">
+                                            <label>Max</label>
+                                            <input class="form-control" placeholder="$1,0000" type="number">
+                                        </div>
+                                    </div> <!-- form-row.// -->
+                                    <button class="btn btn-block btn-primary">Apply</button>
+                                </div><!-- card-body.// -->
+                            </div>
+                        </article> <!-- filter-group .// -->
+
+                </aside>
+                <main class="col-md-9">
+                    <div class="row row-cols-1 row-cols-md-3 mt-4">
+                        <?php while ($row = mysqli_fetch_array($result)) { ?>
+                            <div class="col mb-4">
+                                <div class="card h-100">
+                                    <!--Card image-->
+                                    <div class="bg-image hover-zoom ripple shadow-1-strong rounded" style="height: 200px; overflow: hidden;">
+                                        <img src="vehicle/<?= $row["image1"] ?>" class="w-100 h-100 object-fit-cover" />
+                                        <a href="#!">
+                                            <div class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
+                                                <div class="d-flex justify-content-start align-items-start h-100">
+                                                    <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark"><?= $row["rate"] ?></span></h5>
+                                                </div>
+                                            </div>
+                                            <div class="hover-overlay">
+                                                <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <!--Card content-->
+                                    <div class="card-body">
+                                        <div class="d-flex flex-row justify-content-center mt-1">
+                                            <a href="" class="text-reset">
+                                                <h5 class="card-title mb-3"><?= $row["brand_name"] ?> <?= $row["model_name"] ?></h5>
+                                            </a>
+                                        </div>
+                                        <div class="text-center mb-2"><i class='fas fa-map-marker-alt'></i><span class="p-2"><?= $row["location"] ?></span></div>
+                                        <div class="d-flex flex-row justify-content-center mt-1 mb-4 text-danger">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <div class="d-flex flex-row justify-content-center mt-1">
+                                            <button type="button" onclick="location.href='vehicle_det.php?id= <?= $id ?>'" class="btn btn-primary gradient-custom ">BOOK NOW</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Close the card element -->
+                            </div>
+                        <?php } ?>
+                    </div>
+
+                    <?php
+                    $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+                    ?>
+                    <nav class="mt-4" aria-label="Page navigation sample">
+                        <ul class="pagination">
+                            <?php if ($current_page > 1) : ?>
+                                <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $current_page - 1; ?>">Previous</a></li>
+                            <?php else : ?>
+                                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                            <?php endif; ?>
+
+                            <?php for ($page = 1; $page <= $number_of_page; $page++) : ?>
+                                <?php if ($page == $current_page) : ?>
+                                    <li class="page-item active"><a class="page-link" href="#"><?php echo $page; ?></a></li>
+                                <?php else : ?>
+                                    <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $page; ?>"><?php echo $page; ?></a></li>
+                                <?php endif; ?>
+                            <?php endfor; ?>
+
+                            <?php if ($current_page < $number_of_page) : ?>
+                                <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $current_page + 1; ?>">Next</a></li>
+                            <?php else : ?>
+                                <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </nav>
+
+                </main>
             </div>
-        </section>
+        </div>
     </main>
 </body>
 <script src='https://code.jquery.com/jquery-1.12.0.min.js'></script>

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-session_start();
-if ($_SESSION['logout'] == "") {
-    header("location:login.php");
-}
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    if ($_SESSION['logout'] == "") {
+        header("location:login.php");
+    }
 ?>
 
 <head>
@@ -222,7 +224,7 @@ if ($_SESSION['logout'] == "") {
     <main style="margin-top: 58px">
         <div class="container pt-4">
             <?php
-            $query1 = "SELECT * FROM `tbl_vehicle` WHERE `user_id` =  $tmp_id";
+            $query1 = "SELECT * FROM `tbl_vehicle` WHERE `user_id`=$tmp_id AND`status`=1;";
             $result1 = mysqli_query($con, $query1);
             ?>
             <section>

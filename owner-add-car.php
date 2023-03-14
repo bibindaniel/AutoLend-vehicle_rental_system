@@ -631,10 +631,18 @@ if ($_SESSION['logout'] == "") {
                 $targetfilepath2 = $target . $img2;
                 $targetfilepath3 = $target . $img3;
                 $targetfilepath4 = $target . $img4;
+                $targetfilepath5 = $target . $rc;
+                $targetfilepath6 = $target . $puc;
+                $targetfilepath7 = $target . $ins;
+                $targetfilepath8 = $target . $per;
                 move_uploaded_file($_FILES['image1']['tmp_name'], $targetfilepath1);
                 move_uploaded_file($_FILES['image2']['tmp_name'], $targetfilepath2);
                 move_uploaded_file($_FILES['image3']['tmp_name'], $targetfilepath3);
                 move_uploaded_file($_FILES['image4']['tmp_name'], $targetfilepath4);
+                move_uploaded_file($_FILES['rc"']['tmp_name'], $targetfilepath5);
+                move_uploaded_file($_FILES['puc']['tmp_name'], $targetfilepath6);
+                move_uploaded_file($_FILES['insurance']['tmp_name'], $targetfilepath7);
+                move_uploaded_file($_FILES['permit']['tmp_name'], $targetfilepath);
 
                 if ($res) { ?>
                     <script>
