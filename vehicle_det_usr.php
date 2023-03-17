@@ -31,6 +31,24 @@ if ($_SESSION['logout'] == "") {
         background-color: rgb(2, 0, 36);
         background: linear-gradient(280deg, rgba(2, 0, 36, 1) 0%, rgba(14, 72, 73, 1) 37%, rgba(0, 212, 255, 1) 100%);
     }
+
+    .green_clr {
+        background-color: #203740;
+    }
+
+    .btn.btn-verify {
+        width: 100%;
+        height: 55px;
+        border-radius: 0;
+        padding: 13px 0;
+        border: none;
+        font-weight: 600;
+    }
+
+    .btn.btn-primary:hover .fas {
+        transform: translateX(10px);
+        transition: transform 0.5s ease
+    }
 </style>
 <?php
 $tmp_id = $_SESSION['id'];
@@ -185,6 +203,94 @@ $row3 = mysqli_fetch_array($result3);
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 card shadow">
+                    <div class="title">
+                        <p class="fw-bold text-center">Owner Details</p>
+                    </div>
+                    <div class="card-body  text-center">
+                        <img src="Uploads/<?= $row1["image"] ?>" alt="avatar" class="rounded-circle img-fluid" style="width: 150px; height:150px">
+                        <h5 class="my-3"><?= $row1["first_name"] ?></h5>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="mailto:"><i class="fas fa-envelope"></i></a><?= $row1["email"] ?>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="tel:"><i class="fas fa-phone"></i></a><?= $row1["mobile"] ?>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center mb-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 card">
+                    <div class="d-flex align-items-center justify-content-center px-4 mt-4 mb-2">
+                        <p class="h4 m-0"><span class="pe-1">MAKE</span><span class="pe-1">YOUR</span><span class="pe-1">TRIP</span></p>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="d-flex align-items-end px-5 mt-4 pb-1 mx-5">
+                            <p class="h6 m-0"><span class="pe-1 px-5 mx-4">TRIP START</span></p>
+                        </div>
+                        <div class="col-md-4 mb-4 m-4 mt-1">
+                            <div class="form-outline">
+                                <input type="date" id="stdate" name="stdate" min="1" class="form-control form-control-lg" required />
+                                <label class="form-label" for="stdate">START DATE</label>
+                            </div>
+                            <div class="wr-msg text-danger" id="stdate1"></div>
+                        </div>
+                        <div class="col-md-4 mb-4 m-4 mt-1">
+                            <div class="form-outline">
+                                <input type="Number" id="sttime" name="sttime" min="1" class="form-control form-control-lg" required />
+                                <label class="form-label" for="sttime">START TIME</label>
+                            </div>
+                            <div class="wr-msg text-danger" id="sttime1"></div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="d-flex align-items-end px-5 pb-1 mx-5">
+                            <p class="h6 m-0"><span class="pe-1 px-5 mx-4">TRIP END</span></p>
+                        </div>
+                        <div class="col-md-4 mb-4 m-4 mt-1">
+                            <div class="form-outline">
+                                <input type="date" id="endate" name="endate" min="1" class="form-control form-control-lg" required />
+                                <label class="form-label" for="endate">END DATE</label>
+                            </div>
+                            <div class="wr-msg text-danger" id="endate1"></div>
+                        </div>
+                        <div class="col-md-4 mb-4 m-4 mt-1">
+                            <div class="form-outline">
+                                <input type="Number" id="entime" name="entime" min="1" class="form-control form-control-lg" required />
+                                <label class="form-label" for="entime">END TIME</label>
+                            </div>
+                            <div class="wr-msg text-danger" id="entime1"></div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="d-flex align-items-end px-5  pb-1 mx-5">
+                            <p class="h6 m-0"><span class="pe-1 px-5 mx-4">TRIP START</span></p>
+                        </div>
+                        <div class="col-md-4 mb-4 m-4 mt-1">
+                            <div class="form-outline">
+                                <input type="text" id="Location" name="loc" class="form-control form-control-lg" required />
+                                <label class="form-label" for="Location">Location</label>
+                            </div>
+                            <div class="wr-msg text-danger" id="Location1"></div>
+                        </div>
+                        <div class="col-md-4 mb-4 m-4 mt-1">
+                            <div class="form-outline">
+                                <input type="text" id="Location" name="loc" class="form-control form-control-lg" required />
+                                <label class="form-label" for="Location">Location</label>
+                            </div>
+                            <div class="wr-msg text-danger" id="Location1"></div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center px-5">
+                        <div class="col-md-4 mb-4 m-4 px-5 mt-1">
+                            <div class="btn btn-verify btn-danger ver_btn green_clr" data-vehicle-id="12">BOOK NOW</div>
                         </div>
                     </div>
                 </div>
