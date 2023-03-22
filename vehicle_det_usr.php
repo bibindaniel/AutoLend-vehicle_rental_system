@@ -25,6 +25,7 @@ if ($_SESSION['logout'] == "") {
     <!-- ajax -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <link rel="stylesheet" href="search-cars.css">
+    <link rel="stylesheet" href="confrimmodal.css">
 </head>
 <style>
     .gradient-custom {
@@ -36,7 +37,7 @@ if ($_SESSION['logout'] == "") {
         background-color: #203740;
     }
 
-    .btn.btn-verify {
+    .btn {
         width: 100%;
         height: 55px;
         border-radius: 0;
@@ -45,11 +46,60 @@ if ($_SESSION['logout'] == "") {
         font-weight: 600;
     }
 
-    .btn.btn-primary:hover .fas {
+    .btn.btn-primary:hover {
         transform: translateX(10px);
         transition: transform 0.5s ease
     }
+
+    .carousel-item>img {
+        min-height: 447px;
+        max-height: 447px;
+    }
+
+    select {
+        width: 100%;
+        max-width: 300px;
+    }
 </style>
+<script>
+    $(document).ready(function() {
+        var today = new Date().toISOString().split('T')[0];
+        $('#stdate').attr('min', today);
+        $('#endate').attr('min', today);
+        $("#stdate").on("change", function() {
+            var startDate = $(this).val();
+            $("#endate").attr("min", startDate);
+        });
+        $('#bookbtn').click(function() {
+            var status = $("#bookbtn").text()
+            if (status != 'BOOK NOW') {
+                $("#modal-btn1").click();
+            }
+        });
+        $("#btn1").click(function() {
+            var vehicleID = $(this).data("vehicle-id");
+            var userID = $("#hid").data("user-id");
+
+            $.ajax({
+                url: "update_vehicle_status.php",
+                type: "POST",
+                data: {
+                    vehicle_id: vehicleID,
+                    user_id: userID,
+                    status: "requested"
+                },
+                cache: false,
+                success: function(response) {
+                    location.reload();
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    // Error message
+                    alert("Error: " + errorThrown);
+                }
+            });
+        });
+    });
+</script>
 <?php
 $tmp_id = $_SESSION['id'];
 $con = mysqli_connect("localhost", "root", "", "mini-prj");
@@ -83,7 +133,7 @@ $row3 = mysqli_fetch_array($result3);
                             <a class="nav-link text-light" href="#!">About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" aria-current="page" href="#!">Services</a>
+                            <a class="nav-link text-light" aria-current="page" href="search-cars.php">Services</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-light" href="#!">Opinions</a>
@@ -118,7 +168,7 @@ $row3 = mysqli_fetch_array($result3);
             <!-- Container wrapper -->
     </nav>
     <?php
-    $id = 35;
+    $id = $_GET["id"];
     $con = mysqli_connect("localhost", "root", "", "mini-prj");
     $query = "SELECT * FROM `tbl_vehicle` WHERE `vehicle_id`=$id";
     $result = mysqli_query($con, $query);
@@ -131,6 +181,10 @@ $row3 = mysqli_fetch_array($result3);
     $query2 = "SELECT * FROM `tbl_vehicle_category` WHERE `category_id`=$catid";
     $result2 = mysqli_query($con, $query2);
     $row2 = mysqli_fetch_array($result2);
+    $query3 = "SELECT * FROM `tbl_available_time` WHERE `vehicle_id` =$id";
+    $result3 = mysqli_query($con, $query3);
+    $query4 = "SELECT * FROM `tbl_available_time` WHERE `vehicle_id` =$id";
+    $result4 = mysqli_query($con, $query4);
 
     ?>
     <div class="container-fluid">
@@ -141,7 +195,7 @@ $row3 = mysqli_fetch_array($result3);
                         <div class="row">
                             <div class="col-md-7 m-3">
                                 <div class="container-fluid p-0">
-                                    <div id="carouselExampleCrossfade" class="carousel slide carousel-fade" data-mdb-ride="carousel">
+                                    <div id="carouselExampleCrossfade" class="carousel slide" data-mdb-ride="carousel">
                                         <div class="carousel-indicators">
                                             <button type="button" data-mdb-target="#carouselExampleCrossfade" data-mdb-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
                                             <button type="button" data-mdb-target="#carouselExampleCrossfade" data-mdb-slide-to="1" aria-label="Slide 2"></button>
@@ -150,16 +204,16 @@ $row3 = mysqli_fetch_array($result3);
                                         </div>
                                         <div class="carousel-inner rounded-5 shadow-4-strong">
                                             <div class="carousel-item active">
-                                                <img src="vehicle/arteum-ro-_8WDl2zgB_0-unsplash.jpg" class="d-block w-100 " alt="Wild Landscape" />
+                                                <img src="vehicle/<?= $row["image1"] ?>" class="d-block w-100 " alt="Wild Landscape" />
                                             </div>
                                             <div class="carousel-item">
-                                                <img src="vehicle/caleb-white-XGJBSkoqX_I-unsplash.jpg" class="d-block w-100" alt="Camera" />
+                                                <img src="vehicle/<?= $row["image2"] ?>" class="d-block w-100" alt="Camera" />
                                             </div>
                                             <div class="carousel-item">
-                                                <img src="vehicle/david-moffatt-bTp1ByhNzQg-unsplash.jpg" class="d-block w-100" alt="Exotic Fruits" />
+                                                <img src="vehicle/<?= $row["image3"] ?>" class="d-block w-100" alt="Exotic Fruits" />
                                             </div>
                                             <div class="carousel-item">
-                                                <img src="vehicle/david-moffatt-bTp1ByhNzQg-unsplash.jpg" class="d-block w-100" alt="Exotic Fruits" />
+                                                <img src="vehicle/<?= $row["image4"] ?>" class="d-block w-100" alt="Exotic Fruits" />
                                             </div>
                                         </div>
                                         <button class="carousel-control-prev" type="button" data-mdb-target="#carouselExampleCrossfade" data-mdb-slide="prev">
@@ -183,23 +237,23 @@ $row3 = mysqli_fetch_array($result3);
                                         <p class="text-dark">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Neque tempore mollitia, iste soluta voluptate at voluptatibus magnam harum architecto omnis, ratione blanditiis nam distinctio quidem </p>
                                     </div>
                                     <div class="col-md-4 col-6 ps-30 pe-0 my-2">
-                                        <p><i class="fa-solid fa-gears"></i><span class="m-2">Automatic</span></p>
+                                        <p><i class="fa-solid fa-gears"></i><span class="m-2"><?= $row["transmission_type"] ?></span></p>
                                     </div>
                                     <div class="col-md-4 col-6 ps-30 pe-0 my-2">
-                                        <p><i class='fas fa-oil-can'></i><span class="m-2">12km</span></p>
+                                        <p><i class='fas fa-oil-can'></i><span class="m-2"><?= $row["mileage"] ?></span></p>
                                     </div>
                                     <div class="col-md-4 col-6 ps-30 pe-0 my-2">
-                                        <p><i class='fas fa-gas-pump'></i><span class="m-2">Diseal</span></p>
+                                        <p><i class='fas fa-gas-pump'></i><span class="m-2"><?= $row["fuel_type"] ?></span></p>
                                     </div>
 
                                     <div class="col-md-4 col-6 ps-30 pe-0 my-2">
-                                        <p><i class='fas fa-car-side'></i><span class="m-2">hachback</span></p>
+                                        <p><i class='fas fa-car-side'></i><span class="m-2"><?= $row2["category_name"] ?></span></p>
                                     </div>
                                     <div class="col-md-4 col-6 ps-30 pe-0 my-2">
-                                        <p><i class='fas fa-thumbtack'></i><span class="m-2">Asdf</span></p>
+                                        <p><i class='fas fa-thumbtack'></i><span class="m-2"><?= $row["location"] ?></span></p>
                                     </div>
                                     <div class="col-md-4 col-6 ps-30 pe-0 my-2">
-                                        <p><i class='fas fa-gas-pump'></i><span class="m-2">Autdf</span></p>
+                                        <p><i class='fas fa-gas-pump'></i><span class="m-2"><?= $row["seat"] ?></span></p>
                                     </div>
                                 </div>
                             </div>
@@ -228,76 +282,148 @@ $row3 = mysqli_fetch_array($result3);
                     </div>
                 </div>
                 <div class="col-md-8 card">
-                    <div class="d-flex align-items-center justify-content-center px-4 mt-4 mb-2">
-                        <p class="h4 m-0"><span class="pe-1">MAKE</span><span class="pe-1">YOUR</span><span class="pe-1">TRIP</span></p>
+                    <form action="#" method="POST" enctype="multipart/form-data">
+                        <div class="d-flex align-items-center justify-content-center px-4 mt-4 mb-2">
+                            <p class="h4 m-0"><span class="pe-1">MAKE</span><span class="pe-1">YOUR</span><span class="pe-1">TRIP</span></p>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-md-4 mb-4 m-4 mt-1">
+                                <div class="form-outline">
+                                    <input type="text" id="Location1" name="loc1" class="form-control form-control-lg" maxlength="40" required />
+                                    <label class="form-label" for="Location1">DROP IN</label>
+                                </div>
+                                <div class="wr-msg text-danger" id="Location1"></div>
+                            </div>
+                            <div class="col-md-4 mb-4 m-4 mt-1">
+                                <select class="select form-control-lg" id="sttime" name="sttime" required>
+                                    <?php
+                                    while ($row3 = mysqli_fetch_array($result3)) {
+                                    ?>
+                                        <option value="<?= $row3["time"] ?>"><?= $row3["time"] ?></option>
+                                    <?php } ?>
+                                </select>
+                                <div class="wr-msg text-danger" id="sttime1"></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-md-4 mb-4 m-4 mt-1">
+                                <div class="form-outline">
+                                    <input type="text" id="Location2" name="loc2" class="form-control form-control-lg" required />
+                                    <label class="form-label" for="Location2">DROP OFF</label>
+                                </div>
+                                <div class="wr-msg text-danger" id="Location1"></div>
+                            </div>
+                            <div class="col-md-4 mb-4 m-4 mt-1">
+                                <select class="select form-control-lg" id="entime" name="entime" required>
+                                    <?php
+                                    while ($row4 = mysqli_fetch_array($result4)) {
+                                    ?>
+                                        <option value="<?= $row4["time"] ?>"><?= $row4["time"] ?></option>
+                                    <?php } ?>
+                                </select>
+                                <div class="wr-msg text-danger" id="entime1"></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="d-flex align-items-end px-5  pb-1 mx-5">
+                                <p class="h6 m-0"><span class="pe-1 px-5 mx-4">RENTAL PERIOD</span></p>
+                            </div>
+                            <div class="col-md-4 mb-4 m-4 mt-1">
+                                <div class="form-outline">
+                                    <input type="date" id="stdate" name="stdate" min='2023-03-01' class="form-control form-control-lg" onkeydown="return false" required />
+                                    <label class="form-label" for="stdate">START DATE</label>
+                                </div>
+                                <div class="wr-msg text-danger" id="stdate1"></div>
+                            </div>
+                            <div class="col-md-4 mb-4 m-4 mt-1">
+                                <div class="form-outline">
+                                    <input type="date" id="endate" name="endate" min='2023-03-01' class="form-control form-control-lg" onkeydown="return false" required />
+                                    <label class="form-label" for="endate">END DATE</label>
+                                </div>
+                                <div class="wr-msg text-danger" id="endate1"></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center px-5">
+                            <div class="col-md-4 mb-4 m-4 px-5 mt-1">
+                                <?php
+                                if ($row["booking_status"] == 'available') {
+                                ?>
+                                    <button type="submit" class=" btn btn-success green_clr" id="bookbtn" name="sub">BOOK NOW</button>
+
+                                <?php
+                                } else if ($row["booking_status"] == 'Requested') {
+                                ?>
+                                    <button type="submit" class=" btn btn-success green_clr" id="bookbtn" name="sub">Requested</button>
+
+                                <?php
+                                } else {
+                                ?>
+                                    <button type="submit" class=" btn btn-success green_clr" id="bookbtn" name="sub">Booked</button>
+                                <?php
+                                }
+                                ?>
+                            </div>
+                            <input type="hidden" name="hidden" id="hid" data-user-id="<?= $tmp_id ?>">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="button" id="modal-btn1" style="display:none;" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#delModal">
+        Launch demo modal
+    </button>
+    <!-- Modal del -->
+    <div id="delModal" class="modal fade">
+        <div class="modal-dialog modal-confirm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="icon-box" style="background-color:#fa0000;">
+                        <i class="fa fa-times fa-3x"></i>
                     </div>
-                    <div class="row justify-content-center">
-                        <div class="d-flex align-items-end px-5 mt-4 pb-1 mx-5">
-                            <p class="h6 m-0"><span class="pe-1 px-5 mx-4">TRIP START</span></p>
-                        </div>
-                        <div class="col-md-4 mb-4 m-4 mt-1">
-                            <div class="form-outline">
-                                <input type="date" id="stdate" name="stdate" min="1" class="form-control form-control-lg" required />
-                                <label class="form-label" for="stdate">START DATE</label>
-                            </div>
-                            <div class="wr-msg text-danger" id="stdate1"></div>
-                        </div>
-                        <div class="col-md-4 mb-4 m-4 mt-1">
-                            <div class="form-outline">
-                                <input type="Number" id="sttime" name="sttime" min="1" class="form-control form-control-lg" required />
-                                <label class="form-label" for="sttime">START TIME</label>
-                            </div>
-                            <div class="wr-msg text-danger" id="sttime1"></div>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="d-flex align-items-end px-5 pb-1 mx-5">
-                            <p class="h6 m-0"><span class="pe-1 px-5 mx-4">TRIP END</span></p>
-                        </div>
-                        <div class="col-md-4 mb-4 m-4 mt-1">
-                            <div class="form-outline">
-                                <input type="date" id="endate" name="endate" min="1" class="form-control form-control-lg" required />
-                                <label class="form-label" for="endate">END DATE</label>
-                            </div>
-                            <div class="wr-msg text-danger" id="endate1"></div>
-                        </div>
-                        <div class="col-md-4 mb-4 m-4 mt-1">
-                            <div class="form-outline">
-                                <input type="Number" id="entime" name="entime" min="1" class="form-control form-control-lg" required />
-                                <label class="form-label" for="entime">END TIME</label>
-                            </div>
-                            <div class="wr-msg text-danger" id="entime1"></div>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="d-flex align-items-end px-5  pb-1 mx-5">
-                            <p class="h6 m-0"><span class="pe-1 px-5 mx-4">TRIP START</span></p>
-                        </div>
-                        <div class="col-md-4 mb-4 m-4 mt-1">
-                            <div class="form-outline">
-                                <input type="text" id="Location" name="loc" class="form-control form-control-lg" required />
-                                <label class="form-label" for="Location">Location</label>
-                            </div>
-                            <div class="wr-msg text-danger" id="Location1"></div>
-                        </div>
-                        <div class="col-md-4 mb-4 m-4 mt-1">
-                            <div class="form-outline">
-                                <input type="text" id="Location" name="loc" class="form-control form-control-lg" required />
-                                <label class="form-label" for="Location">Location</label>
-                            </div>
-                            <div class="wr-msg text-danger" id="Location1"></div>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center px-5">
-                        <div class="col-md-4 mb-4 m-4 px-5 mt-1">
-                            <div class="btn btn-verify btn-danger ver_btn green_clr" data-vehicle-id="12">BOOK NOW</div>
-                        </div>
-                    </div>
+                    <h4 class="modal-title w-100">Confirm!</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center">Are you sure? Do you want to cancel your request!..</p>
+                </div>
+                <div class="modal-footer d-grid d-md-flex justify-content-center">
+                    <button type="button" id="btn1" data-vehicle-id="<?= $id ?>" class="btn btn-secondary" data-mdb-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
     </div>
 </body>
+<?php
+if (isset($_POST["sub"])) {
+    $dinloc = $_POST["loc1"];
+    $dofloc = $_POST["loc2"];
+    $dintime = $_POST["sttime"];
+    $doftime = $_POST["entime"];
+    $stdate = $_POST["stdate"];
+    $enddate = $_POST["endate"];
+    $con = mysqli_connect("localhost", "root", "", "mini-prj");
+    $exists_query = "SELECT * FROM `tbl_request_vehicle` WHERE `vehicle_id`='$id' AND `user_id`='$tmp_id'";
+    $exists_result = mysqli_query($con, $exists_query);
+    if ($exists_result && mysqli_num_rows($exists_result) > 0) {
+        // Request already exists, do nothing
+    } else {
+        $query = "INSERT INTO `tbl_request_vehicle`(`vehicle_id`, `user_id`, `start_date`, `end_date`, `drop_in_location`, `drop_in_time`, `drop_of_location`, `drop_of_time`) VALUES ('$id','$tmp_id','$stdate','$enddate','$dinloc','$dintime','$dofloc','$doftime')";
+        $result = mysqli_query($con, $query);
+        $query = "UPDATE `tbl_vehicle` SET `booking_status`='Requested' WHERE `vehicle_id`=$id";
+        $result = mysqli_query($con, $query);
+        if ($result) {
+            echo "<script>location.href='search-cars.php'</script>";
+?>
+            <script>
+                $(document).ready(function() {
+                    $("#bookbtn").text('REQUESTED')
+                })
+            </script>
+<?php
+        }
+    }
+}
+?>
 <script src='https://code.jquery.com/jquery-1.12.0.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.min.js'></script>
 <!-- MDB -->

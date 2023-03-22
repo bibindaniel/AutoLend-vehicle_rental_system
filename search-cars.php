@@ -239,8 +239,9 @@ $row3 = mysqli_fetch_array($result3);
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
                                         </div>
+                                        <?php $id=$row["vehicle_id"] ?>
                                         <div class="d-flex flex-row justify-content-center mt-1">
-                                            <button type="button" onclick="location.href='vehicle_det.php?id= <?= $id ?>'" class="btn btn-primary gradient-custom ">BOOK NOW</button>
+                                            <button type="button" onclick="location.href='vehicle_det_usr.php?id= <?= $id ?>'" class="btn btn-primary gradient-custom ">BOOK NOW</button>
                                         </div>
                                     </div>
                                 </div>

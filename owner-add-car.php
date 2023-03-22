@@ -23,7 +23,6 @@ if ($_SESSION['logout'] == "") {
     <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js" integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
     <!-- ajax -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-    <link rel="stylesheet" href="adminpanel.css">
     <link rel="stylesheet" href="confrimmodal.css">
 </head>
 <script>
@@ -253,6 +252,73 @@ if ($_SESSION['logout'] == "") {
             $('#btn').prop("disabled", false);
         }
     }
+
+    function addTime() {
+        // Check if more than 5 time fields have been added
+        var timeInputs = document.getElementsByName('times[]');
+        if (timeInputs.length === 5) {
+            alert('You cannot add more than 5 available times.');
+            return;
+        }
+
+        // Create a new input field with the 'time' type
+        var newInput = document.createElement('input');
+        newInput.type = 'time';
+        newInput.name = 'times[]';
+        newInput.classList.add('form-control', 'form-control-lg');
+        newInput.required = true;
+
+        // Add event listener to validate input times
+        newInput.addEventListener('change', function() {
+            var duplicate = false;
+            for (var i = 0; i < timeInputs.length; i++) {
+                if (timeInputs[i] !== this && timeInputs[i].value == this.value) {
+                    duplicate = true;
+                    break;
+                }
+            }
+            if (duplicate) {
+                alert('Duplicate time detected. Please enter a unique time.');
+                this.value = '';
+            }
+        });
+
+        // Disable the addTime button if there are already five input fields
+        var timesWrapper = document.getElementById('times-wrapper');
+        if (timesWrapper.childElementCount - 1 === 5) {
+            document.getElementById('add-time-btn').disabled = true;
+        }
+
+        // Append the new input field to the form
+        var wrapperDiv = document.createElement('div');
+        wrapperDiv.classList.add('col-md-4', 'mb-4');
+        wrapperDiv.appendChild(newInput);
+        timesWrapper.appendChild(wrapperDiv);
+    }
+
+    function addLocation() {
+        // Get the value from the input
+        var locationInput = document.getElementById('location-input').value;
+
+        // Check if the location has already been added to the list
+        var locationsList = document.getElementById('location-list');
+        var locationsArray = Array.from(locationsList.children).map((li) => li.textContent);
+        if (locationsArray.includes(locationInput)) {
+            alert('This location has already been added.');
+            return;
+        }
+
+        // Add the location to the list
+        var newLocation = document.createElement('li');
+        newLocation.innerHTML = '<div class="form-outline"><input type="text" name="location[]" class="form-control form-control-lg" value="' + locationInput + '" required><label class="form-label">Location:</label></div>';
+        locationsList.appendChild(newLocation);
+
+        // Disable the input field if there are already five locations in the list
+        if (locationsList.childElementCount === 5) {
+            document.getElementById('location-input').disabled = true;
+            document.getElementById('add-location-btn').disabled = true;
+        }
+    }
 </script>
 <style>
     select {
@@ -284,67 +350,10 @@ if ($_SESSION['logout'] == "") {
     $row = mysqli_fetch_array($result);
     $img = $row['image'];
     ?>
-    <!--Main Navigation-->
-    <header>
-        <!-- Sidebar -->
-        <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-            <div class="position-sticky">
-                <div class="list-group list-group-flush mx-3 mt-4">
-                    <a href="owner-dashboard.php" class="list-group-item list-group-item-action py-2 ripple " aria-current="true">
-                        <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple active ">
-                        <i class="fas fa-plus-square fa-fw me-3"></i><span>Add cars</span>
-                    </a>
-                    <a href="owner-view-cars.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas  fa-car fa-fw me-3"></i><span>View Cars</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-bell fa-fw me-3"></i><span>View Request</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-address-book fa-fw me-3"></i><span>View Bookings</span></a>
-                </div>
-            </div>
-        </nav>
-        <!-- Sidebar -->
-
-        <!-- Navbar -->
-        <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light  fixed-top">
-            <!-- Container wrapper -->
-            <div class="container-fluid">
-                <!-- Toggle button -->
-                <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="fas fa-bars"></i>
-                </button>
-
-                <!-- Brand -->
-                <a class="navbar-brand" href="#">
-                    <img src="images/Logo.png" height="45" alt="" loading="lazy" />
-                    <small class="ms-2 text-light">AutoLend</small></a>
-                </a>
-                <small class="h3 text-light font-weight-bold text-align-center">DashBoard</small></a>
-
-                <!-- Avatar -->
-                <div class="dropdown ">
-                    <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                        <img src="Uploads/<?php echo $row['image'] ?>" class="rounded-circle" height="25" alt="profile pic" loading="lazy" />
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
-                        <li>
-                            <a class="dropdown-item" href="l-car-owner-page.php">Home</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="sessiondestroy.php">Logout</a>
-                        </li>
-                    </ul>
-                </div>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                    <li><a class="dropdown-item" href="#">My profile</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="#">Logout</a></li>
-                </ul>
-
-            </div>
-            <!-- Container wrapper -->
-        </nav>
-        <!-- Navbar -->
-    </header>
+  <!--Main Navigation-->
+  <?php
+        include("sidebar.php");
+        ?>
     <!--Main Navigation-->
     <?php
     $con = mysqli_connect("localhost", "root", "", "mini-prj");
@@ -470,83 +479,109 @@ if ($_SESSION['logout'] == "") {
                                             <div class="wr-msg text-danger" id="seats1"></div>
                                         </div>
                                     </div>
-
                                     <div class="row">
                                         <h6>Rental Information</h6>
                                         <hr class="mt-0 mb-4">
-                                        <div class="col-md-4 mb-4 pb-2">
 
+                                        <div class="col-md-4 mb-4 pb-2">
                                             <div class="form-outline">
                                                 <input type="number" id="rate" min="100" name="rate" class="form-control form-control-lg" required />
                                                 <label class="form-label" for="rate">Rate</label>
                                             </div>
                                             <div class="wr-msg text-danger" id="rate1"></div>
-
                                         </div>
-                                        <div class="col-md-4 mb-4">
 
+                                        <div class="col-md-4 mb-4">
                                             <div class="form-outline">
                                                 <input type="text" id="Location" name="loc" class="form-control form-control-lg" required />
                                                 <label class="form-label" for="Location">Location</label>
                                             </div>
                                             <div class="wr-msg text-danger" id="Location1"></div>
-
                                         </div>
                                         <div class="col-md-6 mb-4">
 
                                             <div class="form-outline">
-                                                <textarea type="text" id="features" name="fea" class="form-control form-control-lg" required ></textarea>
+                                                <textarea type="text" id="features" name="fea" class="form-control form-control-lg" maxlength="200" required></textarea>
                                                 <label class="form-label" for="features">Features</label>
                                             </div>
-                                            <div class="wr-msg text-danger" id="Location1"></div>
+                                            <div class="wr-msg text-danger" id="features1"></div>
 
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <h6>Upload Documents</h6><span class="text-muted">(scanned or digital copies '.pdf format')</span>
-                                        <hr class="mt-0 mb-4">
-                                        <div class="col-md-6 mb-4">
-                                            <label class="" for="rcbook">RCBOOK</label>
-                                            <div class="form-outline">
-                                                <input type="file" class="form-control file" id="rcbook" name="rc" accept=".pdf" onchange="fileValidation1()" required>
+                                        <div id="times-wrapper" class="row">
+                                            <div class="col-md-4 mb-4">
+                                                <div class="form-outline">
+                                                    <input type="time" id="time-input" name="times[]" class="form-control form-control-lg" value="12:00" required>
+                                                    <label for="time-input" class="form-label">Available Times:</label>
+                                                </div>
+                                                <button onclick="addTime()" id="add-time-btn" class="btn">Add Time</button>
+
+                                                <ul id="time-list">
+                                                    <!-- This empty list will be populated with added times -->
+                                                </ul>
+                                                <div class="wr-msg text-danger" id="time-input1"></div>
                                             </div>
-                                            <div class="filemsg text-danger" id="inputfileupload1"></div>
                                         </div>
-                                        <div class="col-md-6 mb-4">
-                                            <label class="" for="puc">PUC Certificate</label>
-                                            <div class="form-outline">
-                                                <input type="file" class="form-control file" id="puc" name="puc" accept=".pdf" onchange="fileValidation2()" required>
+                                        <div id="locations-wrapper" class="row">
+                                            <div class="col-md-4 mb-4">
+                                                <div class="form-outline">
+                                                    <input type="text" id="location-input" name="location[]" class="form-control form-control-lg" required>
+                                                    <label for="location-input" class="form-label">Location:</label>
+                                                </div>
+                                                <button onclick="addLocation()" id="add-location-btn" class="btn">Add Location</button>
+
+                                                <ul id="location-list">
+                                                    <!-- This empty list will be populated with added locations -->
+                                                </ul>
+                                                <div class="wr-msg text-danger" id="location-input1"></div>
                                             </div>
-                                            <div class="filemsg text-danger" id="inputfileupload1"></div>
-                                        </div>
-                                        <div class="col-md-6 mb-4">
-                                            <label class="" for="insurance">Insurance</label>
-                                            <div class="form-outline">
-                                                <input type="file" class="form-control file" id="insurance" name="insurance" accept=".pdf" onchange="fileValidation3()" required>
-                                            </div>
-                                            <div class="filemsg text-danger" id="inputfileupload1"></div>
-                                        </div>
-                                        <div class="col-md-6 mb-4">
-                                            <label class="" for="permit">Permit</label>
-                                            <div class="form-outline">
-                                                <input type="file" class="form-control file" id="permit" name="permit" accept=".pdf" onchange="fileValidation4()" required>
-                                            </div>
-                                            <div class="filemsg text-danger" id="inputfileupload1"></div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="text-danger" id="error-message"></div>
-                                <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                    <div class="mt-4 pt-2">
-                                        <input class="btn btn-primary mb-3" id="btn" type="submit" name="sub" />
+                                <div class="row m-2">
+                                    <h6>Upload Documents</h6><span class="text-muted">(scanned or digital copies '.pdf format')</span>
+                                    <hr class="mt-0 mb-4">
+                                    <div class="col-md-6 mb-4">
+                                        <label class="" for="rcbook">RCBOOK</label>
+                                        <div class="form-outline">
+                                            <input type="file" class="form-control file" id="rcbook" name="rc" accept=".pdf" onchange="fileValidation1()" required>
+                                        </div>
+                                        <div class="filemsg text-danger" id="inputfileupload1"></div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <label class="" for="puc">PUC Certificate</label>
+                                        <div class="form-outline">
+                                            <input type="file" class="form-control file" id="puc" name="puc" accept=".pdf" onchange="fileValidation2()" required>
+                                        </div>
+                                        <div class="filemsg text-danger" id="inputfileupload1"></div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <label class="" for="insurance">Insurance</label>
+                                        <div class="form-outline">
+                                            <input type="file" class="form-control file" id="insurance" name="insurance" accept=".pdf" onchange="fileValidation3()" required>
+                                        </div>
+                                        <div class="filemsg text-danger" id="inputfileupload1"></div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <label class="" for="permit">Permit</label>
+                                        <div class="form-outline">
+                                            <input type="file" class="form-control file" id="permit" name="permit" accept=".pdf" onchange="fileValidation4()" required>
+                                        </div>
+                                        <div class="filemsg text-danger" id="inputfileupload1"></div>
                                     </div>
                                 </div>
-
                             </div>
+                            <div class="text-danger" id="error-message"></div>
+                            <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                <div class="mt-4 pt-2">
+                                    <input class="btn btn-primary mb-3" id="btn" type="submit" name="sub" />
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                </form>
             </div>
+            </form>
+        </div>
         </div>
     </main>
     <button type="button" id="modal-btn" style="display:none;" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#myModal">
@@ -595,6 +630,7 @@ if ($_SESSION['logout'] == "") {
     </div>
     <?php
     if (isset($_POST["sub"])) {
+        $times = array();
         $bname = $_POST["bname"];
         $mname = $_POST["mname"];
         $mile = $_POST["mileage"];
@@ -613,8 +649,9 @@ if ($_SESSION['logout'] == "") {
         $img2 = $_FILES["image2"]["name"];
         $img3 = $_FILES["image3"]["name"];
         $img4 = $_FILES["image4"]["name"];
-
-        if (empty($bname) || empty($mname) || empty($year) || empty($yr) || empty($ft) || empty($trtype) || empty($cat) || empty($seats) || empty($loc) || empty($rate) || empty($rc) || empty($puc) || empty($ins) || empty($per) || empty($img1) || empty($img2) || empty($img3) || empty($img4)) {
+        $fea = $_POST["fea"];
+        $time = $_POST["times"];
+        if (empty($bname) || empty($mname) || empty($year) || empty($yr) || empty($ft) || empty($trtype) || empty($cat) || empty($seats) || empty($loc) || empty($rate) || empty($rc) || empty($puc) || empty($ins) || empty($per) || empty($img1) || empty($img2) || empty($img3) || empty($img4) || empty($fea)) {
 
             $con = mysqli_connect("localhost", "root", "", "mini-prj");
             $query = "SELECT * FROM `tbl_vehicle` WHERE `brand_name` = '$bname' AND `model_name` = '$mname' AND `year` = '$yr' AND `location` = '$loc' AND `category_id` = '$cat' AND `user_id` = '$tmp_id'";
@@ -623,7 +660,7 @@ if ($_SESSION['logout'] == "") {
                 // Data already exists, display an error message
                 // echo "Data already exists.";
             } else {
-                $query1 = "INSERT INTO `tbl_vehicle`(`brand_name`, `model_name`, `mileage`, `year`, `fuel_type`, `transmission_type`, `seat`, `rate`,`location`, `category_id`, `user_id`, `rcbook`, `puc`, `insurance`, `permit`, `image1`, `image2`, `image3`, `image4`) VALUES ('$bname','$mname',' $mile','$yr ',' $ft','$trtype','$seats','$rate','$loc','$cat','$tmp_id ','$rc','$puc','$ins','$per','$img1','$img2','$img3','$img4')";
+                $query1 = "INSERT INTO `tbl_vehicle`(`brand_name`, `model_name`, `mileage`, `year`, `fuel_type`, `transmission_type`, `seat`, `rate`,`location`, `category_id`, `user_id`, `rcbook`, `puc`, `insurance`, `permit`, `image1`, `image2`, `image3`, `image4`, `Features`) VALUES ('$bname','$mname',' $mile','$yr ',' $ft','$trtype','$seats','$rate','$loc','$cat','$tmp_id ','$rc','$puc','$ins','$per','$img1','$img2','$img3','$img4','$fea')";
                 $res = mysqli_query($con, $query1);
                 $id = mysqli_insert_id($con);
                 $target = "vehicle/";
@@ -639,10 +676,15 @@ if ($_SESSION['logout'] == "") {
                 move_uploaded_file($_FILES['image2']['tmp_name'], $targetfilepath2);
                 move_uploaded_file($_FILES['image3']['tmp_name'], $targetfilepath3);
                 move_uploaded_file($_FILES['image4']['tmp_name'], $targetfilepath4);
-                move_uploaded_file($_FILES['rc"']['tmp_name'], $targetfilepath5);
+                move_uploaded_file($_FILES['rc']['tmp_name'], $targetfilepath5);
                 move_uploaded_file($_FILES['puc']['tmp_name'], $targetfilepath6);
                 move_uploaded_file($_FILES['insurance']['tmp_name'], $targetfilepath7);
-                move_uploaded_file($_FILES['permit']['tmp_name'], $targetfilepath);
+                move_uploaded_file($_FILES['permit']['tmp_name'], $targetfilepath8);
+                $vid = mysqli_insert_id($con);
+                foreach ($time as $ti) {
+                    $query1 = "INSERT INTO `tbl_available_time`( `time`, `vehicle_id`) VALUES ('$ti','$vid')";
+                    $result = mysqli_query($con, $query1);
+                }
 
                 if ($res) { ?>
                     <script>
