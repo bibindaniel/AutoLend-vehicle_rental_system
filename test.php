@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Toast Notification</title>
@@ -87,6 +88,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="toast" id="toast">
@@ -96,6 +98,37 @@
         </div>
         <button id="open">Open</button>
     </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="vehicle/kenny-eliason-yDekvyZ52dU-unsplash.jpg" class="card-img-top" alt="Car Image">
+            <div class="card-body">
+                <h5 class="card-title">Booking Request</h5>
+                <p class="card-text"><strong>Vehicle:</strong> Toyota Camry</p>
+                <p class="card-text"><strong>Dates:</strong> August 1st, 2022 - August 10th, 2022</p>
+                <p class="card-text"><strong>Pick-up Location:</strong> John F. Kennedy International Airport</p>
+                <p class="card-text"><strong>Drop-off Location:</strong> LaGuardia Airport</p>
+                <button type="button" class="btn btn-success mr-3">Accept</button>
+                <button type="button" class="btn btn-danger">Reject</button>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="vehicle/talia-sBPnD3jzQ7g-unsplash.jpg" class="card-img-top" alt="Car Image">
+            <div class="card-body">
+                <h5 class="card-title">Booking Request</h5>
+                <p class="card-text"><strong>Vehicle:</strong> BMW X5</p>
+                <p class="card-text"><strong>Dates:</strong> September 10th, 2022 - September 15th, 2022</p>
+                <p class="card-text"><strong>Pick-up Location:</strong> Chicago O'Hare International Airport</p>
+                <p class="card-text"><strong>Drop-off Location:</strong> Midway International Airport</p>
+                <button type="button" class="btn btn-success mr-3">Accept</button>
+                <button type="button" class="btn btn-danger">Reject</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
     <script>
         const openBtn = document.getElementById("open");
         const toast = document.getElementById("toast");
@@ -113,4 +146,5 @@
         })
     </script>
 </body>
+
 </html>

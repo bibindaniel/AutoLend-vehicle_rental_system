@@ -12,21 +12,31 @@
 </head>
 
 <body>
+    <!-- Sidebar -->
+    <header>
         <!-- Sidebar -->
-        <header>
-            <!-- Sidebar -->
-            <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+        <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
             <div class="position-sticky">
                 <div class="list-group list-group-flush mx-3 mt-4">
-                    <a href="owner-dashboard.php" class="list-group-item list-group-item-action py-2 ripple<?php if(basename($_SERVER['PHP_SELF']) == "owner-dashboard.php") { echo " active"; } ?>" aria-current="true">
+                    <a href="owner-dashboard.php" class="list-group-item list-group-item-action py-2 ripple<?php if (basename($_SERVER['PHP_SELF']) == "owner-dashboard.php") {
+                                                                                                                echo " active";
+                                                                                                            } ?>" aria-current="true">
                         <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
                     </a>
-                    <a href="owner-add-car.php" class="list-group-item list-group-item-action py-2 ripple <?php if(basename($_SERVER['PHP_SELF']) == "owner-add-car.php") { echo " active"; } ?>">
+                    <a href="owner-add-car.php" class="list-group-item list-group-item-action py-2 ripple <?php if (basename($_SERVER['PHP_SELF']) == "owner-add-car.php") {
+                                                                                                                echo " active";
+                                                                                                            } ?>">
                         <i class="fas fa-plus-square fa-fw me-3"></i><span>Add cars</span>
                     </a>
-                    <a href="owner-view-cars.php" class="list-group-item list-group-item-action py-2 ripple <?php if(basename($_SERVER['PHP_SELF']) == "owner-view-cars.php") { echo " active"; } ?>"><i class="fas  fa-car fa-fw me-3"></i><span>View Cars</span></a>
-                    <a href="owner-view-request.php" class="list-group-item list-group-item-action py-2 ripple <?php if(basename($_SERVER['PHP_SELF']) == "owner-view-request.php") { echo " active"; } ?>"><i class="fas fa-bell fa-fw me-3"></i><span>View Request</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple <?php if(basename($_SERVER['PHP_SELF']) == "") { echo " active"; } ?>"><i class="fas fa-address-book fa-fw me-3"></i><span>View Bookings</span></a>
+                    <a href="owner-view-cars.php" class="list-group-item list-group-item-action py-2 ripple <?php if (basename($_SERVER['PHP_SELF']) == "owner-view-cars.php") {
+                                                                                                                echo " active";
+                                                                                                            } ?>"><i class="fas  fa-car fa-fw me-3"></i><span>View Cars</span></a>
+                    <a href="owner-view-request.php" class="list-group-item list-group-item-action py-2 ripple <?php if (basename($_SERVER['PHP_SELF']) == "owner-view-request.php") {
+                                                                                                                    echo " active";
+                                                                                                                } ?>"><i class="fas fa-bell fa-fw me-3"></i><span>View Request</span></a>
+                    <a href="#" class="list-group-item list-group-item-action py-2 ripple <?php if (basename($_SERVER['PHP_SELF']) == "") {
+                                                                                                echo " active";
+                                                                                            } ?>"><i class="fas fa-address-book fa-fw me-3"></i><span>View Bookings</span></a>
                 </div>
             </div>
         </nav>
@@ -61,11 +71,6 @@
                         </li>
                     </ul>
                 </div>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                    <li><a class="dropdown-item" href="#">My profile</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="#">Logout</a></li>
-                </ul>
 
             </div>
             <!-- Container wrapper -->

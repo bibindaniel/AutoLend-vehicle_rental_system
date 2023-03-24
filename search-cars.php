@@ -24,6 +24,7 @@ if ($_SESSION['logout'] == "") {
     <!-- ajax -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <link rel="stylesheet" href="search-cars.css">
+    <link rel="stylesheet" href="confrimmodal.css">
 </head>
 <style>
     .gradient-custom {
@@ -31,12 +32,49 @@ if ($_SESSION['logout'] == "") {
         background: linear-gradient(280deg, rgba(2, 0, 36, 1) 0%, rgba(14, 72, 73, 1) 37%, rgba(0, 212, 255, 1) 100%);
     }
 </style>
+<script>
+    $(document).ready(function() {
+        $('#booknver').click(function() {
+            $("#modal-btn1").click();
+        })
+    });
+    $(document).ready(function() {
+        $("#search-input").on("keyup", function() {
+            var searchTerm = $(this).val();
+            var status = $('#usrstat').data('usr')
+            $.ajax({
+                url: "search_ajax.php",
+                type: "POST",
+                data: {
+                    term: searchTerm,
+                    status: status
+                },
+                success: function(response) {
+                    $(".row-cols-1").html(response);
+                }
+            });
+        });
+    });
+    $(document).ready(function() {
+        $('.filter-group-btn').on('click', function(e) {
+            e.preventDefault();
+            $(this).find('.fa-chevron-down, .fa-chevron-up').toggleClass('fa-chevron-down fa-chevron-up');
+            $(this).closest('.filter-group').find('form').slideToggle();
+        });
+    });
+</script>
 <?php
 $tmp_id = $_SESSION['id'];
 $con = mysqli_connect("localhost", "root", "", "mini-prj");
-$query3 = "SELECT `image` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
+$query3 = "SELECT `image`,`user_id` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
 $result3 = mysqli_query($con, $query3);
 $row3 = mysqli_fetch_array($result3);
+$usr_id = $row3["user_id"];
+$query4 = "SELECT * FROM `tbl_verify_user` WHERE `user_id`=$usr_id";
+$result4 = mysqli_query($con, $query4);
+$row4 = mysqli_fetch_array($result4);
+$usr_stat = $row4['verify_status']
+
 ?>
 
 <body>
@@ -103,7 +141,7 @@ $row3 = mysqli_fetch_array($result3);
     $results_per_page = 9;
 
     //find the total number of results stored in the database  
-    $query = "select *from `tbl_vehicle` WHERE `status`= 1";
+    $query = "SELECT *FROM `tbl_vehicle` where `status`= 1 AND `booking_status`='available'";
     $result = mysqli_query($con, $query);
     $number_of_result = mysqli_num_rows($result);
 
@@ -121,91 +159,122 @@ $row3 = mysqli_fetch_array($result3);
     $page_first_result = ($page - 1) * $results_per_page;
 
     //retrieve the selected results from database   
-    $query = "SELECT *FROM `tbl_vehicle` where `status`= 1  LIMIT " . $page_first_result . ',' . $results_per_page;
+    $query = "SELECT *FROM `tbl_vehicle` where `status`= 1 AND `booking_status`='available'  LIMIT " . $page_first_result . ',' . $results_per_page;
     $result = mysqli_query($con, $query);
     ?>
     <main>
+        <input type="hidden" id="usrstat" data-usr="<?= $usr_stat ?>">
         <div class="container m-0">
             <div class="row">
                 <aside class="col-md-3">
                     <div class="card">
+                        <?php
+                         $sql="SELECT * FROM `tbl_vehicle_category`";
+                         $res=mysqli_query($con, $sql);
+                        ?>
                         <article class="filter-group">
                             <header class="card-header">
                                 <a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true" class="">
-                                    <i class="icon-control fa fa-chevron-down"></i>
+                                    <i class="icon-control fa fa-chevron-down filter-group-btn"></i>
                                     <h6 class="title">Product type</h6>
                                 </a>
                             </header>
+                            <div class="filter-content collapse show" id="collapse_3">
+                                <form action="">
+                                    <div class="card-body">
+                                        <?php
+                                         while($cat=mysqli_fetch_array($res)) {
+                                        ?>
+                                        <label class="custom-control custom-checkbox">
+                                            <input type="checkbox"  class="custom-control-input" value="<?=$cat['category_name'] ?>">
+                                            <div class="custom-control-label"><?=$cat['category_name'] ?></div>
+                                        </label>
+                                        <?php } ?>
+                                    </div> <!-- card-body.// -->
+                                </form>
+                            </div>
                         </article> <!-- filter-group  .// -->
                         <article class="filter-group">
                             <header class="card-header">
                                 <a href="#" data-toggle="collapse" data-target="#collapse_2" aria-expanded="true" class="">
-                                    <i class="icon-control fa fa-chevron-down"></i>
+                                    <i class="icon-control fa fa-chevron-down filter-group-btn"></i>
                                     <h6 class="title">Brands </h6>
                                 </a>
                             </header>
                             <div class="filter-content collapse show" id="collapse_2">
-                                <div class="card-body">
-                                    <label class="custom-control custom-checkbox">
-                                        <input type="checkbox" checked="" class="custom-control-input">
-                                        <div class="custom-control-label">Mercedes
-                                            <b class="badge badge-pill badge-light float-right">120</b>
-                                        </div>
-                                    </label>
-                                    <label class="custom-control custom-checkbox">
-                                        <input type="checkbox" checked="" class="custom-control-input">
-                                        <div class="custom-control-label">Toyota
-                                            <b class="badge badge-pill badge-light float-right">15</b>
-                                        </div>
-                                    </label>
-                                    <label class="custom-control custom-checkbox">
-                                        <input type="checkbox" checked="" class="custom-control-input">
-                                        <div class="custom-control-label">Mitsubishi
-                                            <b class="badge badge-pill badge-light float-right">35</b>
-                                        </div>
-                                    </label>
-                                    <label class="custom-control custom-checkbox">
-                                        <input type="checkbox" checked="" class="custom-control-input">
-                                        <div class="custom-control-label">Nissan
-                                            <b class="badge badge-pill badge-light float-right">89</b>
-                                        </div>
-                                    </label>
-                                    <label class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input">
-                                        <div class="custom-control-label">Honda
-                                            <b class="badge badge-pill badge-light float-right">30</b>
-                                        </div>
-                                    </label>
-                                </div> <!-- card-body.// -->
+                                <form>
+                                    <div class="card-body">
+                                        <label class="custom-control custom-checkbox">
+                                            <input type="checkbox" checked="" class="custom-control-input">
+                                            <div class="custom-control-label">Mercedes
+                                                <b class="badge badge-pill badge-light float-right">120</b>
+                                            </div>
+                                        </label>
+                                        <label class="custom-control custom-checkbox">
+                                            <input type="checkbox" checked="" class="custom-control-input">
+                                            <div class="custom-control-label">Toyota
+                                                <b class="badge badge-pill badge-light float-right">15</b>
+                                            </div>
+                                        </label>
+                                        <label class="custom-control custom-checkbox">
+                                            <input type="checkbox" checked="" class="custom-control-input">
+                                            <div class="custom-control-label">Mitsubishi
+                                                <b class="badge badge-pill badge-light float-right">35</b>
+                                            </div>
+                                        </label>
+                                        <label class="custom-control custom-checkbox">
+                                            <input type="checkbox" checked="" class="custom-control-input">
+                                            <div class="custom-control-label">Nissan
+                                                <b class="badge badge-pill badge-light float-right">89</b>
+                                            </div>
+                                        </label>
+                                        <label class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input">
+                                            <div class="custom-control-label">Honda
+                                                <b class="badge badge-pill badge-light float-right">30</b>
+                                            </div>
+                                        </label>
+                                    </div> <!-- card-body.// -->
+                                </form>
                             </div>
                         </article> <!-- filter-group .// -->
                         <article class="filter-group">
                             <header class="card-header">
                                 <a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
-                                    <i class="icon-control fa fa-chevron-down"></i>
+                                    <i class="icon-control fa fa-chevron-down filter-group-btn"></i>
                                     <h6 class="title">Price range </h6>
                                 </a>
                             </header>
                             <div class="filter-content collapse show" id="collapse_3">
-                                <div class="card-body">
-                                    <input type="range" class="custom-range" min="0" max="100" name="">
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label>Min</label>
-                                            <input class="form-control" placeholder="$0" type="number">
-                                        </div>
-                                        <div class="form-group text-right col-md-6">
-                                            <label>Max</label>
-                                            <input class="form-control" placeholder="$1,0000" type="number">
-                                        </div>
-                                    </div> <!-- form-row.// -->
-                                    <button class="btn btn-block btn-primary">Apply</button>
-                                </div><!-- card-body.// -->
+                                <form action="">
+                                    <div class="card-body">
+                                        <input type="range" class="custom-range" min="0" max="100" name="">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label>Min</label>
+                                                <input class="form-control" placeholder="$0" type="number">
+                                            </div>
+                                            <div class="form-group text-right col-md-6">
+                                                <label>Max</label>
+                                                <input class="form-control" placeholder="$1,0000" type="number">
+                                            </div>
+                                        </div> <!-- form-row.// -->
+                                        <button class="btn btn-block btn-primary">Apply</button>
+                                    </div><!-- card-body.// -->
+                                </form>
                             </div>
                         </article> <!-- filter-group .// -->
 
                 </aside>
                 <main class="col-md-9">
+                    <div class="row mt-3 d-flext align-items-start justify-content-end">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search for vehicles" id="search-input">
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
                     <div class="row row-cols-1 row-cols-md-3 mt-4">
                         <?php while ($row = mysqli_fetch_array($result)) { ?>
                             <div class="col mb-4">
@@ -239,9 +308,19 @@ $row3 = mysqli_fetch_array($result3);
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
                                         </div>
-                                        <?php $id=$row["vehicle_id"] ?>
+                                        <?php $id = $row["vehicle_id"] ?>
                                         <div class="d-flex flex-row justify-content-center mt-1">
-                                            <button type="button" onclick="location.href='vehicle_det_usr.php?id= <?= $id ?>'" class="btn btn-primary gradient-custom ">BOOK NOW</button>
+                                            <?php
+                                            if ($row4['verify_status'] == 1) {
+                                            ?>
+                                                <button type="button" onclick="location.href='vehicle_det_usr.php?id= <?= $id ?>'" class="btn btn-primary gradient-custom ">BOOK NOW</button>
+                                            <?php
+                                            } else {
+                                            ?>
+                                                <button type="button" id="booknver" class="btn btn-primary gradient-custom ">BOOK NOW</button>
+                                            <?php
+                                            }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>
@@ -249,9 +328,21 @@ $row3 = mysqli_fetch_array($result3);
                             </div>
                         <?php } ?>
                     </div>
-
                     <?php
-                    $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+                    // Set the number of links to display
+                    $links_limit = 5;
+                    $current_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+
+                    // Calculate the offset based on the current page
+                    $offset = max(1, $current_page - intval($links_limit / 2));
+
+                    // Calculate the maximum number of links to display
+                    $max_links = min($number_of_page, $offset + $links_limit - 1);
+
+                    // If the maximum number of links is less than the limit, adjust the offset accordingly
+                    if ($max_links - $offset + 1 < $links_limit) {
+                        $offset = max(1, $max_links - $links_limit + 1);
+                    }
                     ?>
                     <nav class="mt-4" aria-label="Page navigation sample">
                         <ul class="pagination">
@@ -261,13 +352,21 @@ $row3 = mysqli_fetch_array($result3);
                                 <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
                             <?php endif; ?>
 
-                            <?php for ($page = 1; $page <= $number_of_page; $page++) : ?>
+                            <?php if ($offset > 1) : ?>
+                                <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+                            <?php endif; ?>
+
+                            <?php for ($page = $offset; $page <= $max_links; $page++) : ?>
                                 <?php if ($page == $current_page) : ?>
                                     <li class="page-item active"><a class="page-link" href="#"><?php echo $page; ?></a></li>
                                 <?php else : ?>
                                     <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $page; ?>"><?php echo $page; ?></a></li>
                                 <?php endif; ?>
                             <?php endfor; ?>
+
+                            <?php if ($max_links < $number_of_page) : ?>
+                                <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+                            <?php endif; ?>
 
                             <?php if ($current_page < $number_of_page) : ?>
                                 <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $current_page + 1; ?>">Next</a></li>
@@ -277,10 +376,33 @@ $row3 = mysqli_fetch_array($result3);
                         </ul>
                     </nav>
 
+
                 </main>
             </div>
         </div>
     </main>
+    <button type="button" id="modal-btn1" style="display:none;" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#delModal">
+        Launch demo modal
+    </button>
+    <!-- Modal del -->
+    <div id="delModal" class="modal fade">
+        <div class="modal-dialog modal-confirm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="icon-box" style="background-color:#fa0000;">
+                        <i class="fa fa-times fa-3x"></i>
+                    </div>
+                    <h4 class="modal-title w-100">Verify your Account!</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center">Go to <a href="userprofile.php">user profile</a> then click verify user and update your details to book vehicle </p>
+                </div>
+                <div class="modal-footer d-grid d-md-flex justify-content-center">
+                    <button type="button" id="btn1" data-vehicle-id="<?= $id ?>" class="btn btn-secondary" data-mdb-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <script src='https://code.jquery.com/jquery-1.12.0.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.min.js'></script>
