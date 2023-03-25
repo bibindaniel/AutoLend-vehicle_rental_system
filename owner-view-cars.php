@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-    }
-    if ($_SESSION['logout'] == "") {
-        header("location:login.php");
-    }
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+if ($_SESSION['logout'] == "") {
+    header("location:login.php");
+}
 ?>
 
 <head>
@@ -28,6 +28,32 @@
 </head>
 
 <body>
+    <script>
+        $(document).ready(function(){
+            $('.toggle-btn').click(function(){
+                var status=$(this).text()
+                var id=$(this).data('id')
+                if(status=='Active'){
+                    $(this).removeClass('btn-success').addClass('btn-danger').text('Blocked')
+                }else{
+                    $(this).addClass('btn-success').removeClass('btn-danger').text('Active')
+
+                }
+                $.ajax({
+                    url:'availability_status_ajax.php',
+                    type: 'POST',
+                    data:{
+                        id:id,
+                        status:status
+                    },
+                    success:function(data){
+                        console.log(data);
+                    }
+
+                })
+            })
+        })
+    </script>
     <?php
     $tmp_id = $_SESSION['id'];
     $con = mysqli_connect("localhost", "root", "", "mini-prj");
@@ -38,8 +64,8 @@
     ?>
     <!--Main Navigation-->
     <?php
-        include("sidebar.php");
-        ?>
+    include("sidebar.php");
+    ?>
     <!--Main layout-->
     <main style="margin-top: 58px">
         <div class="container pt-4">
@@ -55,18 +81,31 @@
                         <?php
                         while ($row1 = mysqli_fetch_array($result1)) { ?>
                             <div class="col-lg-4 col-md-12 mb-4">
-                                <div class="bg-image hover-zoom ripple shadow-1-strong rounded" style="height: 200px; overflow: hidden;">
-                                    <img src="vehicle/<?= $row1["image1"] ?>" class="w-100 h-100 object-fit-cover" />
-                                    <a href="#!">
-                                        <div class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
-                                            <div class="d-flex justify-content-start align-items-start h-100">
-                                                <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">$<?= $row1["rate"] ?></span></h5>
+                                <div class="card">
+                                    <div class="bg-image hover-zoom ripple shadow-1-strong rounded" style="height: 200px; overflow: hidden;">
+                                        <img src="vehicle/<?= $row1["image1"] ?>" class="w-100 h-100 object-fit-cover" />
+                                        <a href="owner_edit_cars.php?id=<?=$row1['vehicle_id']?>">
+                                            <div class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
+                                                <div class="d-flex justify-content-start align-items-start h-100">
+                                                    <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">$<?= $row1["rate"] ?></span></h5>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="hover-overlay">
-                                            <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
-                                        </div>
-                                    </a>
+                                            <div class="hover-overlay">
+                                                <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="card-body d-flex align-items-start justify-content-center">
+                                        <?php
+                                        if($row1['Availability']==1){
+                                        ?>
+                                        <button class="btn btn-success toggle-btn" data-id="<?=$row1['vehicle_id']?>" style="width:100px">Active</button>
+                                        <?php }else{
+                                            ?>
+                                            <button class="btn btn-danger toggle-btn" data-id="<?=$row1['vehicle_id']?>" style="width:100px">Blocked</button>
+                                            <?php
+                                        } ?>
+                                    </div>
                                 </div>
                             </div>
                         <?php } ?>
