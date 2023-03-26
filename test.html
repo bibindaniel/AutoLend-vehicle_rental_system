@@ -7,6 +7,108 @@
     <title>Document</title>
 </head>
 <body>
-    
+    script>
+var options = {
+"key": "rzp_test_nySRUxQbtLzqmJ", // Enter the Key ID generated from the Dashboard
+"amount": "", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+"currency": "INR",
+"name": "AUTOLEND",
+"description": "Test Transaction",
+"image": "Images/Logo.png",
+"handler": function(response) {
+var paymentData = {
+requestId: ,
+amount: ,
+method: 'Razorpay',
+razorpayPaymentId: response.razorpay_payment_id
+};
+$.ajax({
+type: "POST",
+url: "process_payment.php",
+data: paymentData,
+success: function(msg) {
+// show success message or redirect user to success page
+},
+error: function() {
+// show error message or redirect user to error page
+}
+});
+},
+"prefill": {
+"name": "Gaurav Kumar",
+"email": "gaurav.kumar@example.com",
+"contact": "9000090000"
+},
+"notes": {
+"address": "Razorpay Corporate Office"
+},
+"theme": {
+"color": "#203740"
+}
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function(response) {
+alert(response.error.code);
+alert(response.error.description);
+alert(response.error.source);
+alert(response.error.step);
+alert(response.error.reason);
+alert(response.error.metadata.order_id);
+alert(response.error.metadata.payment_id);
+});
+document.getElementById('rzp-button1').onclick = function(e) {
+rzp1.open();
+e.preventDefault();
+}
+$(document).ready(function() {
+    $('.pay-button').click(function() {
+        // get the id from the button's data-id attribute
+        var itemId = $(this).data('id');
+
+        // generate the payment data
+        var options = {
+            "key": "rzp_test_nySRUxQbtLzqmJ",
+            "amount": <?= $item_prices[$itemId] * 100 ?>,
+            "currency": "INR",
+            "name": "AUTOLEND",
+            "description": "Test Transaction",
+            "image": "Images/Logo.png",
+            "handler": function(response) {
+                var paymentData = {
+                    itemId: itemId,
+                    amount: <?= $item_prices[$itemId] ?>,
+                    method: 'Razorpay',
+                    razorpayPaymentId: response.razorpay_payment_id
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "process_payment.php",
+                    data: paymentData,
+                    success: function(msg) {
+                        // show success message or redirect user to success page
+                    },
+                    error: function() {
+                        // show error message or redirect user to error page
+                    }
+                });
+            },
+            "prefill": {
+                "name": "Gaurav Kumar",
+                "email": "gaurav.kumar@example.com",
+                "contact": "9000090000"
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#203740"
+            }
+        };
+
+        // create the Razorpay object and open the checkout form
+        var rzp = new Razorpay(options);
+        rzp.open();
+    });
+})
 </body>
 </html>

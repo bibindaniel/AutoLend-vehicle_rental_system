@@ -166,7 +166,7 @@ $row3 = mysqli_fetch_array($result3);
         $results_per_page = 9;
 
         //find the total number of results stored in the database  
-        $query = "SELECT tbl_request_vehicle.*, tbl_vehicle.brand_name,tbl_vehicle.model_name,tbl_vehicle.image1,tbl_vehicle.rate
+        $query = "SELECT tbl_request_vehicle.*,tbl_vehicle.vehicle_id, tbl_vehicle.brand_name,tbl_vehicle.model_name,tbl_vehicle.image1,tbl_vehicle.rate
         FROM tbl_request_vehicle JOIN tbl_vehicle ON tbl_request_vehicle.vehicle_id=tbl_vehicle.vehicle_id WHERE tbl_request_vehicle.user_id=$tmp_id";
         $result = mysqli_query($con, $query);
         $number_of_result = mysqli_num_rows($result);
@@ -185,7 +185,7 @@ $row3 = mysqli_fetch_array($result3);
         $page_first_result = ($page - 1) * $results_per_page;
 
         //retrieve the selected results from database   
-        $query = "SELECT tbl_request_vehicle.*, tbl_vehicle.brand_name,tbl_vehicle.model_name,tbl_vehicle.image1,tbl_vehicle.rate
+        $query = "SELECT tbl_request_vehicle.*, tbl_vehicle.vehicle_id, tbl_vehicle.brand_name,tbl_vehicle.model_name,tbl_vehicle.image1,tbl_vehicle.rate
         FROM tbl_request_vehicle JOIN tbl_vehicle ON tbl_request_vehicle.vehicle_id=tbl_vehicle.vehicle_id WHERE tbl_request_vehicle.user_id=$tmp_id  LIMIT " . $page_first_result . ',' . $results_per_page;
         $result = mysqli_query($con, $query);
         if (empty($number_of_page)) : ?>
@@ -240,6 +240,11 @@ $row3 = mysqli_fetch_array($result3);
                                                 <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Accepted</span></h5>
 
                                             <?php
+                                            } else if ($row['request_status'] == 2) {
+                                            ?>
+                                                <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Booked</span></h5>
+
+                                            <?php
                                             } else {
                                             ?>
                                                 <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Rejected</span></h5>
@@ -267,7 +272,8 @@ $row3 = mysqli_fetch_array($result3);
                                 <?php
                                 if ($row['request_status'] == 1) {
                                 ?>
-                                    <button type="button" class="btn btn-success mr-3 btn-rectangle m-2 ">PAY NOW</button>
+
+                                    <button type="button" id="rzp-button1" data-id="<?= $row['request_id'] ?>" class="btn btn-success mr-3 btn-rectangle m-2 pay-button">PAY NOW</button>
 
                                 <?php
                                 }
@@ -350,7 +356,66 @@ $row3 = mysqli_fetch_array($result3);
     </div>
 </div>
 </body>
-<script src='https://code.jquery.com/jquery-1.12.0.min.js'></script>
+<script>
+    $(document).ready(function() {
+        $('.pay-button').click(function() {
+            var itemId = $(this).data('id');
+            var options = {
+                "key": "rzp_test_nySRUxQbtLzqmJ", // Enter the Key ID generated from the Dashboard
+                "amount": "<?= $total_rent * 100 ?>", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "currency": "INR",
+                "name": "Acme Corp",
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "handler": function(response) {
+                    var paymentData = {
+                        itemId: itemId,
+                        amount: <?= $total_rent ?>,
+                        razorpayPaymentId: response.razorpay_payment_id
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "process_payment.php",
+                        data: paymentData,
+                        success: function(msg) {
+                            console.log(msg)
+                            $('.badge').text('Booked');
+                            $('.pay-button').hide()
+                        },
+                        error: function() {
+                            // show error message or redirect user to error page
+                        }
+                    });
+                },
+                "prefill": {
+                    "name": "Gaurav Kumar",
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9000090000"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function(response) {
+                alert(response.error.code);
+                alert(response.error.description);
+                alert(response.error.source);
+                alert(response.error.step);
+                alert(response.error.reason);
+                alert(response.error.metadata.order_id);
+                alert(response.error.metadata.payment_id);
+            });
+            var rzp = new Razorpay(options);
+            rzp.open();
+        })
+    })
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.min.js'></script>
 <!-- MDB -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.js"></script>
