@@ -66,7 +66,7 @@ if ($_SESSION['logout'] == "") {
               <a class="nav-link" href="#!">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#!">Services</a>
+              <a class="nav-link" href="owner-dashboard.php"></i>Dashboard</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#!">Opinions</a>
@@ -82,15 +82,12 @@ if ($_SESSION['logout'] == "") {
           <div class="dropdown ">
             <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar"
               role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-              <img src="Uploads/<?php echo $row['image'] ?>" class="rounded-circle" height="25"
+              <img src="Uploads/<?php echo $row['image'] ?>" class="rounded-circle" height="35" width="35"
                 alt="profile pic" loading="lazy" />
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
               <li>
                 <a class="dropdown-item" href="userprofile.php">My profile</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="owner-dashboard.php">View dashboard</a>
               </li>
               <li>
                 <a class="dropdown-item" href="sessiondestroy.php">Logout</a>

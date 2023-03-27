@@ -61,6 +61,44 @@ if ($_SESSION['logout'] == "") {
             $(this).find('.fa-chevron-down, .fa-chevron-up').toggleClass('fa-chevron-down fa-chevron-up');
             $(this).closest('.filter-group').find('form').slideToggle();
         });
+        $(document).ready(function() {
+            // Function to fetch data and display in results div
+            function fetch_data() {
+                var action = 'fetch_data_ajax';
+                var minimum_price = '1';
+                var maximum_price = '1000';
+                var brand = get_filter('brand');
+                var status = $('#usrstat').data('usr')
+
+                $.ajax({
+                    url: "fetch_data_ajax.php",
+                    method: "POST",
+                    data: {
+                        action: action,
+                        minimum_price: minimum_price,
+                        maximum_price: maximum_price,
+                        brand: brand,
+                        status: status
+                    },
+                    success: function(data) {
+                        $(".row-cols-1").html(data);
+                    }
+                });
+            }
+
+            // Function to get selected filters
+            function get_filter(class_name) {
+                var filter = [];
+                $('.' + class_name + ':checked').each(function() {
+                    filter.push($(this).val());
+                });
+                return filter;
+            }
+            // Call fetch_data function when any filter is changed
+            $('.common_selector').change(function() {
+                fetch_data();
+            });
+        });
     });
 </script>
 <?php
@@ -78,65 +116,7 @@ $usr_stat = $row4['verify_status']
 ?>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light solid-nav">
-        <!-- Container wrapper -->
-        <div class="container-fluid">
-            <!-- Toggle button -->
-            <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-
-            <!-- Collapsible wrapper -->
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <!-- Navbar brand -->
-                <a class="navbar-brand" href="#"> <img src="Images/Logo.png" class="me-2" height="50" alt="AutoLend Logo" loading="lazy" />
-                    <small class="ms-2 text-light">AutoLend</small></a>
-                <!-- Left links -->
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="lpage.php">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#!">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="#!">Services</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#!">Opinions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#!">Contact</a>
-                        </li>
-                    </ul>
-
-                    <!-- Collapsible wrapper -->
-
-                    <!-- Avatar -->
-                    <div class="dropdown ">
-                        <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                            <img src="Uploads/<?php echo $row3['image'] ?>" class="rounded-circle" height="25" alt="profile pic" loading="lazy" />
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
-                            <li>
-                                <a class="dropdown-item" href="userprofile.php">My profile</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">View Booking</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="sessiondestroy.php">Logout</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- Right elements -->
-            </div>
-            <!-- Container wrapper -->
-    </nav>
-    <!-- Navbar -->
+    <?php include "navbar_renter.php"; ?>
     <?php
     $results_per_page = 9;
 
@@ -169,8 +149,8 @@ $usr_stat = $row4['verify_status']
                 <aside class="col-md-3">
                     <div class="card">
                         <?php
-                         $sql="SELECT * FROM `tbl_vehicle_category`";
-                         $res=mysqli_query($con, $sql);
+                        $sql = "SELECT * FROM `tbl_vehicle_category`";
+                        $res = mysqli_query($con, $sql);
                         ?>
                         <article class="filter-group">
                             <header class="card-header">
@@ -183,12 +163,12 @@ $usr_stat = $row4['verify_status']
                                 <form action="">
                                     <div class="card-body">
                                         <?php
-                                         while($cat=mysqli_fetch_array($res)) {
+                                        while ($cat = mysqli_fetch_array($res)) {
                                         ?>
-                                        <label class="custom-control custom-checkbox">
-                                            <input type="checkbox"  class="custom-control-input" value="<?=$cat['category_name'] ?>">
-                                            <div class="custom-control-label"><?=$cat['category_name'] ?></div>
-                                        </label>
+                                            <label class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input common_selector cat" name="cat" value="<?= $cat['category_name'] ?>">
+                                                <div class="custom-control-label"><?= $cat['category_name'] ?></div>
+                                            </label>
                                         <?php } ?>
                                     </div> <!-- card-body.// -->
                                 </form>
@@ -201,39 +181,23 @@ $usr_stat = $row4['verify_status']
                                     <h6 class="title">Brands </h6>
                                 </a>
                             </header>
+                            <?php
+                            $sql1 = "SELECT DISTINCT `brand_name` FROM `tbl_vehicle`    ";
+                            $res1 = mysqli_query($con, $sql1);
+                            ?>
                             <div class="filter-content collapse show" id="collapse_2">
                                 <form>
                                     <div class="card-body">
-                                        <label class="custom-control custom-checkbox">
-                                            <input type="checkbox" checked="" class="custom-control-input">
-                                            <div class="custom-control-label">Mercedes
-                                                <b class="badge badge-pill badge-light float-right">120</b>
-                                            </div>
-                                        </label>
-                                        <label class="custom-control custom-checkbox">
-                                            <input type="checkbox" checked="" class="custom-control-input">
-                                            <div class="custom-control-label">Toyota
-                                                <b class="badge badge-pill badge-light float-right">15</b>
-                                            </div>
-                                        </label>
-                                        <label class="custom-control custom-checkbox">
-                                            <input type="checkbox" checked="" class="custom-control-input">
-                                            <div class="custom-control-label">Mitsubishi
-                                                <b class="badge badge-pill badge-light float-right">35</b>
-                                            </div>
-                                        </label>
-                                        <label class="custom-control custom-checkbox">
-                                            <input type="checkbox" checked="" class="custom-control-input">
-                                            <div class="custom-control-label">Nissan
-                                                <b class="badge badge-pill badge-light float-right">89</b>
-                                            </div>
-                                        </label>
-                                        <label class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input">
-                                            <div class="custom-control-label">Honda
-                                                <b class="badge badge-pill badge-light float-right">30</b>
-                                            </div>
-                                        </label>
+                                        <?php
+                                        while ($brand = mysqli_fetch_array($res1)) {
+                                        ?>
+                                            <label class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input common_selector brand" name="brand[]" value="<?= $brand['brand_name'] ?>">
+                                                <div class="custom-control-label "><?= $brand['brand_name'] ?>
+                                                    <b class="badge badge-pill badge-light float-right">120</b>
+                                                </div>
+                                            </label>
+                                        <?php } ?>
                                     </div> <!-- card-body.// -->
                                 </form>
                             </div>

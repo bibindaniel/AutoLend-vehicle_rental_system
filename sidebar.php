@@ -59,12 +59,17 @@
                     <img src="images/Logo.png" height="45" alt="" loading="lazy" />
                     <small class="ms-2 text-light">AutoLend</small></a>
                 </a>
-                <small class="h3 text-light font-weight-bold text-align-center">DashBoard</small></a>
-
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active text-light" href="l-car-owner-page.php">Home</a>
+                        </li>
+                    </ul>
+                </div>
                 <!-- Avatar -->
                 <div class="dropdown ">
                     <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                        <img src="Uploads/<?php echo $row['image'] ?>" class="rounded-circle" height="25" alt="profile pic" loading="lazy" />
+                        <img src="Uploads/<?php echo $row['image'] ?>" class="rounded-circle" height="35" width="35" alt="profile pic" loading="lazy" />
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                         <li>
