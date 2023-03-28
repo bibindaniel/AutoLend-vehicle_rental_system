@@ -88,45 +88,6 @@ if ($_SESSION['logout'] == "") {
                 }
             });
         });
-        $(".recieve").click(function(){
-            var id=$(this).data('id')
-            $.ajax({
-                url: "update_booking_status.php",
-                type: "POST",
-                data: {
-                    booking_id: id
-                },
-                cache: false,
-                success: function(response) {
-                    location.reload();
-                },
-                error: function(XMLHttpRequest, textStatus, errorThrown) {
-                    // Error message
-                    alert("Error: " + errorThrown);
-                }
-            });
-        })
-        $(".return").click(function(){
-            var id=$(this).data('id')
-            var vid=$('.card-title').data('vid')
-            alert(vid)
-            $.ajax({
-                url: "return_vehicle_ajax.php",
-                type: "POST",
-                data: {
-                    vehicle_id: vid,
-                    booking_id: id
-                },
-                cache: false,
-                success: function(response) {
-                    location.reload();
-                },
-                error: function(XMLHttpRequest, textStatus, errorThrown) {
-                    // Error message
-                    alert("Error: " + errorThrown);
-                }
-            });
-        })
     })
 </script>
 <?php
@@ -141,14 +102,14 @@ include "navbar_renter.php";
 <!-- Main Content -->
 <main>
     <div class="container my-5">
-        <h2 class="fw-bold mb-4">View Bookings</h2>
+        <h2 class="fw-bold mb-4">View Request</h2>
         <hr>
         <?php
         $results_per_page = 9;
 
         //find the total number of results stored in the database  
-        $query = "SELECT tbl_vehicle_booking.*,tbl_vehicle.vehicle_id, tbl_vehicle.brand_name,tbl_vehicle.model_name,tbl_vehicle.image1,tbl_vehicle.rate
-        FROM tbl_vehicle_booking JOIN tbl_vehicle ON tbl_vehicle_booking.vehicle_id=tbl_vehicle.vehicle_id WHERE tbl_vehicle_booking.user_id=$tmp_id";
+        $query = "SELECT tbl_request_vehicle.*,tbl_vehicle.vehicle_id, tbl_vehicle.brand_name,tbl_vehicle.model_name,tbl_vehicle.image1,tbl_vehicle.rate
+        FROM tbl_request_vehicle JOIN tbl_vehicle ON tbl_request_vehicle.vehicle_id=tbl_vehicle.vehicle_id WHERE tbl_request_vehicle.user_id=$tmp_id";
         $result = mysqli_query($con, $query);
         $number_of_result = mysqli_num_rows($result);
 
@@ -166,8 +127,8 @@ include "navbar_renter.php";
         $page_first_result = ($page - 1) * $results_per_page;
 
         //retrieve the selected results from database   
-        $query = "SELECT tbl_vehicle_booking.*, tbl_vehicle.vehicle_id, tbl_vehicle.brand_name,tbl_vehicle.model_name,tbl_vehicle.image1,tbl_vehicle.rate
-        FROM tbl_vehicle_booking JOIN tbl_vehicle ON tbl_vehicle_booking.vehicle_id=tbl_vehicle.vehicle_id WHERE tbl_vehicle_booking.user_id=$tmp_id  LIMIT " . $page_first_result . ',' . $results_per_page;
+        $query = "SELECT tbl_request_vehicle.*, tbl_vehicle.vehicle_id, tbl_vehicle.brand_name,tbl_vehicle.model_name,tbl_vehicle.image1,tbl_vehicle.rate
+        FROM tbl_request_vehicle JOIN tbl_vehicle ON tbl_request_vehicle.vehicle_id=tbl_vehicle.vehicle_id WHERE tbl_request_vehicle.user_id=$tmp_id  LIMIT " . $page_first_result . ',' . $results_per_page;
         $result = mysqli_query($con, $query);
         if (empty($number_of_page)) : ?>
             <div class="alert alert-warning text-center mt-5" role="alert">
@@ -208,7 +169,33 @@ include "navbar_renter.php";
                                 <img src="vehicle/<?= $row['image1'] ?>" class="w-100 h-100 object-fit-cover" />
                                 <?php $id = $row['vehicle_id'] ?>
                                 <a href="vehicle_det_usr.php?id= <?= $id ?>">
+                                    <div class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
+                                        <div class=" px-1 d-flex justify-content-end align-items-start h-100">
+                                            <?php
+                                            if ($row['request_status'] == 0) {
+                                            ?>
+                                                <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Pending</span></h5>
 
+                                            <?php
+                                            } else if ($row['request_status'] == 1) {
+                                            ?>
+                                                <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Accepted</span></h5>
+
+                                            <?php
+                                            } else if ($row['request_status'] == 2) {
+                                            ?>
+                                                <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Booked</span></h5>
+
+                                            <?php
+                                            } else {
+                                            ?>
+                                                <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Rejected</span></h5>
+
+                                            <?php
+                                            }
+                                            ?>
+                                        </div>
+                                    </div>
                                     <div class="hover-overlay">
                                         <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);">
                                         </div>
@@ -216,25 +203,21 @@ include "navbar_renter.php";
                                 </a>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title" data-vid="<?=$row['vehicle_id']?>">Booked vehicle</h5>
+                                <h5 class="card-title">Booking Request</h5>
                                 <p class="card-text"><strong>Vehicle:</strong> <?= $row['brand_name'] ?> <?= $row['model_name'] ?></p>
                                 <p class="card-text"><strong>Dates:</strong> <?= $row['start_date'] ?> - <?= $row['end_date'] ?></p>
                                 <p class="card-text"><strong>Pick-up Location:</strong> <?= $row['drop_in_location'] ?> <?= $row['drop_in_time'] ?></p>
                                 <p class="card-text"><strong>Drop-off Location:</strong> <?= $row['drop_of_location'] ?> <?= $row['drop_of_time'] ?></p>
                                 <p class="card-text"><strong>Total Amount:</strong><?= $total_rent ?></p>
                                 <input type="hidden" name="hidden" id="hid" data-user-id="<?= $tmp_id ?>">
-
+                                <button type="button" class="btn btn-danger btn-rectangle m-2">cancel</button>
                                 <?php
-                                if ($row['booking_status'] == 1) {
+                                if ($row['request_status'] == 1) {
                                 ?>
-                                    <button type="button" class="btn btn-danger btn-rectangle m-2">cancel</button>
-                                    <button type="button" data-id="<?=$row['booking_id']?>" class="btn btn-success btn-rectangle m-2 recieve">recieve Vehicle</button>
+
+                                    <button type="button" id="rzp-button1" data-id="<?= $row['request_id'] ?>" class="btn btn-success mr-3 btn-rectangle m-2 pay-button">PAY NOW</button>
 
                                 <?php
-                                }else if($row['booking_status'] == 2){
-                                    ?>
-                                    <button type="button" data-id="<?=$row['booking_id']?>" class="btn btn-success btn-rectangle m-2 return">return Vehicle</button>
-                                    <?php
                                 }
                                 ?>
                             </div>
@@ -315,6 +298,65 @@ include "navbar_renter.php";
     </div>
 </div>
 </body>
+<script>
+    $(document).ready(function() {
+        $('.pay-button').click(function() {
+            var itemId = $(this).data('id');
+            var options = {
+                "key": "rzp_test_nySRUxQbtLzqmJ", // Enter the Key ID generated from the Dashboard
+                "amount": "<?= $total_rent * 100 ?>", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "currency": "INR",
+                "name": "AUTOLEND",
+                "description": "Test Transaction",
+                "image": "Images/Logo.png",
+                "handler": function(response) {
+                    var paymentData = {
+                        itemId: itemId,
+                        amount: <?= $total_rent ?>,
+                        razorpayPaymentId: response.razorpay_payment_id
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "process_payment.php",
+                        data: paymentData,
+                        success: function(msg) {
+                            console.log(msg)
+                            $('.badge').text('Booked');
+                            $('.pay-button').hide()
+                        },
+                        error: function() {
+                            // show error message or redirect user to error page
+                        }
+                    });
+                },
+                "prefill": {
+                    "name": "Gaurav Kumar",
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9000090000"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function(response) {
+                alert(response.error.code);
+                alert(response.error.description);
+                alert(response.error.source);
+                alert(response.error.step);
+                alert(response.error.reason);
+                alert(response.error.metadata.order_id);
+                alert(response.error.metadata.payment_id);
+            });
+            var rzp = new Razorpay(options);
+            rzp.open();
+        })
+    })
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.min.js'></script>
 <!-- MDB -->

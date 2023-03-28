@@ -99,6 +99,29 @@ if ($_SESSION['logout'] == "") {
             });
         });
     });
+    $(document).ready(function() {
+        $("#stdate").on("change", function() {
+            var start_date = $(this).val();
+            var vid=$('#btn1').data('vehicle-id')
+            $.ajax({
+                url: "check_dates.php",
+                type: "POST",
+                data: {
+                    start_date: start_date,
+                    vehicleID:vid
+                },
+                dataType: "json",
+                success: function(result) {
+                    if (result.status === "error") {
+                        $("#modal-btn2").click();
+                        $("#stdate").val("");
+                    } else {
+                        $("#stdate1").text("");
+                    }
+                }
+            });
+        });
+    });
 </script>
 <?php
 $tmp_id = $_SESSION['id'];
@@ -110,7 +133,7 @@ $row3 = mysqli_fetch_array($result3);
 
 <body>
     <?php
-     include "navbar_renter.php";
+    include "navbar_renter.php";
     $id = $_GET["id"];
     $con = mysqli_connect("localhost", "root", "", "mini-prj");
     $query = "SELECT * FROM `tbl_vehicle` WHERE `vehicle_id`=$id";
@@ -128,6 +151,18 @@ $row3 = mysqli_fetch_array($result3);
     $result3 = mysqli_query($con, $query3);
     $query4 = "SELECT * FROM `tbl_available_time` WHERE `vehicle_id` =$id";
     $result4 = mysqli_query($con, $query4);
+    $sql = "SELECT * FROM `tbl_request_vehicle` WHERE `user_id`=$tmp_id AND `vehicle_id`=$id";
+    $result5 = mysqli_query($con, $sql);
+    $req = mysqli_fetch_array($result5);
+    $sql2 = "SELECT start_date,end_date FROM tbl_request_vehicle
+    UNION
+    SELECT start_date,end_date FROM tbl_vehicle_booking";
+    $result6 = mysqli_query($con, $sql2);
+    $blocked_dates = array();
+
+    while ($row7 = mysqli_fetch_assoc($result6)) {
+        $blocked_dates[] = $row;
+    }
 
     ?>
     <div class="container-fluid">
@@ -174,7 +209,7 @@ $row3 = mysqli_fetch_array($result3);
                                 <div class="row m-0 bg-light">
                                     <div class="d-flex align-items-end px-4 mt-4 mb-2">
                                         <p class="h4 m-0"><span class="pe-1"><?= $row["brand_name"] ?></span><span class="pe-1"><?= $row["model_name"] ?></span><span class="pe-1"><?= $row["year"] ?></span></p>
-                                        <P class="ps-3 textmuted">1L</P>
+                                        <P class="ps-3 textmuted"><?= $row["rate"] ?></P>
                                     </div>
                                     <div class="d-flex align-items-center  mt-4 mb-2">
                                         <p class="text-dark">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Neque tempore mollitia, iste soluta voluptate at voluptatibus magnam harum architecto omnis, ratione blanditiis nam distinctio quidem </p>
@@ -289,19 +324,19 @@ $row3 = mysqli_fetch_array($result3);
                         <div class="row justify-content-center px-5">
                             <div class="col-md-4 mb-4 m-4 px-5 mt-1">
                                 <?php
-                                if ($row["booking_status"] == 'available') {
+                                if (mysqli_num_rows($result5) == 0) {
                                 ?>
                                     <button type="submit" class=" btn btn-success green_clr" id="bookbtn" name="sub">BOOK NOW</button>
 
                                 <?php
-                                } else if ($row["booking_status"] == 'Requested') {
-                                ?>
-                                    <button type="submit" class=" btn btn-success green_clr" id="bookbtn" name="sub">Requested</button>
-
-                                <?php
-                                } else {
+                                } else if ($req['request_status'] == 2) {
                                 ?>
                                     <button type="submit" class=" btn btn-success green_clr" id="bookbtn" name="sub">Booked</button>
+
+                                <?php
+                                } else if ($req['request_status'] == 1 || $req['request_status'] == 0) {
+                                ?>
+                                    <button type="submit" class=" btn btn-success green_clr" id="bookbtn" name="sub">Requested</button>
                                 <?php
                                 }
                                 ?>
@@ -328,6 +363,28 @@ $row3 = mysqli_fetch_array($result3);
                 </div>
                 <div class="modal-body">
                     <p class="text-center">Are you sure? Do you want to cancel your request!..</p>
+                </div>
+                <div class="modal-footer d-grid d-md-flex justify-content-center">
+                    <button type="button" id="btn1" data-vehicle-id="<?= $id ?>" class="btn btn-secondary" data-mdb-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="button" id="modal-btn2" style="display:none;" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#dateModal">
+        Launch demo modal
+    </button>
+    <!-- Modal del -->
+    <div id="dateModal" class="modal fade">
+        <div class="modal-dialog modal-confirm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="icon-box" style="background-color:#fa0000;">
+                        <i class="fa fa-times fa-3x"></i>
+                    </div>
+                    <h4 class="modal-title w-100">Oops!</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center">"The vehicle is already booked on this day. Please choose other dates!"</p>
                 </div>
                 <div class="modal-footer d-grid d-md-flex justify-content-center">
                     <button type="button" id="btn1" data-vehicle-id="<?= $id ?>" class="btn btn-secondary" data-mdb-dismiss="modal">OK</button>

@@ -68,6 +68,7 @@ if ($_SESSION['logout'] == "") {
                 var minimum_price = '1';
                 var maximum_price = '1000';
                 var brand = get_filter('brand');
+                var cat=get_filter('cat')
                 var status = $('#usrstat').data('usr')
 
                 $.ajax({
@@ -78,6 +79,7 @@ if ($_SESSION['logout'] == "") {
                         minimum_price: minimum_price,
                         maximum_price: maximum_price,
                         brand: brand,
+                        cat:cat,
                         status: status
                     },
                     success: function(data) {
@@ -121,7 +123,7 @@ $usr_stat = $row4['verify_status']
     $results_per_page = 9;
 
     //find the total number of results stored in the database  
-    $query = "SELECT *FROM `tbl_vehicle` where `status`= 1 AND `booking_status`='available'";
+    $query = "SELECT *FROM `tbl_vehicle` where `status`= 1 ";
     $result = mysqli_query($con, $query);
     $number_of_result = mysqli_num_rows($result);
 
@@ -139,7 +141,7 @@ $usr_stat = $row4['verify_status']
     $page_first_result = ($page - 1) * $results_per_page;
 
     //retrieve the selected results from database   
-    $query = "SELECT *FROM `tbl_vehicle` where `status`= 1 AND `booking_status`='available'  LIMIT " . $page_first_result . ',' . $results_per_page;
+    $query = "SELECT *FROM `tbl_vehicle` where `status`= 1   LIMIT " . $page_first_result . ',' . $results_per_page;
     $result = mysqli_query($con, $query);
     ?>
     <main>
@@ -166,7 +168,7 @@ $usr_stat = $row4['verify_status']
                                         while ($cat = mysqli_fetch_array($res)) {
                                         ?>
                                             <label class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input common_selector cat" name="cat" value="<?= $cat['category_name'] ?>">
+                                                <input type="checkbox" class="custom-control-input common_selector cat" name="cat" value="<?= $cat['category_id'] ?>">
                                                 <div class="custom-control-label"><?= $cat['category_name'] ?></div>
                                             </label>
                                         <?php } ?>

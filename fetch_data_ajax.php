@@ -8,12 +8,19 @@ if (isset($_POST["action"]) && $_POST["action"] == "fetch_data_ajax") {
     if(isset($_POST["brand"]) && is_array($_POST["brand"])) {
         $brand_filter = implode("','", $_POST["brand"]);
     }
+    if(isset($_POST["cat"]) && is_array($_POST["cat"])) {
+        $cat_filter = implode("','", $_POST["cat"]);
+    }
     // Build SQL query based on filters
     $query = " SELECT * FROM tbl_vehicle WHERE status = 1 AND booking_status = 'available' 
  ";
     if (!empty($brand_filter)) {
         
         $query .= " AND brand_name IN ('$brand_filter')";
+    }
+    if (!empty($cat_filter)) {
+        
+        $query .= " AND category_id IN ('$cat_filter')";
     }
 
     // $query .= " AND price BETWEEN '" . $minimum_price . "' AND '" . $maximum_price . "'";

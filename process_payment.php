@@ -18,6 +18,11 @@ $row=mysqli_fetch_array($res);
 $v_id=$row["vehicle_id"];
 $sql="UPDATE `tbl_vehicle` SET `booking_status`='Booked' WHERE `vehicle_id`=$v_id";
 $res=mysqli_query($conn,$sql);
+$sql="INSERT INTO tbl_vehicle_booking 
+(user_id, vehicle_id, start_date, end_date, drop_in_location, drop_in_time, drop_of_location, drop_of_time) 
+SELECT user_id, vehicle_id, start_date, end_date, drop_in_location, drop_in_time, drop_of_location, drop_of_time 
+FROM tbl_request_vehicle WHERE request_id = $id";
+$res=mysqli_query($conn,$sql);
  if($res){
     echo"success";
  }
