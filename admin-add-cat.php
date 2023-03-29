@@ -82,7 +82,7 @@ if ($_SESSION['logout'] == "") {
                     $('#btn-modal').attr("disabled", false);
                 }
             });
-            $('.toggle-status').click(function(e) {
+            $(document).on('click','.toggle-status',function(e) {
                 e.preventDefault();
                 var userId = $(this).data('user-id');
                 var statusElm = $('.user-status[data-user-id="' + userId + '"]');

@@ -38,7 +38,7 @@
                     <a href="owner-view-request.php" class="list-group-item list-group-item-action py-2 ripple <?php if (basename($_SERVER['PHP_SELF']) == "owner-view-request.php") {
                                                                                                                     echo " active";
                                                                                                                 } ?>"><i class="fas fa-bell fa-fw me-3"></i><span>View Request</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple <?php if (basename($_SERVER['PHP_SELF']) == "") {
+                    <a href="owner_view_bookings.php" class="list-group-item list-group-item-action py-2 ripple <?php if (basename($_SERVER['PHP_SELF']) == "owner_view_bookings.php") {
                                                                                                 echo " active";
                                                                                             } ?>"><i class="fas fa-address-book fa-fw me-3"></i><span>View Bookings</span></a>
                 </div>

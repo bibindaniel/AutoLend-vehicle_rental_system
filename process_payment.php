@@ -23,6 +23,11 @@ $sql="INSERT INTO tbl_vehicle_booking
 SELECT user_id, vehicle_id, start_date, end_date, drop_in_location, drop_in_time, drop_of_location, drop_of_time 
 FROM tbl_request_vehicle WHERE request_id = $id";
 $res=mysqli_query($conn,$sql);
+$book_id=mysqli_insert_id($conn);
+$sql="UPDATE `tbl_payment` SET `request_id`='$book_id' WHERE `request_id`=$id";
+mysqli_query($conn,$sql);
+$del_req="DELETE  FROM `tbl_request_vehicle` WHERE request_id = $id";
+$result=mysqli_query($conn,$del_req);
  if($res){
     echo"success";
  }

@@ -45,7 +45,7 @@ if ($_SESSION['logout'] == "") {
                     [5, 10, 20, 'Todos']
                 ]
             })
-            $('.ver_btn').click(function(e) {
+            $(document).on('click','.ver_btn',function(e) {
                 e.preventDefault();
                 var userId = $(this).data('vehicle-id');
                 var status = $(this).text()

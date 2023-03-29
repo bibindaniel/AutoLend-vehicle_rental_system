@@ -246,7 +246,7 @@ include "navbar_renter.php";
     <nav class="mt-4" aria-label="Page navigation sample">
         <ul class="pagination">
             <?php if ($current_page > 1) : ?>
-                <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $current_page - 1; ?>">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="view_request_vehicle.php?page=<?php echo $current_page - 1; ?>">Previous</a></li>
             <?php else : ?>
                 <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
             <?php endif; ?>
@@ -323,6 +323,7 @@ include "navbar_renter.php";
                             console.log(msg)
                             $('.badge').text('Booked');
                             $('.pay-button').hide()
+                            window.location.href="view_bookings.php"
                         },
                         error: function() {
                             // show error message or redirect user to error page

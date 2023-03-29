@@ -37,7 +37,7 @@ if ($_SESSION['logout'] == "") {
 <body>
     <script>
         $(document).ready(function() {
-            $("#btn").click(function() {
+            $(document).on('click',"#btn",function() {
                 $('#exampleModal').modal('toggle')
             })
             var table = $('#mytable').DataTable({
@@ -50,7 +50,7 @@ if ($_SESSION['logout'] == "") {
             })
             $(document).ready(function() {
                 // toggle user status
-                $('.toggle-status1').click(function(e) {
+                $(document).on('click','.toggle-status1',function(e) {
                     e.preventDefault();
                     var userId = $(this).data('user-id');
                     var statusElm = $('.user-v-status[data-user-id="' + userId + '"]');
@@ -89,7 +89,7 @@ if ($_SESSION['logout'] == "") {
             });
             $(document).ready(function() {
                 // toggle user status
-                $('.toggle-status').click(function(e) {
+                $(document).on('click', '.toggle-status', function(e) {
                     e.preventDefault();
                     var userId = $(this).data('user-id');
                     var statusElm = $('.user-status[data-user-id="' + userId + '"]');
@@ -118,7 +118,7 @@ if ($_SESSION['logout'] == "") {
                     });
                 });
             });
-            $('.view-btn').click(function(e) {
+            $(document).on('click','.view-btn',function(e) {
                 e.preventDefault();
                 var userId = $(this).data('user-id');
                 console.log("Triggering")

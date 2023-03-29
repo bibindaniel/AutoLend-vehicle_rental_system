@@ -109,7 +109,6 @@ if ($_SESSION['logout'] == "") {
         $(".return").click(function(){
             var id=$(this).data('id')
             var vid=$('.card-title').data('vid')
-            alert(vid)
             $.ajax({
                 url: "return_vehicle_ajax.php",
                 type: "POST",
@@ -235,6 +234,10 @@ include "navbar_renter.php";
                                     ?>
                                     <button type="button" data-id="<?=$row['booking_id']?>" class="btn btn-success btn-rectangle m-2 return">return Vehicle</button>
                                     <?php
+                                }else{
+                                    ?>
+                                    <button type="button" class="btn btn-success btn-rectangle m-2 ">Service Completed</button>
+                                    <?php 
                                 }
                                 ?>
                             </div>
@@ -263,7 +266,7 @@ include "navbar_renter.php";
     <nav class="mt-4" aria-label="Page navigation sample">
         <ul class="pagination">
             <?php if ($current_page > 1) : ?>
-                <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $current_page - 1; ?>">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="view_bookings.php?page=<?php echo $current_page - 1; ?>">Previous</a></li>
             <?php else : ?>
                 <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
             <?php endif; ?>
@@ -276,7 +279,7 @@ include "navbar_renter.php";
                 <?php if ($page == $current_page) : ?>
                     <li class="page-item active"><a class="page-link" href="#"><?php echo $page; ?></a></li>
                 <?php else : ?>
-                    <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $page; ?>"><?php echo $page; ?></a></li>
+                    <li class="page-item"><a class="page-link" href="view_bookings.php?page=<?php echo $page; ?>"><?php echo $page; ?></a></li>
                 <?php endif; ?>
             <?php endfor; ?>
 
@@ -285,7 +288,7 @@ include "navbar_renter.php";
             <?php endif; ?>
 
             <?php if ($current_page < $number_of_page) : ?>
-                <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $current_page + 1; ?>">Next</a></li>
+                <li class="page-item"><a class="page-link" href="view_bookings.php?page=<?php echo $current_page + 1; ?>">Next</a></li>
             <?php else : ?>
                 <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
             <?php endif; ?>

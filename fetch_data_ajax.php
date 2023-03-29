@@ -5,29 +5,38 @@ if (isset($_POST["action"]) && $_POST["action"] == "fetch_data_ajax") {
     $maximum_price = $_POST["maximum_price"];
     $status = $_POST['status'];
     $brand_filter = '';
-    if(isset($_POST["brand"]) && is_array($_POST["brand"])) {
+    if (isset($_POST["brand"]) && is_array($_POST["brand"])) {
         $brand_filter = implode("','", $_POST["brand"]);
     }
-    if(isset($_POST["cat"]) && is_array($_POST["cat"])) {
+    if (isset($_POST["cat"]) && is_array($_POST["cat"])) {
         $cat_filter = implode("','", $_POST["cat"]);
     }
     // Build SQL query based on filters
     $query = " SELECT * FROM tbl_vehicle WHERE status = 1 AND booking_status = 'available' 
  ";
     if (!empty($brand_filter)) {
-        
         $query .= " AND brand_name IN ('$brand_filter')";
     }
     if (!empty($cat_filter)) {
-        
         $query .= " AND category_id IN ('$cat_filter')";
     }
+    if (isset($_POST["minimum_price"], $_POST["maximum_price"]) && !empty($_POST["minimum_price"]) && !empty($_POST["maximum_price"])) {
+        $query .= " AND rate BETWEEN '" . $_POST["minimum_price"] . "' AND '" . $_POST["maximum_price"] . "'";
+    }
 
-    // $query .= " AND price BETWEEN '" . $minimum_price . "' AND '" . $maximum_price . "'";
+    // Get the current page number
+    $page = isset($_POST['page']) ? $_POST['page'] : 1;
+
+
+    // Calculate the limit and offset values for the query
+    $results_per_page = 9;
+    $limit = ($page - 1) * $results_per_page;
+    $query .= " LIMIT $limit, $results_per_page";
 
     // Execute SQL query
     $result = mysqli_query($conn, $query);
     $total_row = mysqli_num_rows($result);
+
 
     if ($total_row > 0) {
         while ($row = mysqli_fetch_array($result)) {

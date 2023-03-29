@@ -85,6 +85,9 @@ if ($_SESSION['logout'] == "") {
                 <a class="dropdown-item" href="userprofile.php">My profile</a>
               </li>
               <li>
+                <a class="dropdown-item" href="view_request_vehicle.php">View Request</a>
+              </li>
+              <li>
                 <a class="dropdown-item" href="view_bookings.php">View Booking</a>
               </li>
               <li>

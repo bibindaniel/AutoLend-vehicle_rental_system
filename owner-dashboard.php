@@ -168,6 +168,9 @@ if ($_SESSION['logout'] == "") {
             $query1 = "SELECT * FROM `tbl_vehicle` WHERE `user_id` =  $tmp_id";
             $result1 = mysqli_query($con, $query1);
             $count=mysqli_num_rows($result1);
+            $query1 = "SELECT * FROM `tbl_vehicle` WHERE `user_id` =  $tmp_id";
+            $result1 = mysqli_query($con, $query1);
+            $count2=mysqli_num_rows($result1);
             ?>
     <!--Main layout-->
     <main style="margin-top: 58px">

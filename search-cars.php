@@ -34,7 +34,7 @@ if ($_SESSION['logout'] == "") {
 </style>
 <script>
     $(document).ready(function() {
-        $('#booknver').click(function() {
+        $('.booknver').click(function() {
             $("#modal-btn1").click();
         })
     });
@@ -63,13 +63,17 @@ if ($_SESSION['logout'] == "") {
         });
         $(document).ready(function() {
             // Function to fetch data and display in results div
-            function fetch_data() {
+            function fetch_data(page) {
                 var action = 'fetch_data_ajax';
-                var minimum_price = '1';
-                var maximum_price = '1000';
+                var minimum_price = $('.min').val();
+                var maximum_price = $('.max').val();
                 var brand = get_filter('brand');
-                var cat=get_filter('cat')
-                var status = $('#usrstat').data('usr')
+                var cat = get_filter('cat');
+                var status = $('#usrstat').data('usr');
+
+                // Get current page from URL
+                var searchParams = new URLSearchParams(window.location.search);
+                var currentPage = searchParams.get('page');
 
                 $.ajax({
                     url: "fetch_data_ajax.php",
@@ -79,14 +83,16 @@ if ($_SESSION['logout'] == "") {
                         minimum_price: minimum_price,
                         maximum_price: maximum_price,
                         brand: brand,
-                        cat:cat,
-                        status: status
+                        cat: cat,
+                        status: status,
+                        page: currentPage // Pass current page to server
                     },
                     success: function(data) {
                         $(".row-cols-1").html(data);
                     }
                 });
             }
+
 
             // Function to get selected filters
             function get_filter(class_name) {
@@ -123,7 +129,7 @@ $usr_stat = $row4['verify_status']
     $results_per_page = 9;
 
     //find the total number of results stored in the database  
-    $query = "SELECT *FROM `tbl_vehicle` where `status`= 1 ";
+    $query = "SELECT *FROM `tbl_vehicle` where `status`= 1 AND `Availability`=1 ";
     $result = mysqli_query($con, $query);
     $number_of_result = mysqli_num_rows($result);
 
@@ -141,7 +147,7 @@ $usr_stat = $row4['verify_status']
     $page_first_result = ($page - 1) * $results_per_page;
 
     //retrieve the selected results from database   
-    $query = "SELECT *FROM `tbl_vehicle` where `status`= 1   LIMIT " . $page_first_result . ',' . $results_per_page;
+    $query = "SELECT *FROM `tbl_vehicle` where `status`= 1 AND `Availability`=1  LIMIT " . $page_first_result . ',' . $results_per_page;
     $result = mysqli_query($con, $query);
     ?>
     <main>
@@ -184,7 +190,7 @@ $usr_stat = $row4['verify_status']
                                 </a>
                             </header>
                             <?php
-                            $sql1 = "SELECT DISTINCT `brand_name` FROM `tbl_vehicle`    ";
+                            $sql1 = "SELECT DISTINCT `brand_name` FROM `tbl_vehicle` where `status`= 1 AND `Availability`=1 ";
                             $res1 = mysqli_query($con, $sql1);
                             ?>
                             <div class="filter-content collapse show" id="collapse_2">
@@ -214,18 +220,18 @@ $usr_stat = $row4['verify_status']
                             <div class="filter-content collapse show" id="collapse_3">
                                 <form action="">
                                     <div class="card-body">
-                                        <input type="range" class="custom-range" min="0" max="100" name="">
+                                        <!-- <input type="range" class="custom-range" min="0" max="100" name=""> -->
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label>Min</label>
-                                                <input class="form-control" placeholder="$0" type="number">
+                                                <input class="form-control common_selector min" placeholder="$500" min="500" type="number">
                                             </div>
                                             <div class="form-group text-right col-md-6">
                                                 <label>Max</label>
-                                                <input class="form-control" placeholder="$1,0000" type="number">
+                                                <input class="form-control common_selector max" placeholder="$1,0000" min="500" type="number">
                                             </div>
                                         </div> <!-- form-row.// -->
-                                        <button class="btn btn-block btn-primary">Apply</button>
+                                        <!-- <button class="btn btn-block btn-primary">Apply</button> -->
                                     </div><!-- card-body.// -->
                                 </form>
                             </div>
@@ -251,7 +257,7 @@ $usr_stat = $row4['verify_status']
                                         <a href="#!">
                                             <div class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
                                                 <div class="d-flex justify-content-start align-items-start h-100">
-                                                    <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark"><?= $row["rate"] ?></span></h5>
+                                                    <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark"><i class="fa fa-rupee"></i> <?= $row["rate"] ?>/DAY</span></h5>
                                                 </div>
                                             </div>
                                             <div class="hover-overlay">
@@ -283,7 +289,7 @@ $usr_stat = $row4['verify_status']
                                             <?php
                                             } else {
                                             ?>
-                                                <button type="button" id="booknver" class="btn btn-primary gradient-custom ">BOOK NOW</button>
+                                                <button type="button" id="booknver" class="btn btn-primary gradient-custom booknver">BOOK NOW</button>
                                             <?php
                                             }
                                             ?>
@@ -341,8 +347,6 @@ $usr_stat = $row4['verify_status']
                             <?php endif; ?>
                         </ul>
                     </nav>
-
-
                 </main>
             </div>
         </div>
