@@ -61,21 +61,24 @@ if ($_SESSION['logout'] == "") {
 <script>
     $(document).ready(function() {
         $('.btn-danger').click(function() {
-            var status = $("#bookbtn").text()
-            if (status != 'BOOK NOW') {
-                $("#modal-btn1").click();
-            }
+            var vehicleID = $(this).data("vehicle-id");
+            var bookingID = $(this).data("book-id")
+            $("#modal-btn1").click();
+            $("#btn1").data("vehicle-id", vehicleID);
+            $("#btn1").data("book-id", bookingID);
+
         });
         $("#btn1").click(function() {
             var vehicleID = $(this).data("vehicle-id");
-            var userID = $("#hid").data("user-id");
+            var bookingID = $(this).data("book-id");
+
 
             $.ajax({
-                url: "update_vehicle_status.php",
+                url: "cancel_booking.php",
                 type: "POST",
                 data: {
                     vehicle_id: vehicleID,
-                    user_id: userID,
+                    booking_id: bookingID,
                     status: "requested"
                 },
                 cache: false,
@@ -88,8 +91,8 @@ if ($_SESSION['logout'] == "") {
                 }
             });
         });
-        $(".recieve").click(function(){
-            var id=$(this).data('id')
+        $(".recieve").click(function() {
+            var id = $(this).data('id')
             $.ajax({
                 url: "update_booking_status.php",
                 type: "POST",
@@ -106,9 +109,9 @@ if ($_SESSION['logout'] == "") {
                 }
             });
         })
-        $(".return").click(function(){
-            var id=$(this).data('id')
-            var vid=$('.card-title').data('vid')
+        $(".return").click(function() {
+            var id = $(this).data('id')
+            var vid = $('.card-title').data('vid')
             $.ajax({
                 url: "return_vehicle_ajax.php",
                 type: "POST",
@@ -134,6 +137,21 @@ $con = mysqli_connect("localhost", "root", "", "mini-prj");
 $query3 = "SELECT `image` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
 $result3 = mysqli_query($con, $query3);
 $row3 = mysqli_fetch_array($result3);
+$current_date = date('Y-m-d');
+$update_query = "UPDATE `tbl_vehicle_booking` SET `booking_status`='2' WHERE `start_date` <= '$current_date'";
+$res = mysqli_query($con, $update_query);
+$update_query = "UPDATE `tbl_vehicle_booking` SET `booking_status`='3' WHERE `end_date` <= '$current_date'";
+$res = mysqli_query($con, $update_query);
+$select_query = "SELECT `vehicle_id` FROM `tbl_vehicle_booking` WHERE `end_date` <= '$current_date'";
+$result = mysqli_query($con, $select_query);
+
+// Loop through the result set and display the vehicle IDs and updated status
+while ($row01 = mysqli_fetch_assoc($result)) {
+    $vehicle_id = $row01['vehicle_id'];
+    $sql = "UPDATE `tbl_vehicle` SET `booking_status`='available' WHERE `vehicle_id`= $vehicle_id";
+    $res = mysqli_query($con, $sql);
+}
+
 include "navbar_renter.php";
 ?>
 
@@ -166,7 +184,7 @@ include "navbar_renter.php";
 
         //retrieve the selected results from database   
         $query = "SELECT tbl_vehicle_booking.*, tbl_vehicle.vehicle_id, tbl_vehicle.brand_name,tbl_vehicle.model_name,tbl_vehicle.image1,tbl_vehicle.rate
-        FROM tbl_vehicle_booking JOIN tbl_vehicle ON tbl_vehicle_booking.vehicle_id=tbl_vehicle.vehicle_id WHERE tbl_vehicle_booking.user_id=$tmp_id  LIMIT " . $page_first_result . ',' . $results_per_page;
+        FROM tbl_vehicle_booking JOIN tbl_vehicle ON tbl_vehicle_booking.vehicle_id=tbl_vehicle.vehicle_id WHERE tbl_vehicle_booking.user_id=$tmp_id ORDER BY booking_id DESC  LIMIT " . $page_first_result . ',' . $results_per_page;
         $result = mysqli_query($con, $query);
         if (empty($number_of_page)) : ?>
             <div class="alert alert-warning text-center mt-5" role="alert">
@@ -206,8 +224,25 @@ include "navbar_renter.php";
                             <div class="bg-image hover-zoom ripple shadow-1-strong rounded" style="height: 200px; overflow: hidden;">
                                 <img src="vehicle/<?= $row['image1'] ?>" class="w-100 h-100 object-fit-cover" />
                                 <?php $id = $row['vehicle_id'] ?>
+                                <?php $bid = $row['booking_id'] ?>
                                 <a href="vehicle_det_usr.php?id= <?= $id ?>">
-
+                                    <div class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
+                                        <div class=" px-1 d-flex justify-content-end align-items-start h-100">
+                                            <?php
+                                            if ($row['booking_status'] == 3) {
+                                            ?>
+                                                <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Service completed</span></h5>
+                                            <?php
+                                            }
+                                            if ($row['booking_status'] == 4) {
+                                            ?>
+                                                <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Service canceled</span></h5>
+                                            <?php
+                                            }
+                                            ?>
+                                            
+                                        </div>
+                                    </div>
                                     <div class="hover-overlay">
                                         <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);">
                                         </div>
@@ -215,29 +250,24 @@ include "navbar_renter.php";
                                 </a>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title" data-vid="<?=$row['vehicle_id']?>">Booked vehicle</h5>
+                                <h5 class="card-title" data-vid="<?= $row['vehicle_id'] ?>">Booked vehicle</h5>
                                 <p class="card-text"><strong>Vehicle:</strong> <?= $row['brand_name'] ?> <?= $row['model_name'] ?></p>
                                 <p class="card-text"><strong>Dates:</strong> <?= $row['start_date'] ?> - <?= $row['end_date'] ?></p>
                                 <p class="card-text"><strong>Pick-up Location:</strong> <?= $row['drop_in_location'] ?> <?= $row['drop_in_time'] ?></p>
                                 <p class="card-text"><strong>Drop-off Location:</strong> <?= $row['drop_of_location'] ?> <?= $row['drop_of_time'] ?></p>
                                 <p class="card-text"><strong>Total Amount:</strong><?= $total_rent ?></p>
-                                <input type="hidden" name="hidden" id="hid" data-user-id="<?= $tmp_id ?>">
-
+                                <input type="hidden" name="hidden" class="hid" data-book-id="<?= $bid ?>" data-id="<?= 1 ?>">
                                 <?php
                                 if ($row['booking_status'] == 1) {
                                 ?>
-                                    <button type="button" class="btn btn-danger btn-rectangle m-2">cancel</button>
-                                    <button type="button" data-id="<?=$row['booking_id']?>" class="btn btn-success btn-rectangle m-2 recieve">recieve Vehicle</button>
+                                    <button type="button" data-book-id="<?= $row['booking_id']  ?>" data-vehicle-id="<?= $id ?>" class="btn btn-danger btn-rectangle  cancel m-2">cancel</button>
 
                                 <?php
-                                }else if($row['booking_status'] == 2){
-                                    ?>
-                                    <button type="button" data-id="<?=$row['booking_id']?>" class="btn btn-success btn-rectangle m-2 return">return Vehicle</button>
-                                    <?php
                                 }else{
                                     ?>
-                                    <button type="button" class="btn btn-success btn-rectangle m-2 ">Service Completed</button>
-                                    <?php 
+                                     <a href="car_booking_bill.php?booking_id=<?= $row['booking_id'] ?>" class="btn btn-primary">Download Bill</a>
+
+                                    <?php
                                 }
                                 ?>
                             </div>
@@ -309,7 +339,7 @@ include "navbar_renter.php";
                 <h4 class="modal-title w-100">Confirm!</h4>
             </div>
             <div class="modal-body">
-                <p class="text-center">Are you sure? Do you want to cancel your request!..</p>
+                <p class="text-center">Are you sure? Do you want to cancel your request!..your return amount will depend upon the rental policies..</p>
             </div>
             <div class="modal-footer d-grid d-md-flex justify-content-center">
                 <button type="button" id="btn1" data-vehicle-id="<?= $id ?>" class="btn btn-secondary" data-mdb-dismiss="modal">OK</button>

@@ -69,11 +69,13 @@ if ($_SESSION['logout'] == "") {
                 var maximum_price = $('.max').val();
                 var brand = get_filter('brand');
                 var cat = get_filter('cat');
+                var fuel=get_filter('fuel');
+                var seat=get_filter('seat');
                 var status = $('#usrstat').data('usr');
 
                 // Get current page from URL
                 var searchParams = new URLSearchParams(window.location.search);
-                var currentPage = searchParams.get('page');
+                var currentPage = parseInt(searchParams.get('page'));
 
                 $.ajax({
                     url: "fetch_data_ajax.php",
@@ -85,6 +87,8 @@ if ($_SESSION['logout'] == "") {
                         brand: brand,
                         cat: cat,
                         status: status,
+                        fuel:fuel,
+                        seat:seat,
                         page: currentPage // Pass current page to server
                     },
                     success: function(data) {
@@ -202,7 +206,63 @@ $usr_stat = $row4['verify_status']
                                             <label class="custom-control custom-checkbox">
                                                 <input type="checkbox" class="custom-control-input common_selector brand" name="brand[]" value="<?= $brand['brand_name'] ?>">
                                                 <div class="custom-control-label "><?= $brand['brand_name'] ?>
-                                                    <b class="badge badge-pill badge-light float-right">120</b>
+                                                    <!-- <b class="badge badge-pill badge-light float-right">120</b> -->
+                                                </div>
+                                            </label>
+                                        <?php } ?>
+                                    </div> <!-- card-body.// -->
+                                </form>
+                            </div>
+                        </article> <!-- filter-group .// -->
+                        <article class="filter-group">
+                            <header class="card-header">
+                                <a href="#" data-toggle="collapse" data-target="#collapse_2" aria-expanded="true" class="">
+                                    <i class="icon-control fa fa-chevron-down filter-group-btn"></i>
+                                    <h6 class="title">Seats</h6>
+                                </a>
+                            </header>
+                            <?php
+                            $sql1 = "SELECT DISTINCT `seat` FROM `tbl_vehicle` where `status`= 1 AND `Availability`=1 ";
+                            $res1 = mysqli_query($con, $sql1);
+                            ?>
+                            <div class="filter-content collapse show" id="collapse_2">
+                                <form>
+                                    <div class="card-body">
+                                        <?php
+                                        while ($brand = mysqli_fetch_array($res1)) {
+                                        ?>
+                                            <label class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input common_selector seat" name="seat[]" value="<?= $brand['seat'] ?>">
+                                                <div class="custom-control-label "><?= $brand['seat'] ?> Seater
+                                                    <!-- <b class="badge badge-pill badge-light float-right">120</b> -->
+                                                </div>
+                                            </label>
+                                        <?php } ?>
+                                    </div> <!-- card-body.// -->
+                                </form>
+                            </div>
+                        </article> <!-- filter-group .// -->
+                        <article class="filter-group">
+                            <header class="card-header">
+                                <a href="#" data-toggle="collapse" data-target="#collapse_2" aria-expanded="true" class="">
+                                    <i class="icon-control fa fa-chevron-down filter-group-btn"></i>
+                                    <h6 class="title">Fuel Type </h6>
+                                </a>
+                            </header>
+                            <?php
+                            $sql1 = "SELECT DISTINCT `fuel_type` FROM `tbl_vehicle` where `status`= 1 AND `Availability`=1 ";
+                            $res1 = mysqli_query($con, $sql1);
+                            ?>
+                            <div class="filter-content collapse show" id="collapse_2">
+                                <form>
+                                    <div class="card-body">
+                                        <?php
+                                        while ($fuel = mysqli_fetch_array($res1)) {
+                                        ?>
+                                            <label class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input common_selector fuel" name="fuel[]" value="<?= $fuel['fuel_type']  ?>">
+                                                <div class="custom-control-label "><?= $fuel['fuel_type'] ?>
+                                                    <!-- <b class="badge badge-pill badge-light float-right">120</b> -->
                                                 </div>
                                             </label>
                                         <?php } ?>
@@ -224,11 +284,11 @@ $usr_stat = $row4['verify_status']
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label>Min</label>
-                                                <input class="form-control common_selector min" placeholder="$500" min="500" type="number">
+                                                <input class="form-control common_selector min" placeholder="RS 500" min="500" type="number">
                                             </div>
                                             <div class="form-group text-right col-md-6">
                                                 <label>Max</label>
-                                                <input class="form-control common_selector max" placeholder="$1,0000" min="500" type="number">
+                                                <input class="form-control common_selector max" placeholder="Rs 1,000" min="500" type="number">
                                             </div>
                                         </div> <!-- form-row.// -->
                                         <!-- <button class="btn btn-block btn-primary">Apply</button> -->
@@ -236,10 +296,12 @@ $usr_stat = $row4['verify_status']
                                 </form>
                             </div>
                         </article> <!-- filter-group .// -->
-
                 </aside>
                 <main class="col-md-9">
                     <div class="row mt-3 d-flext align-items-start justify-content-end">
+                        <div class="col-md-4">
+                             
+                        </div>
                         <div class="col-md-4">
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Search for vehicles" id="search-input">

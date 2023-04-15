@@ -146,5 +146,35 @@
         })
     </script>
 </body>
-
+<?php
+if (isset($_POST["sub"])) {
+    $dinloc = $_POST["loc1"];
+    $dofloc = $_POST["loc2"];
+    $dintime = $_POST["sttime"];
+    $doftime = $_POST["entime"];
+    $stdate = $_POST["stdate"];
+    $enddate = $_POST["endate"];
+    $con = mysqli_connect("localhost", "root", "", "mini-prj");
+    $exists_query = "SELECT * FROM `tbl_request_vehicle` WHERE `vehicle_id`='$id' AND `user_id`='$tmp_id'";
+    $exists_result = mysqli_query($con, $exists_query);
+    if ($exists_result && mysqli_num_rows($exists_result) > 0) {
+        // Request already exists, do nothing
+    } else {
+        $query = "INSERT INTO `tbl_request_vehicle`(`vehicle_id`, `user_id`, `start_date`, `end_date`, `drop_in_location`, `drop_in_time`, `drop_of_location`, `drop_of_time`) VALUES ('$id','$tmp_id','$stdate','$enddate','$dinloc','$dintime','$dofloc','$doftime')";
+        $result = mysqli_query($con, $query);
+        $query = "UPDATE `tbl_vehicle` SET `booking_status`='Requested' WHERE `vehicle_id`=$id";
+        $result = mysqli_query($con, $query);
+        if ($result) {
+            echo "<script>location.href='search-cars.php'</script>";
+?>
+            <script>
+                $(document).ready(function() {
+                    $("#bookbtn").text('REQUESTED')
+                })
+            </script>
+<?php
+        }
+    }
+}
+?>
 </html>

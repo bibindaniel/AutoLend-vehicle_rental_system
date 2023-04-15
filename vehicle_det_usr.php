@@ -209,10 +209,10 @@ $row3 = mysqli_fetch_array($result3);
                                 <div class="row m-0 bg-light">
                                     <div class="d-flex align-items-end px-4 mt-4 mb-2">
                                         <p class="h4 m-0"><span class="pe-1"><?= $row["brand_name"] ?></span><span class="pe-1"><?= $row["model_name"] ?></span><span class="pe-1"><?= $row["year"] ?></span></p>
-                                        <P class="ps-3 textmuted"><?= $row["rate"] ?></P>
+                                        <div class="m-2 h5"><i class="fa fa-rupee"></i> <?= $row["rate"] ?>/DAY</div>
                                     </div>
                                     <div class="d-flex align-items-center  mt-4 mb-2">
-                                        <p class="text-dark">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Neque tempore mollitia, iste soluta voluptate at voluptatibus magnam harum architecto omnis, ratione blanditiis nam distinctio quidem </p>
+                                        <p class="text-dark"><?= $row["Features"] ?> </p>
                                     </div>
                                     <div class="col-md-4 col-6 ps-30 pe-0 my-2">
                                         <p><i class="fa-solid fa-gears"></i><span class="m-2"><?= $row["transmission_type"] ?></span></p>
@@ -231,7 +231,7 @@ $row3 = mysqli_fetch_array($result3);
                                         <p><i class='fas fa-thumbtack'></i><span class="m-2"><?= $row["location"] ?></span></p>
                                     </div>
                                     <div class="col-md-4 col-6 ps-30 pe-0 my-2">
-                                        <p><i class='fas fa-gas-pump'></i><span class="m-2"><?= $row["seat"] ?></span></p>
+                                        <p><i class='fas fa-couch'></i><span class="m-2"><?= $row["seat"] ?></span></p>
                                     </div>
                                 </div>
                             </div>
@@ -348,6 +348,90 @@ $row3 = mysqli_fetch_array($result3);
             </div>
         </div>
     </div>
+    <section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Reviews</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Accuracy</h5>
+                <div class="progress" style="height: 15%;">
+                    <div class="progress-bar" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">80%</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h5>Cleanliness</h5>
+                <div class="progress" style="height: 15%;">
+                    <div class="progress-bar" role="progressbar" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">90%</div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h5>Communication</h5>
+                <div class="progress" style="height: 15%;">
+                    <div class="progress-bar" role="progressbar" style="width: 70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">70%</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h5>Location</h5>
+                <div class="progress" style="height: 15%;">
+                    <div class="progress-bar" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%</div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <img src="https://via.placeholder.com/50x50" class="rounded-circle me-3" alt="User profile image">
+                                <h5 class="card-title mb-0">John Doe</h5>
+                            </div>
+                            <small class="text-muted">Rated 4.5/5</small>
+                        </div>
+                        <hr>
+                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at porttitor sem. Aliquam erat volutpat. Donec placerat nisl magna, et faucibus arcu condimentum sed.</p>
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">10 days ago</small>
+                            <div>
+                                <a href="#" class="me-2"><i class="far fa-thumbs-up"></i></a>
+                                <a href="#"><i class="far fa-thumbs-down"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <img src="https://via.placeholder.com/50x50" class="rounded-circle me-3" alt="User profile image">
+                                <h5 class="card-title mb-0">Jane Smith</h5>
+                            </div>
+                            <small class="text-muted">Rated 5/5</small>
+                        </div>
+                        <hr>
+                        <p class="card-text">Nullam pellentesque mauris et nulla tincidunt vestibulum. Integer tempor tellus quis velit ultricies, non lobortis dolor posuere. Ut lacinia malesuada augue, ac euismod lacus malesuada eget.</p>
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">15 days ago</small>
+                            <div>
+                                <a href="#" class="me-2"><i class="far fa-thumbs-up"></i></a>
+                                <a href="#"><i class="far fa-thumbs-down"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button class="btn btn-primary">Load More Reviews</button>
+        </div>
+    </div>
+</section>
+
+
     <button type="button" id="modal-btn1" style="display:none;" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#delModal">
         Launch demo modal
     </button>
@@ -412,7 +496,7 @@ if (isset($_POST["sub"])) {
         $query = "UPDATE `tbl_vehicle` SET `booking_status`='Requested' WHERE `vehicle_id`=$id";
         $result = mysqli_query($con, $query);
         if ($result) {
-            echo "<script>location.href='search-cars.php'</script>";
+            echo "<script>location.href='view_request_vehicle.php'</script>";
 ?>
             <script>
                 $(document).ready(function() {

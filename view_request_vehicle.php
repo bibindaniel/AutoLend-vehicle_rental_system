@@ -171,29 +171,7 @@ include "navbar_renter.php";
                                 <a href="vehicle_det_usr.php?id= <?= $id ?>">
                                     <div class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
                                         <div class=" px-1 d-flex justify-content-end align-items-start h-100">
-                                            <?php
-                                            if ($row['request_status'] == 0) {
-                                            ?>
-                                                <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Pending</span></h5>
-
-                                            <?php
-                                            } else if ($row['request_status'] == 1) {
-                                            ?>
-                                                <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Accepted</span></h5>
-
-                                            <?php
-                                            } else if ($row['request_status'] == 2) {
-                                            ?>
-                                                <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Booked</span></h5>
-
-                                            <?php
-                                            } else {
-                                            ?>
-                                                <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Rejected</span></h5>
-
-                                            <?php
-                                            }
-                                            ?>
+                                                <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Payment Pending</span></h5>
                                         </div>
                                     </div>
                                     <div class="hover-overlay">

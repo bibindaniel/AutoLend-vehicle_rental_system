@@ -95,6 +95,11 @@ if ($_SESSION['logout'] == "") {
                                             </div>
                                         </a>
                                     </div>
+                                    <div class="d-flex flex-row justify-content-center mt-3">
+                                            <a href="" class="text-reset">
+                                                <h5 class="card-title mb-3"><?= $row1["brand_name"] ?> <?= $row1["model_name"] ?></h5>
+                                            </a>
+                                        </div>
                                     <div class="card-body d-flex align-items-start justify-content-center">
                                         <?php
                                         if($row1['Availability']==1){
