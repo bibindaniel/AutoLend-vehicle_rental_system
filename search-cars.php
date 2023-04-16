@@ -69,8 +69,8 @@ if ($_SESSION['logout'] == "") {
                 var maximum_price = $('.max').val();
                 var brand = get_filter('brand');
                 var cat = get_filter('cat');
-                var fuel=get_filter('fuel');
-                var seat=get_filter('seat');
+                var fuel = get_filter('fuel');
+                var seat = get_filter('seat');
                 var status = $('#usrstat').data('usr');
 
                 // Get current page from URL
@@ -87,8 +87,8 @@ if ($_SESSION['logout'] == "") {
                         brand: brand,
                         cat: cat,
                         status: status,
-                        fuel:fuel,
-                        seat:seat,
+                        fuel: fuel,
+                        seat: seat,
                         page: currentPage // Pass current page to server
                     },
                     success: function(data) {
@@ -300,7 +300,7 @@ $usr_stat = $row4['verify_status']
                 <main class="col-md-9">
                     <div class="row mt-3 d-flext align-items-start justify-content-end">
                         <div class="col-md-4">
-                             
+
                         </div>
                         <div class="col-md-4">
                             <div class="input-group">
@@ -336,82 +336,119 @@ $usr_stat = $row4['verify_status']
                                             </a>
                                         </div>
                                         <div class="text-center mb-2"><i class='fas fa-map-marker-alt'></i><span class="p-2"><?= $row["location"] ?></span></div>
-                                        <div class="d-flex flex-row justify-content-center mt-1 mb-4 text-danger">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </div>
-                                        <?php $id = $row["vehicle_id"] ?>
-                                        <div class="d-flex flex-row justify-content-center mt-1">
-                                            <?php
-                                            if ($row4['verify_status'] == 1) {
-                                            ?>
-                                                <button type="button" onclick="location.href='vehicle_det_usr.php?id= <?= $id ?>'" class="btn btn-primary gradient-custom ">BOOK NOW</button>
-                                            <?php
-                                            } else {
-                                            ?>
-                                                <button type="button" id="booknver" class="btn btn-primary gradient-custom booknver">BOOK NOW</button>
-                                            <?php
+                                        <?php
+                                        $id = $row["vehicle_id"];
+                                        $sql = "SELECT * FROM `tbl_review` WHERE `vehicle_id`=$id";
+                                        $res1 = mysqli_query($con, $sql);
+                                        $review_count = mysqli_num_rows($res1);
+
+                                        if ($review_count > 0) {
+                                            $accuracy_sum = 0;
+                                            $cleanliness_sum = 0;
+                                            $communication_sum = 0;
+                                            $vehicle_condition_sum = 0;
+
+                                            while ($row = mysqli_fetch_assoc($res1)) {
+                                                $accuracy_sum += $row['Accuracy'];
+                                                $cleanliness_sum += $row['Cleanliness'];
+                                                $communication_sum += $row['Communication'];
+                                                $vehicle_condition_sum += $row['Vehicle_Condition'];
                                             }
-                                            ?>
-                                        </div>
+
+                                            $accuracy_avg = $accuracy_sum / $review_count;
+                                            $cleanliness_avg = $cleanliness_sum / $review_count;
+                                            $communication_avg = $communication_sum / $review_count;
+                                            $vehicle_condition_avg = $vehicle_condition_sum / $review_count;
+
+                                            $overall_rating = ($accuracy_avg + $cleanliness_avg + $communication_avg + $vehicle_condition_avg) / 4;
+
+                                            $overall_rating_out_of_5 = round($overall_rating, 1);
+                                        } else {
+                                            $overall_rating_out_of_5 = 0; // set to 0 if there are no reviews
+                                        }
+                                        ?>
+                                        <div class="text-center m-1">
+                                        <?php
+                                        for ($i = 1; $i <= 5; $i++) {
+                                            if ($i <= $overall_rating_out_of_5) {
+                                                echo '<i class="fas fa-star text-danger"></i>'; // Full star icon with text-danger class
+                                            } else {
+                                                echo '<i class="far fa-star"></i>'; // Empty star icon
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                       
+                                
+                                    <div class="d-flex flex-row justify-content-center mt-1">
+                                        <?php
+                                        if ($row4['verify_status'] == 1) {
+                                        ?>
+                                            <button type="button" onclick="location.href='vehicle_det_usr.php?id= <?= $id ?>'" class="btn btn-primary gradient-custom ">BOOK NOW</button>
+                                        <?php
+                                        } else {
+                                        ?>
+                                            <button type="button" id="booknver" class="btn btn-primary gradient-custom booknver">BOOK NOW</button>
+                                        <?php
+                                        }
+                                        ?>
                                     </div>
                                 </div>
-                                <!-- Close the card element -->
                             </div>
-                        <?php } ?>
+                            <!-- Close the card element -->
                     </div>
-                    <?php
-                    // Set the number of links to display
-                    $links_limit = 5;
-                    $current_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-
-                    // Calculate the offset based on the current page
-                    $offset = max(1, $current_page - intval($links_limit / 2));
-
-                    // Calculate the maximum number of links to display
-                    $max_links = min($number_of_page, $offset + $links_limit - 1);
-
-                    // If the maximum number of links is less than the limit, adjust the offset accordingly
-                    if ($max_links - $offset + 1 < $links_limit) {
-                        $offset = max(1, $max_links - $links_limit + 1);
-                    }
-                    ?>
-                    <nav class="mt-4" aria-label="Page navigation sample">
-                        <ul class="pagination">
-                            <?php if ($current_page > 1) : ?>
-                                <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $current_page - 1; ?>">Previous</a></li>
-                            <?php else : ?>
-                                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                            <?php endif; ?>
-
-                            <?php if ($offset > 1) : ?>
-                                <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
-                            <?php endif; ?>
-
-                            <?php for ($page = $offset; $page <= $max_links; $page++) : ?>
-                                <?php if ($page == $current_page) : ?>
-                                    <li class="page-item active"><a class="page-link" href="#"><?php echo $page; ?></a></li>
-                                <?php else : ?>
-                                    <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $page; ?>"><?php echo $page; ?></a></li>
-                                <?php endif; ?>
-                            <?php endfor; ?>
-
-                            <?php if ($max_links < $number_of_page) : ?>
-                                <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
-                            <?php endif; ?>
-
-                            <?php if ($current_page < $number_of_page) : ?>
-                                <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $current_page + 1; ?>">Next</a></li>
-                            <?php else : ?>
-                                <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
-                            <?php endif; ?>
-                        </ul>
-                    </nav>
-                </main>
+                <?php } ?>
             </div>
-        </div>
+            <?php
+            // Set the number of links to display
+            $links_limit = 5;
+            $current_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+
+            // Calculate the offset based on the current page
+            $offset = max(1, $current_page - intval($links_limit / 2));
+
+            // Calculate the maximum number of links to display
+            $max_links = min($number_of_page, $offset + $links_limit - 1);
+
+            // If the maximum number of links is less than the limit, adjust the offset accordingly
+            if ($max_links - $offset + 1 < $links_limit) {
+                $offset = max(1, $max_links - $links_limit + 1);
+            }
+            ?>
+            <nav class="mt-4" aria-label="Page navigation sample">
+                <ul class="pagination">
+                    <?php if ($current_page > 1) : ?>
+                        <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $current_page - 1; ?>">Previous</a></li>
+                    <?php else : ?>
+                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    <?php endif; ?>
+
+                    <?php if ($offset > 1) : ?>
+                        <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+                    <?php endif; ?>
+
+                    <?php for ($page = $offset; $page <= $max_links; $page++) : ?>
+                        <?php if ($page == $current_page) : ?>
+                            <li class="page-item active"><a class="page-link" href="#"><?php echo $page; ?></a></li>
+                        <?php else : ?>
+                            <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $page; ?>"><?php echo $page; ?></a></li>
+                        <?php endif; ?>
+                    <?php endfor; ?>
+
+                    <?php if ($max_links < $number_of_page) : ?>
+                        <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+                    <?php endif; ?>
+
+                    <?php if ($current_page < $number_of_page) : ?>
+                        <li class="page-item"><a class="page-link" href="search-cars.php?page=<?php echo $current_page + 1; ?>">Next</a></li>
+                    <?php else : ?>
+                        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
+    </main>
+    </div>
+    </div>
     </main>
     <button type="button" id="modal-btn1" style="display:none;" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#delModal">
         Launch demo modal

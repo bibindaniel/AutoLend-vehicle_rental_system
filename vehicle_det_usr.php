@@ -102,13 +102,13 @@ if ($_SESSION['logout'] == "") {
     $(document).ready(function() {
         $("#stdate").on("change", function() {
             var start_date = $(this).val();
-            var vid=$('#btn1').data('vehicle-id')
+            var vid = $('#btn1').data('vehicle-id')
             $.ajax({
                 url: "check_dates.php",
                 type: "POST",
                 data: {
                     start_date: start_date,
-                    vehicleID:vid
+                    vehicleID: vid
                 },
                 dataType: "json",
                 success: function(result) {
@@ -123,6 +123,49 @@ if ($_SESSION['logout'] == "") {
         });
     });
 </script>
+<script>
+    $(document).ready(function() {
+        $('.rating').each(function() {
+            var rating = $(this);
+            var input = rating.find('input');
+            var value = input.val();
+            var icons = rating.find('i');
+
+            icons.on('click', function() {
+                value = $(this).attr('data-value');
+                input.val(value);
+                icons.each(function() {
+                    if ($(this).attr('data-value') <= value) {
+                        $(this).removeClass('far').addClass('fas');
+                    } else {
+                        $(this).removeClass('fas').addClass('far');
+                    }
+                });
+            });
+
+            icons.hover(function() {
+                var hoverValue = $(this).attr('data-value');
+                icons.each(function() {
+                    if ($(this).attr('data-value') <= hoverValue) {
+                        $(this).removeClass('far').addClass('fas');
+                    } else {
+                        $(this).removeClass('fas').addClass('far');
+                    }
+                });
+            }, function() {
+                icons.each(function() {
+                    if ($(this).attr('data-value') <= value) {
+                        $(this).removeClass('far').addClass('fas');
+                    } else {
+                        $(this).removeClass('fas').addClass('far');
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+
 <?php
 $tmp_id = $_SESSION['id'];
 $con = mysqli_connect("localhost", "root", "", "mini-prj");
@@ -348,135 +391,293 @@ $row3 = mysqli_fetch_array($result3);
             </div>
         </div>
     </div>
-    <section class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-5">Reviews</h2>
-        <div class="row">
-            <div class="col-md-6">
-                <h5>Accuracy</h5>
-                <div class="progress" style="height: 15%;">
-                    <div class="progress-bar" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">80%</div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <h5>Cleanliness</h5>
-                <div class="progress" style="height: 15%;">
-                    <div class="progress-bar" role="progressbar" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">90%</div>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <h5>Communication</h5>
-                <div class="progress" style="height: 15%;">
-                    <div class="progress-bar" role="progressbar" style="width: 70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">70%</div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <h5>Location</h5>
-                <div class="progress" style="height: 15%;">
-                    <div class="progress-bar" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%</div>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <img src="https://via.placeholder.com/50x50" class="rounded-circle me-3" alt="User profile image">
-                                <h5 class="card-title mb-0">John Doe</h5>
-                            </div>
-                            <small class="text-muted">Rated 4.5/5</small>
+    <?php
+    $sql1 = "SELECT * FROM `tbl_review` WHERE `vehicle_id`='$id'";
+    $res1 = mysqli_query($con, $sql1);
+    $accuracy_total = 0;
+    $cleanliness_total = 0;
+    $communication_total = 0;
+    $vehicle_condition_total = 0;
+
+    $count = mysqli_num_rows($res1);
+    if ($count > 0) {
+        while ($row = mysqli_fetch_assoc($res1)) {
+            $accuracy_total += $row['Accuracy'];
+            $cleanliness_total += $row['Cleanliness'];
+            $communication_total += $row['Communication'];
+            $vehicle_condition_total += $row['Vehicle_Condition'];
+        }
+
+        $accuracy_avg = $accuracy_total / $count;
+        $cleanliness_avg = $cleanliness_total / $count;
+        $communication_avg = $communication_total / $count;
+        $vehicle_condition_avg = $vehicle_condition_total / $count;
+
+        $accuracy_percent = $accuracy_avg * 20;
+        $cleanliness_percent = $cleanliness_avg * 20;
+        $communication_percent = $communication_avg * 20;
+        $vehicle_condition_percent = $vehicle_condition_avg * 20;
+
+    ?>
+        <section class="py-5">
+            <div class="container">
+                <h2 class="text-center mb-5">Reviews</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Accuracy</h5>
+                        <div class="progress" style="height: 15%;">
+                            <div class="progress-bar" role="progressbar" style="width: <?= $accuracy_percent ?>%;" aria-valuenow="<?= $accuracy_percent ?>" aria-valuemin="0" aria-valuemax="100"><?= $accuracy_percent ?>%</div>
                         </div>
-                        <hr>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at porttitor sem. Aliquam erat volutpat. Donec placerat nisl magna, et faucibus arcu condimentum sed.</p>
-                        <div class="d-flex justify-content-between">
-                            <small class="text-muted">10 days ago</small>
-                            <div>
-                                <a href="#" class="me-2"><i class="far fa-thumbs-up"></i></a>
-                                <a href="#"><i class="far fa-thumbs-down"></i></a>
-                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Cleanliness</h5>
+                        <div class="progress" style="height: 15%;">
+                            <div class="progress-bar" role="progressbar" style="width: <?= $cleanliness_percent ?>%;" aria-valuenow="<?= $cleanliness_percent ?>" aria-valuemin="0" aria-valuemax="100"><?= $cleanliness_percent ?>%</div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <img src="https://via.placeholder.com/50x50" class="rounded-circle me-3" alt="User profile image">
-                                <h5 class="card-title mb-0">Jane Smith</h5>
-                            </div>
-                            <small class="text-muted">Rated 5/5</small>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h5>Communication</h5>
+                        <div class="progress" style="height: 15%;">
+                            <div class="progress-bar" role="progressbar" style="width: <?= $communication_percent ?>%;" aria-valuenow="<?= $communication_percent ?>" aria-valuemin="0" aria-valuemax="100"><?= $communication_percent ?>%</div>
                         </div>
-                        <hr>
-                        <p class="card-text">Nullam pellentesque mauris et nulla tincidunt vestibulum. Integer tempor tellus quis velit ultricies, non lobortis dolor posuere. Ut lacinia malesuada augue, ac euismod lacus malesuada eget.</p>
-                        <div class="d-flex justify-content-between">
-                            <small class="text-muted">15 days ago</small>
-                            <div>
-                                <a href="#" class="me-2"><i class="far fa-thumbs-up"></i></a>
-                                <a href="#"><i class="far fa-thumbs-down"></i></a>
-                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Vehicle condition</h5>
+                        <div class="progress" style="height: 15%;">
+                            <div class="progress-bar" role="progressbar" style="width: <?= $vehicle_condition_percent ?>%;" aria-valuenow="<?= $vehicle_condition_percent ?>" aria-valuemin="0" aria-valuemax="100"><?= $vehicle_condition_percent ?>%</div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="text-center mt-4">
-            <button class="btn btn-primary">Load More Reviews</button>
-        </div>
-    </div>
-</section>
+                <div class="row mt-5">
+                    <?php
+                    $sql2 = "SELECT tbl_review.*,tbl_user.* from tbl_review JOIN tbl_user on tbl_review.user_id=tbl_user.login_id limit 4";
+                    $res2 = mysqli_query($con, $sql2);
+                    while ($rev = mysqli_fetch_array($res2)) {
+                    ?>
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <img src="Uploads/<?= $rev["image"] ?>" class="rounded-circle me-3" alt="User profile image" style="width: 50px; height:50px">
+                                            <h5 class="card-title mb-0"><?= $rev["first_name"] ?></h5>
+                                        </div>
+                                        <small class="text-muted">Rated 4.5/5</small>
+                                    </div>
+                                    <hr>
+                                    <p class="card-text"><?= $rev["review_msg"] ?></p>
+                                    <div class="d-flex justify-content-between">
+                                        <small class="text-muted"><?= $rev["review_date"] ?></small>
+                                        <div>
+                                            <a href="#" class="me-2"><i class="far fa-thumbs-up"></i></a>
+                                            <a href="#"><i class="far fa-thumbs-down"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php
+                    }
+                } else {
+                    ?>
+                    <section class="p-5 text-center">
+                        <h2>No rating or review available</h2>
+                    </section>
+                <?php
+                }
+                ?>
+                </div>
+                <?php
+                $sql = "SELECT * FROM `tbl_vehicle_booking` WHERE `user_id`=$tmp_id AND`booking_status`=3 AND `vehicle_id`=$id";
+                $res = mysqli_query($con, $sql);
+                $count = mysqli_num_rows($res);
+                if ($count >= 1) {
+                ?>
+                    <div class="col-md-12 mb-4 d-flex align-items-center justify-content-center">
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#reviewModal">
+                                Rate this car
+                            </button>
+                        </div>
+                    </div>
+                <?php
+                }
+                ?>
+                <!-- Modal -->
+                <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="reviewModalLabel">Rate Your Experience</h5>
+                                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="#" method="POST">
+                                    <div class="mb-3">
+                                        <div class="row align-items-center">
+                                            <div class="col-6">
+                                                <label for="accuracy" class="form-label">Accuracy</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="rating">
+                                                    <input type="hidden" name="accuracy_rating_value" id="accuracy_rating_value" value="0" required>
+                                                    <div class="rating-icons">
+                                                        <i class="far fa-angry fa-lg" style="color: #673ab7" data-value="1"></i>
+                                                        <i class="far fa-frown fa-lg" style="color: #3f51b5" data-value="2"></i>
+                                                        <i class="far fa-meh fa-lg" style="color: #2196f3" data-value="3"></i>
+                                                        <i class="far fa-smile fa-lg" style="color: #03a9f4" data-value="4"></i>
+                                                        <i class="far fa-grin-stars fa-lg" style="color: #00bcd4" data-value="5"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="row align-items-center">
+                                            <div class="col-6">
+                                                <label for="cleanliness" class="form-label">Cleanliness</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="rating">
+                                                    <input type="hidden" name="cleanliness_rating_value" id="cleanliness_rating_value" value="0" required>
+                                                    <div class="rating-icons">
+                                                        <i class="far fa-angry fa-lg" style="color: #673ab7" data-value="1"></i>
+                                                        <i class="far fa-frown fa-lg" style="color: #3f51b5" data-value="2"></i>
+                                                        <i class="far fa-meh fa-lg" style="color: #2196f3" data-value="3"></i>
+                                                        <i class="far fa-smile fa-lg" style="color: #03a9f4" data-value="4"></i>
+                                                        <i class="far fa-grin-stars fa-lg" style="color: #00bcd4" data-value="5"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="row align-items-center">
+                                            <div class="col-6">
+                                                <label for="communication" class="form-label">Communication</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="rating">
+                                                    <input type="hidden" name="communication_rating_value" id="communication_rating_value" value="0" required>
+                                                    <div class="rating-icons">
+                                                        <i class="far fa-angry fa-lg" style="color: #673ab7" data-value="1"></i>
+                                                        <i class="far fa-frown fa-lg" style="color: #3f51b5" data-value="2"></i>
+                                                        <i class="far fa-meh fa-lg" style="color: #2196f3" data-value="3"></i>
+                                                        <i class="far fa-smile fa-lg" style="color: #03a9f4" data-value="4"></i>
+                                                        <i class="far fa-grin-stars fa-lg" style="color: #00bcd4" data-value="5"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="row align-items-center">
+                                            <div class="col-6">
+                                                <label for="vehicle-condition" class="form-label">Vehicle Condition</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="rating">
+                                                    <input type="hidden" name="vehicle-condition_rating_value" id="vehicle-condition_rating_value" value="0" required>
+                                                    <div class="rating-icons">
+                                                        <i class="far fa-angry fa-lg" style="color: #673ab7" data-value="1"></i>
+                                                        <i class="far fa-frown fa-lg" style="color: #3f51b5" data-value="2"></i>
+                                                        <i class="far fa-meh fa-lg" style="color: #2196f3" data-value="3"></i>
+                                                        <i class="far fa-smile fa-lg" style="color: #03a9f4" data-value="4"></i>
+                                                        <i class="far fa-grin-stars fa-lg" style="color: #00bcd4" data-value="5"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="review-text" class="form-label">Write a Review</label>
+                                        <textarea class="form-control" name="reviewmsg" id="review-text" rows="3" required></textarea>
+                                    </div>
+
+                            </div>
+                            <div class="modal-footer row">
+                                <div class="col-12">
+                                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                                    <button type="submit" name="revsub" class="btn btn-primary">Submit Review</button>
+                                </div>
+
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+        </section>
 
 
-    <button type="button" id="modal-btn1" style="display:none;" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#delModal">
-        Launch demo modal
-    </button>
-    <!-- Modal del -->
-    <div id="delModal" class="modal fade">
-        <div class="modal-dialog modal-confirm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="icon-box" style="background-color:#fa0000;">
-                        <i class="fa fa-times fa-3x"></i>
+        <button type="button" id="modal-btn1" style="display:none;" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#delModal">
+            Launch demo modal
+        </button>
+        <!-- Modal del -->
+        <div id="delModal" class="modal fade">
+            <div class="modal-dialog modal-confirm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="icon-box" style="background-color:#fa0000;">
+                            <i class="fa fa-times fa-3x"></i>
+                        </div>
+                        <h4 class="modal-title w-100">Confirm!</h4>
                     </div>
-                    <h4 class="modal-title w-100">Confirm!</h4>
-                </div>
-                <div class="modal-body">
-                    <p class="text-center">Are you sure? Do you want to cancel your request!..</p>
-                </div>
-                <div class="modal-footer d-grid d-md-flex justify-content-center">
-                    <button type="button" id="btn1" data-vehicle-id="<?= $id ?>" class="btn btn-secondary" data-mdb-dismiss="modal">OK</button>
+                    <div class="modal-body">
+                        <p class="text-center">Are you sure? Do you want to cancel your request!..</p>
+                    </div>
+                    <div class="modal-footer d-grid d-md-flex justify-content-center">
+                        <button type="button" id="btn1" data-vehicle-id="<?= $id ?>" class="btn btn-secondary" data-mdb-dismiss="modal">OK</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <button type="button" id="modal-btn2" style="display:none;" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#dateModal">
-        Launch demo modal
-    </button>
-    <!-- Modal del -->
-    <div id="dateModal" class="modal fade">
-        <div class="modal-dialog modal-confirm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="icon-box" style="background-color:#fa0000;">
-                        <i class="fa fa-times fa-3x"></i>
+        <button type="button" id="modal-btn2" style="display:none;" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#dateModal">
+            Launch demo modal
+        </button>
+        <!-- Modal del -->
+        <div id="dateModal" class="modal fade">
+            <div class="modal-dialog modal-confirm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="icon-box" style="background-color:#fa0000;">
+                            <i class="fa fa-times fa-3x"></i>
+                        </div>
+                        <h4 class="modal-title w-100">Oops!</h4>
                     </div>
-                    <h4 class="modal-title w-100">Oops!</h4>
-                </div>
-                <div class="modal-body">
-                    <p class="text-center">"The vehicle is already booked on this day. Please choose other dates!"</p>
-                </div>
-                <div class="modal-footer d-grid d-md-flex justify-content-center">
-                    <button type="button" id="btn1" data-vehicle-id="<?= $id ?>" class="btn btn-secondary" data-mdb-dismiss="modal">OK</button>
+                    <div class="modal-body">
+                        <p class="text-center">"The vehicle is already booked on this day. Please choose other dates!"</p>
+                    </div>
+                    <div class="modal-footer d-grid d-md-flex justify-content-center">
+                        <button type="button" id="btn1" data-vehicle-id="<?= $id ?>" class="btn btn-secondary" data-mdb-dismiss="modal">OK</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 </body>
+<?php
+if (isset($_POST["revsub"])) {
+    $accur = $_POST["accuracy_rating_value"];
+    $clean = $_POST["cleanliness_rating_value"];
+    $commu = $_POST["communication_rating_value"];
+    $vehcon = $_POST["vehicle-condition_rating_value"];
+    $msg = $_POST["reviewmsg"];
+    $con = mysqli_connect("localhost", "root", "", "mini-prj");
+    $query5="SELECT * FROM `tbl_review` WHERE `user_id`=$tmp_id AND `vehicle_id`=$id";
+    $res5=mysqli_query($con, $query5);
+    $no=mysqli_num_rows($res5);
+    if($no<1){
+        $query = "INSERT INTO `tbl_review`(`Accuracy`, `Cleanliness`, `Communication`, `Vehicle_Condition`, `review_msg`, `user_id`,`vehicle_id`) VALUES ('$accur',' $clean',' $commu','$vehcon','$msg','$tmp_id','$id')";
+        $result = mysqli_query($con, $query);
+    }else{
+        $query="UPDATE `tbl_review` SET `Accuracy`='$accur',`Cleanliness`='$clean',`Communication`='$commu',`Vehicle_Condition`='$vehcon',`review_msg`='$msg' WHERE `user_id`=$tmp_id AND `vehicle_id`=$id ";
+        $result = mysqli_query($con, $query);
+    }
+    echo "<script>window.location.href = 'search-cars.php';</script>";
+}
+?>
 <?php
 if (isset($_POST["sub"])) {
     $dinloc = $_POST["loc1"];
