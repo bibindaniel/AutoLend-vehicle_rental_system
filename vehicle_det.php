@@ -32,7 +32,7 @@ if ($_SESSION['logout'] == "") {
 <body>
     <?php
     $id = $_GET['id'];
-    $con = mysqli_connect("localhost", "root", "", "mini-prj");
+    include 'dbconnect.php';
     $query = "SELECT * FROM `tbl_vehicle` WHERE `vehicle_id`=$id";
     $result = mysqli_query($con, $query);
     $row = mysqli_fetch_array($result);

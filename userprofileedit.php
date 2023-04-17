@@ -113,7 +113,7 @@ if ($_SESSION['logout'] == "") {
 </style>
 <?php
 $tmp_id = $_SESSION['id'];
-$con = mysqli_connect("localhost", "root", "", "mini-prj");
+include 'dbconnect.php';
 $query = "SELECT * FROM `tbl_user` WHERE `login_id`='$tmp_id'";
 $result = mysqli_query($con, $query);
 $query1 = "SELECT * FROM `tbl_login` WHERE `login_id`='$tmp_id'";
@@ -238,7 +238,6 @@ $row2 = mysqli_fetch_array($result2);
         } else
             $query1 = "UPDATE `tbl_user` SET `first_name`='$name1',`dob`='$dob',`location`='$loc',`email`='$mail',`mobile`='$mob',`image`='$photo' WHERE  `login_id`='$tmp_id'";
 
-        $con = mysqli_connect("localhost", "root", "", "mini-prj");
 
         $query2 = "UPDATE `tbl_login` SET `user_name`='$user' WHERE `login_id`=$tmp_id";
         $result1 = mysqli_query($con, $query1);

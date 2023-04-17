@@ -154,7 +154,7 @@ if (isset($_POST["sub"])) {
     $doftime = $_POST["entime"];
     $stdate = $_POST["stdate"];
     $enddate = $_POST["endate"];
-    $con = mysqli_connect("localhost", "root", "", "mini-prj");
+    include 'dbconnect.php';
     $exists_query = "SELECT * FROM `tbl_request_vehicle` WHERE `vehicle_id`='$id' AND `user_id`='$tmp_id'";
     $exists_result = mysqli_query($con, $exists_query);
     if ($exists_result && mysqli_num_rows($exists_result) > 0) {

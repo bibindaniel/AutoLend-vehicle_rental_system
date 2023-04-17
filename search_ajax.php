@@ -1,13 +1,13 @@
 <?php
-$conn = mysqli_connect("localhost", "root", "", "mini-prj");
+include 'dbconnect.php';
 
 if (isset($_POST['term'])) {
-    $searchTerm = mysqli_real_escape_string($conn, $_POST['term']);
+    $searchTerm = mysqli_real_escape_string($con, $_POST['term']);
     $status = $_POST['status'];
     $sql = "SELECT * FROM tbl_vehicle WHERE status = 1 AND booking_status = 'available' 
             AND (brand_name LIKE '%$searchTerm%' OR model_name LIKE '%$searchTerm%')";
 
-    $result = mysqli_query($conn, $sql);
+    $result = mysqli_query($con, $sql);
 
     if (mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_array($result)) {

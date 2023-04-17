@@ -133,7 +133,7 @@ if ($_SESSION['logout'] == "") {
     <!--Main Navigation-->
     <?php
     $tmp_id = $_SESSION['id'];
-    $con = mysqli_connect("localhost", "root", "", "mini-prj");
+    include 'dbconnect.php';
     $query = "SELECT `image` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
     $result = mysqli_query($con, $query);
     $row = mysqli_fetch_array($result);
@@ -162,7 +162,6 @@ if ($_SESSION['logout'] == "") {
                 </thead>
                 <tbody>
                     <?php
-                    $con = mysqli_connect("localhost", "root", "", "mini-prj");
                     $query = "SELECT * FROM  `tbl_vehicle_category`";
                     $result = mysqli_query($con, $query);
                     while ($row = mysqli_fetch_array($result)) {
@@ -244,7 +243,7 @@ if ($_SESSION['logout'] == "") {
     if (isset($_POST["sub"])) {
         $name = $_POST["name"];
         $img = $_FILES["img"]["name"];
-        $con = mysqli_connect("localhost", "root", "", "mini-prj");
+        include 'dbconnect.php';
         $query1 = "INSERT INTO `tbl_vehicle_category`(`category_name`, `image`) VALUES ('$name','$img')";
         $res = mysqli_query($con, $query1);
         if ($res) {

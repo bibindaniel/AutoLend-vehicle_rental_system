@@ -23,7 +23,7 @@ if (isset($_POST["sub"])) {
 
     if (empty($bname) || empty($mname) || empty($year) || empty($yr) || empty($ft) || empty($trtype) || empty($cat) || empty($seats) || empty($loc) || empty($rate) || empty($rc) || empty($puc) || empty($ins) || empty($per) || empty($img1) || empty($img2) || empty($img3) || empty($img4)) {
 
-        $con = mysqli_connect("localhost", "root", "", "mini-prj");
+        include 'dbconnect.php';
         $query = "SELECT * FROM `tbl_vehicle` WHERE `brand_name` = '$bname' AND `model_name` = '$mname' AND `year` = '$yr' AND `location` = '$loc' AND `category_id` = '$cat' AND `user_id` = '$tmp_id'";
         $result = mysqli_query($con, $query);
         if (mysqli_num_rows($result) > 0) {

@@ -216,7 +216,7 @@ require 'mail/SMTP.php';
     <?php
     if (isset($_POST["sub"])) {
         $email = $_POST["email"];
-        $con = mysqli_connect("localhost", "root","", "mini-prj");
+        include 'dbconnect.php';
         $query1 ="SELECT * FROM `tbl_user` WHERE `email`= '$email'";
         $result=mysqli_query($con, $query1);
         $row=mysqli_fetch_array($result);

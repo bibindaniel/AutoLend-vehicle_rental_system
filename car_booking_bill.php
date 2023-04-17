@@ -4,7 +4,7 @@ require_once 'dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
 
 $dompdf = new Dompdf();
-$con = mysqli_connect("localhost", "root", "", "mini-prj");
+include 'dbconnect.php';
 $booking_id = $_GET['booking_id'];
 $query = "SELECT tbl_vehicle.*,tbl_vehicle_booking.*FROM tbl_vehicle_booking JOIN tbl_vehicle ON tbl_vehicle_booking.vehicle_id=tbl_vehicle.vehicle_id WHERE tbl_vehicle_booking.booking_id=$booking_id";
 $result = mysqli_query($con, $query);

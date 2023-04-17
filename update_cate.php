@@ -1,10 +1,7 @@
 <?php
 if (isset($_POST['user_id'])) {
   $id = $_POST['user_id'];
-  $con = mysqli_connect("localhost", "root", "", "mini-prj");
-  if (!$con) {
-    die("Connection failed: " . mysqli_connect_error());
-  }
+  include 'dbconnect.php';
   $query = "SELECT `status` FROM `tbl_vehicle_category` WHERE `category_id`=  '$id'";
   $result = mysqli_query($con, $query);
   $row = mysqli_fetch_assoc($result);

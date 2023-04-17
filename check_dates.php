@@ -1,8 +1,5 @@
 <?php
-  $con = mysqli_connect("localhost", "root", "", "mini-prj");
-  if (!$con) {
-    die("Connection failed: " . mysqli_connect_error());
-  }
+include 'dbconnect.php';
   $start_date = $_POST["start_date"];
   $vid=$_POST['vehicleID'];
   $query = "SELECT *

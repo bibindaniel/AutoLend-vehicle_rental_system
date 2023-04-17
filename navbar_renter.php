@@ -15,7 +15,7 @@
 </head>
 <?php
 $tmp_id = $_SESSION['id'];
-$con = mysqli_connect("localhost", "root", "", "mini-prj");
+include 'dbconnect.php';
 $query3 = "SELECT `image`,`user_id` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
 $result3 = mysqli_query($con, $query3);
 $row3 = mysqli_fetch_array($result3);

@@ -1,9 +1,5 @@
 <?php
-$conn = mysqli_connect("localhost", "root", "", "mini-prj");
-
-if (!$conn) {
-  die("Connection failed: " . mysqli_connect_error());
-}
+include 'dbconnect.php';
 $id=$_POST['id'];
 $status=$_POST['status'];
 if($status=='Active'){
@@ -12,9 +8,9 @@ if($status=='Active'){
     $newstatus=1;
 }
 $sql="UPDATE `tbl_vehicle` SET `Availability`='$newstatus' WHERE `vehicle_id`=$id";
-$res=mysqli_query($conn,$sql);
+$res=mysqli_query($con,$sql);
 if($res){
     echo"success";
 }
-mysqli_close($conn);
+mysqli_close($con);
 ?>

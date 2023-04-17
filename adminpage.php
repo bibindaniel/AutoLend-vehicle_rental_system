@@ -154,7 +154,7 @@ if ($_SESSION['logout'] == "") {
     </script>
     <?php
     $tmp_id = $_SESSION['id'];
-    $con = mysqli_connect("localhost", "root", "", "mini-prj");
+    include 'dbconnect.php';
     $query = "SELECT `image` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
     $result = mysqli_query($con, $query);
     $row = mysqli_fetch_array($result);
@@ -166,7 +166,6 @@ if ($_SESSION['logout'] == "") {
     ?>
     <!--Main Navigation-->
     <?php
-    $con = mysqli_connect("localhost", "root", "", "mini-prj");
     $query = "SELECT * FROM `tbl_user` where user_type =1";
     $result = mysqli_query($con, $query);
     $count = mysqli_num_rows($result);

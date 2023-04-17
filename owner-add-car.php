@@ -344,7 +344,7 @@ if ($_SESSION['logout'] == "") {
 <body>
     <?php
     $tmp_id = $_SESSION['id'];
-    $con = mysqli_connect("localhost", "root", "", "mini-prj");
+    include 'dbconnect.php';
     $query = "SELECT `image` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
     $result = mysqli_query($con, $query);
     $row = mysqli_fetch_array($result);
@@ -356,7 +356,6 @@ if ($_SESSION['logout'] == "") {
         ?>
     <!--Main Navigation-->
     <?php
-    $con = mysqli_connect("localhost", "root", "", "mini-prj");
     $query1 = "SELECT * FROM `tbl_vehicle_category`";
     $res = mysqli_query($con, $query1);
     ?>
@@ -652,8 +651,7 @@ if ($_SESSION['logout'] == "") {
         $fea = $_POST["fea"];
         $time = $_POST["times"];
         if (empty($bname) || empty($mname) || empty($year) || empty($yr) || empty($ft) || empty($trtype) || empty($cat) || empty($seats) || empty($loc) || empty($rate) || empty($rc) || empty($puc) || empty($ins) || empty($per) || empty($img1) || empty($img2) || empty($img3) || empty($img4) || empty($fea)) {
-
-            $con = mysqli_connect("localhost", "root", "", "mini-prj");
+            
             $query = "SELECT * FROM `tbl_vehicle` WHERE `brand_name` = '$bname' AND `model_name` = '$mname' AND `year` = '$yr' AND `location` = '$loc' AND `category_id` = '$cat' AND `user_id` = '$tmp_id'";
             $result = mysqli_query($con, $query);
             if (mysqli_num_rows($result) > 0) {

@@ -238,7 +238,7 @@ $id=$_SESSION["id"];
   <?php
   if(isset($_POST["sub"])){
     $pass=$_POST["pass"];
-    $con = mysqli_connect("localhost", "root","", "mini-prj");
+    include 'dbconnect.php';
     $query1 ="UPDATE `tbl_login` SET `password`='$pass' WHERE `login_id`=$id";
     $res=mysqli_query($con, $query1);
     if($res){

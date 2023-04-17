@@ -1,10 +1,7 @@
 <?php
 if (isset($_POST['id'])) {
   $id = $_POST['id'];
-  $con = mysqli_connect("localhost", "root", "", "mini-prj");
-  if (!$con) {
-    die("Connection failed: " . mysqli_connect_error());
-  }
+  include 'dbconnect.php';
   $retrieve_query = "SELECT * FROM `tbl_user` WHERE `user_id` = '$id'";
   $result=mysqli_query($con, $retrieve_query);
   $row=mysqli_fetch_array($result);

@@ -1,5 +1,5 @@
 <?php
-$conn = mysqli_connect("localhost", "root", "", "mini-prj");
+include 'dbconnect.php';
 if (isset($_POST["action"]) && $_POST["action"] == "fetch_data_ajax") {
     $minimum_price = $_POST["minimum_price"];
     $maximum_price = $_POST["maximum_price"];
@@ -37,7 +37,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "fetch_data_ajax") {
     }
 
     // Get the total number of filtered results
-    $result = mysqli_query($conn, $query);
+    $result = mysqli_query($con, $query);
     $number_of_result = mysqli_num_rows($result);
 
     // Calculate the total number of pages available
@@ -56,7 +56,7 @@ if (isset($_POST["action"]) && $_POST["action"] == "fetch_data_ajax") {
 
     // Retrieve the selected results from the database with filter conditions and pagination
     $query .= " LIMIT " . $page_first_result . ',' . $results_per_page;
-    $result = mysqli_query($conn, $query);
+    $result = mysqli_query($con, $query);
     $total_row=mysqli_num_rows($result);
     if ($total_row > 0) {
         while ($row = mysqli_fetch_array($result)) {

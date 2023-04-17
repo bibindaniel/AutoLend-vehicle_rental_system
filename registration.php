@@ -168,7 +168,7 @@
     $flag = 0;
     if ($name1 != null && $user != null && $dob != null && $loc != null && $mail != null && $mob != null && $pass != NULL && $utype !== null && $photo != null) {
       $flag = 1;
-      $con = mysqli_connect("localhost", "root", "", "mini-prj");
+      include 'dbconnect.php';
       $query1 = "INSERT INTO `tbl_login`(`user_name`,`password`) VALUES ('$user','$pass')";
       mysqli_query($con, $query1);
       $login_id = mysqli_insert_id($con);

@@ -168,7 +168,7 @@ if ($_SESSION['logout'] == "") {
 
 <?php
 $tmp_id = $_SESSION['id'];
-$con = mysqli_connect("localhost", "root", "", "mini-prj");
+include 'dbconnect.php';
 $query3 = "SELECT `image` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
 $result3 = mysqli_query($con, $query3);
 $row3 = mysqli_fetch_array($result3);
@@ -178,7 +178,6 @@ $row3 = mysqli_fetch_array($result3);
     <?php
     include "navbar_renter.php";
     $id = $_GET["id"];
-    $con = mysqli_connect("localhost", "root", "", "mini-prj");
     $query = "SELECT * FROM `tbl_vehicle` WHERE `vehicle_id`=$id";
     $result = mysqli_query($con, $query);
     $row = mysqli_fetch_array($result);
@@ -664,7 +663,6 @@ if (isset($_POST["revsub"])) {
     $commu = $_POST["communication_rating_value"];
     $vehcon = $_POST["vehicle-condition_rating_value"];
     $msg = $_POST["reviewmsg"];
-    $con = mysqli_connect("localhost", "root", "", "mini-prj");
     $query5="SELECT * FROM `tbl_review` WHERE `user_id`=$tmp_id AND `vehicle_id`=$id";
     $res5=mysqli_query($con, $query5);
     $no=mysqli_num_rows($res5);
@@ -686,7 +684,6 @@ if (isset($_POST["sub"])) {
     $doftime = $_POST["entime"];
     $stdate = $_POST["stdate"];
     $enddate = $_POST["endate"];
-    $con = mysqli_connect("localhost", "root", "", "mini-prj");
     $exists_query = "SELECT * FROM `tbl_request_vehicle` WHERE `vehicle_id`='$id' AND `user_id`='$tmp_id'";
     $exists_result = mysqli_query($con, $exists_query);
     if ($exists_result && mysqli_num_rows($exists_result) > 0) {

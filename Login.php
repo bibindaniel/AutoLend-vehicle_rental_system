@@ -79,7 +79,7 @@ session_start();
         $uname = $_POST["user"];
         $pass = $_POST["pass"];
         if ($uname != null && $pass != null) {
-            $con = mysqli_connect("localhost", "root", "", "mini-prj");
+            include 'dbconnect.php';
             $query1 = "SELECT * FROM `tbl_login` ";
             $result = mysqli_query($con, $query1);
             while ($row = mysqli_fetch_array($result)) {

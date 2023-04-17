@@ -133,7 +133,7 @@ if ($_SESSION['logout'] == "") {
 </style>
 <?php
 $tmp_id = $_SESSION['id'];
-$con = mysqli_connect("localhost", "root", "", "mini-prj");
+include 'dbconnect.php';
 $query = "SELECT * FROM `tbl_user` WHERE `login_id`='$tmp_id'";
 $result = mysqli_query($con, $query);
 $row = mysqli_fetch_array($result);
@@ -276,7 +276,6 @@ $row3 = mysqli_fetch_array($result3);
         $exdate = $_POST["exdate"];
         $limg =  $_FILES['limg']['name'];
         $uid = $row["user_id"];
-        $con = mysqli_connect("localhost", "root", "", "mini-prj");
         $query1 = "UPDATE `tbl_verify_user` SET `verify_status`='0',`licence_no`='$lno',`Expiry_date`='$exdate',`licence_file`='$limg' WHERE  `user_id`='$id'";
         $result3 = mysqli_query($con, $query1);
         $target = "Licence/";

@@ -32,7 +32,7 @@ if ($_SESSION['logout'] == "") {
   <!--Main Navigation-->
   <?php
   $tmp_id = $_SESSION['id'];
-  $con = mysqli_connect("localhost", "root", "", "mini-prj");
+  include 'dbconnect.php';
   $query = "SELECT `image` FROM `tbl_user` WHERE `login_id`='$tmp_id'";
   $result = mysqli_query($con, $query);
   $row = mysqli_fetch_array($result);
@@ -47,7 +47,6 @@ if ($_SESSION['logout'] == "") {
   <main style="margin-top: 58px">
     <div class="container pt-4">
       <?php
-      $con = mysqli_connect("localhost", "root", "", "mini-prj");
       $query = "SELECT tbl_user.first_name, tbl_user.email,tbl_user.image,tbl_user.user_id,tbl_verify_user.licence_no,tbl_verify_user.Expiry_date,tbl_verify_user.licence_file,tbl_verify_user.verify_status from tbl_user JOIN tbl_verify_user ON tbl_user.user_id=tbl_verify_user.user_id AND tbl_verify_user.verify_status = 0";
       $result = mysqli_query($con, $query);
       $count = mysqli_num_rows($result);
