@@ -35,9 +35,9 @@
                     <a href="owner-view-cars.php" class="list-group-item list-group-item-action py-2 ripple <?php if (basename($_SERVER['PHP_SELF']) == "owner-view-cars.php") {
                                                                                                                 echo " active";
                                                                                                             } ?>"><i class="fas  fa-car fa-fw me-3"></i><span>View Cars</span></a>
-                    <a href="owner-view-request.php" class="list-group-item list-group-item-action py-2 ripple <?php if (basename($_SERVER['PHP_SELF']) == "owner-view-request.php") {
+                    <a href="owner_vehicle_rating.php" class="list-group-item list-group-item-action py-2 ripple <?php if (basename($_SERVER['PHP_SELF']) == "owner_vehicle_rating.php") {
                                                                                                                     echo " active";
-                                                                                                                } ?>"><i class="fas fa-bell fa-fw me-3"></i><span>View Request</span></a>
+                                                                                                                } ?>"><i class="fas fa fa-star checked fa-fw me-3"></i><span>View Rating</span></a>
                     <a href="owner_view_bookings.php" class="list-group-item list-group-item-action py-2 ripple <?php if (basename($_SERVER['PHP_SELF']) == "owner_view_bookings.php") {
                                                                                                 echo " active";
                                                                                             } ?>"><i class="fas fa-address-book fa-fw me-3"></i><span>View Bookings</span></a>

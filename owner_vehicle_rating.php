@@ -28,32 +28,6 @@ if ($_SESSION['logout'] == "") {
 </head>
 
 <body>
-    <script>
-        $(document).ready(function(){
-            $('.toggle-btn').click(function(){
-                var status=$(this).text()
-                var id=$(this).data('id')
-                if(status=='Active'){
-                    $(this).removeClass('btn-success').addClass('btn-danger').text('Blocked')
-                }else{
-                    $(this).addClass('btn-success').removeClass('btn-danger').text('Active')
-
-                }
-                $.ajax({
-                    url:'availability_status_ajax.php',
-                    type: 'POST',
-                    data:{
-                        id:id,
-                        status:status
-                    },
-                    success:function(data){
-                        console.log(data);
-                    }
-
-                })
-            })
-        })
-    </script>
     <?php
     $tmp_id = $_SESSION['id'];
     $con = mysqli_connect("localhost", "root", "", "mini-prj");
@@ -69,7 +43,7 @@ if ($_SESSION['logout'] == "") {
     <!--Main layout-->
     <main style="margin-top: 58px">
         <div class="container pt-4">
-            <?php
+        <?php
             $query1 = "SELECT * FROM `tbl_vehicle` WHERE `user_id`=$tmp_id AND`status`=1;";
             $result1 = mysqli_query($con, $query1);
             ?>
@@ -84,7 +58,7 @@ if ($_SESSION['logout'] == "") {
                                 <div class="card">
                                     <div class="bg-image hover-zoom ripple shadow-1-strong rounded" style="height: 200px; overflow: hidden;">
                                         <img src="vehicle/<?= $row1["image1"] ?>" class="w-100 h-100 object-fit-cover" />
-                                        <a href="owner_edit_cars.php?id=<?=$row1['vehicle_id']?>">
+                                        <a href="owner_detailed_rating.php?id=<?=$row1['vehicle_id']?>">
                                             <div class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
                                                 <div class="d-flex justify-content-start align-items-start h-100">
                                                     <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark"><i class="fa fa-rupee"></i> <?= $row1["rate"] ?></span></h5>
@@ -100,24 +74,13 @@ if ($_SESSION['logout'] == "") {
                                                 <h5 class="card-title mb-3"><?= $row1["brand_name"] ?> <?= $row1["model_name"] ?></h5>
                                             </a>
                                         </div>
-                                    <div class="card-body d-flex align-items-start justify-content-center">
-                                        <?php
-                                        if($row1['Availability']==1){
-                                        ?>
-                                        <button class="btn btn-success toggle-btn" data-id="<?=$row1['vehicle_id']?>" style="width:100px">Active</button>
-                                        <?php }else{
-                                            ?>
-                                            <button class="btn btn-danger toggle-btn" data-id="<?=$row1['vehicle_id']?>" style="width:100px">Blocked</button>
-                                            <?php
-                                        } ?>
-                                    </div>
                                 </div>
                             </div>
                         <?php } ?>
                     </div>
                 </div>
             </section>
-        </div>
+            </div>
     </main>
     <!--Main layout-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>

@@ -121,63 +121,9 @@ if ($_SESSION['logout'] == "") {
     $row = mysqli_fetch_array($result);
     $img = $row['image'];
     ?>
-    <header>
-        <!-- Sidebar -->
-        <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-            <div class="position-sticky">
-                <div class="list-group list-group-flush mx-3 mt-4">
-                    <a href="adminpage.php" class="list-group-item list-group-item-action py-2 ripple " aria-current="true">
-                        <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
-                    </a>
-                    <a href="admin-users.php" class="list-group-item list-group-item-action py-2 ripple ">
-                        <i class="fas fa-users fa-fw me-3"></i><span>Users</span>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple active"><i class="fas fa-user fa-fw me-3"></i><span>car owner</span></a>
-                    <a href="admin-verify.php" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-check-circle fa-fw me-3"></i><span>verify Users</span></a>
-                    <a href="admin-add-cat.php" class="list-group-item list-group-item-action py-2 ripple "><i class="fas fa-solid fa-server fa-fw me-3"></i><span>Add category</span></a>
-                    <a href="admin-cars.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-solid fa-car fa-fw me-3"></i><span>vehicles</span></a>
-
-                </div>
-            </div>
-        </nav>
-        <!-- Sidebar -->
-
-        <!-- Navbar -->
-        <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light  fixed-top">
-            <!-- Container wrapper -->
-            <div class="container-fluid">
-                <!-- Toggle button -->
-                <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="fas fa-bars"></i>
-                </button>
-
-                <!-- Brand -->
-                <a class="navbar-brand" href="#">
-                    <img src="images/Logo.png" height="45" alt="" loading="lazy" />
-                    <small class="ms-2 text-light">AutoLend</small></a>
-                </a>
-                <small class="h3 text-light font-weight-bold text-align-center">ADMIN PANEL</small></a>
-                <!-- Avatar -->
-                <div class="dropdown ">
-                    <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                        <img src="Uploads/<?php echo $row['image'] ?>" class="rounded-circle" height="25" alt="profile pic" loading="lazy" />
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
-                        <li>
-                            <a class="dropdown-item" href="sessiondestroy.php">Logout</a>
-                        </li>
-                    </ul>
-                </div>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                    <li><a class="dropdown-item" href="#">My profile</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="#">Logout</a></li>
-                </ul>
-            </div>
-            <!-- Container wrapper -->
-        </nav>
-        <!-- Navbar -->
-    </header>
+   <?php
+    include("adminsidebar.php");
+    ?>
     <!--Main Navigation-->
 
     <!--Main layout-->

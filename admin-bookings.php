@@ -35,41 +35,6 @@ if ($_SESSION['logout'] == "") {
 </style>
 
 <body>
-    <script>
-        $(document).ready(function() {
-            var table = $('#mytable').DataTable({
-                "lengthChange": false,
-                pageLength: 4,
-                lengthMenu: [
-                    [5, 10, 20, -1],
-                    [5, 10, 20, 'Todos']
-                ]
-            })
-            $(document).on('click','.ver_btn',function(e) {
-                e.preventDefault();
-                var userId = $(this).data('vehicle-id');
-                var status = $(this).text()
-                // update user status and icon
-                if (status == 'Not verified') {
-                    $(this).removeClass('btn-outline-danger').addClass('btn-outline-success').text('verified');
-                } else if (status == 'verified') {
-                    $(this).removeClass('btn-outline-success').addClass('btn-outline-danger').text('Not verified');
-                }
-
-                // send ajax request to update user status in database
-                $.ajax({
-                    url: 'car_update.php',
-                    type: 'POST',
-                    data: {
-                        user_id: userId
-                    },
-                    success: function(response) {
-                        console.log(response);
-                    }
-                });
-            });
-        });
-    </script>
     <!--Main Navigation-->
     <?php
     $tmp_id = $_SESSION['id'];
@@ -79,7 +44,7 @@ if ($_SESSION['logout'] == "") {
     $row = mysqli_fetch_array($result);
     $img = $row['image'];
     ?>
-     <?php
+    <?php
     include("adminsidebar.php");
     ?>
     <!--Main Navigation-->
@@ -87,7 +52,10 @@ if ($_SESSION['logout'] == "") {
     $results_per_page = 9;
 
     //find the total number of results stored in the database  
-    $query1 = "select *from `tbl_vehicle`";
+    $query1 = "SELECT tbl_vehicle_booking.*,tbl_vehicle.*,owner.first_name AS owner_name,owner.image AS owner_image,borrower.first_name AS user_name,borrower.image AS user_image FROM tbl_vehicle_booking
+    JOIN tbl_vehicle ON tbl_vehicle.vehicle_id=tbl_vehicle_booking.vehicle_id
+    JOIN tbl_user AS owner ON tbl_vehicle.user_id=owner.login_id 
+    JOIN tbl_user AS borrower ON  tbl_vehicle_booking.user_id=borrower.login_id";
     $result = mysqli_query($con, $query1);
     $number_of_result = mysqli_num_rows($result);
 
@@ -105,7 +73,10 @@ if ($_SESSION['logout'] == "") {
     $page_first_result = ($page - 1) * $results_per_page;
 
     //retrieve the selected results from database   
-    $query = "SELECT *FROM `tbl_vehicle`  LIMIT " . $page_first_result . ',' . $results_per_page;
+    $query = "SELECT tbl_vehicle_booking.*,tbl_vehicle.*,owner.first_name AS owner_name,owner.image AS owner_image,borrower.first_name AS user_name,borrower.image AS user_image FROM tbl_vehicle_booking
+    JOIN tbl_vehicle ON tbl_vehicle.vehicle_id=tbl_vehicle_booking.vehicle_id
+    JOIN tbl_user AS owner ON tbl_vehicle.user_id=owner.login_id 
+    JOIN tbl_user AS borrower ON  tbl_vehicle_booking.user_id=borrower.login_id  LIMIT " . $page_first_result . ',' . $results_per_page;
     $result = mysqli_query($con, $query);
     ?>
     <!--Main layout-->
@@ -125,7 +96,7 @@ if ($_SESSION['logout'] == "") {
                                 <a href="#!">
                                     <div class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
                                         <div class="d-flex justify-content-start align-items-start h-100">
-                                            <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark"><?= $row1["rate"] ?></span></h5>
+                                            <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark"><?= $row1["brand_name"] ?> <?= $row1["model_name"] ?></span></h5>
                                         </div>
                                     </div>
                                     <div class="hover-overlay">
@@ -136,25 +107,21 @@ if ($_SESSION['logout'] == "") {
 
                             <!--Card content-->
                             <div class="card-body">
-                                <!--Title-->
-                                <h4 class="card-title"><?= $row1["brand_name"] ?> <?= $row1["model_name"] ?></h4>
-                                <!--Text-->
-                                <div>
-                                    <div><i class='fas fa-gas-pump'></i><span class="p-2"><?= $row1["fuel_type"] ?></span></div>
-                                    <div><i class='fas fa-map-marker-alt'></i><span class="p-2"><?= $row1["location"] ?></span></div>
-                                    <div><i class="fas fa-cog"></i><span class="p-2"><?= $row1["transmission_type"] ?></span></div>
+                                <div class="row ">
+                                    <div class="col-md-6 text-center">
+                                        <img src="uploads/<?php echo $row1['user_image']; ?>" class="rounded-circle" alt="User profile image" style="width: 50px; height:50px">
+                                        <h5><?php echo $row1['user_name'] ?></h5>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <img src="uploads/<?php echo $row1['owner_image']; ?>" class="rounded-circle" alt="Owner profile image" style="width: 50px; height:50px">
+                                        <h5><?php echo $row1['owner_name'] ?></h5>
+                                    </div>
+                                    <div class="col-md-12 m-2 ">
+                                        <p>Start date: <?php echo $row1['start_date']; ?></p>
+                                        <p>End date: <?php echo $row1['end_date']; ?></p>
+                                        <p>Location: <?php echo $row1['drop_in_location']; ?></p>
+                                    </div>
                                 </div>
-                                <button type="button" onclick="location.href='vehicle_det.php?id= <?= $id ?>'" class="btn btn-primary gradient-custom ">More Details</button>
-                                <?php
-                                if ($row1["status"] == 0) { ?>
-                                    <button type="button" class="btn btn-outline-danger ver_btn w-50 w-md-auto" data-vehicle-id="<?= $row1["vehicle_id"] ?>">Not verified</button>
-                                <?php } else {
-                                ?>
-                                    <button type="button" class="btn btn-outline-success ver_btn w-50 w-md-auto" data-vehicle-id="<?= $row1["vehicle_id"] ?>">verified</button>
-                                <?php
-                                }
-                                ?>
-
                             </div>
                         </div>
                         <!-- Close the card element -->
@@ -162,31 +129,31 @@ if ($_SESSION['logout'] == "") {
                 <?php } ?>
             </div>
             <?php
-                    $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
-                    ?>
-                    <nav class="mt-4" aria-label="Page navigation sample">
-                        <ul class="pagination">
-                            <?php if ($current_page > 1) : ?>
-                                <li class="page-item"><a class="page-link" href="admin-cars.php?page=<?php echo $current_page - 1; ?>">Previous</a></li>
-                            <?php else : ?>
-                                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                            <?php endif; ?>
+            $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+            ?>
+            <nav class="mt-4" aria-label="Page navigation sample">
+                <ul class="pagination">
+                    <?php if ($current_page > 1) : ?>
+                        <li class="page-item"><a class="page-link" href="admin-bookings.php?page=<?php echo $current_page - 1; ?>">Previous</a></li>
+                    <?php else : ?>
+                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    <?php endif; ?>
 
-                            <?php for ($page = 1; $page <= $number_of_page; $page++) : ?>
-                                <?php if ($page == $current_page) : ?>
-                                    <li class="page-item active"><a class="page-link" href="#"><?php echo $page; ?></a></li>
-                                <?php else : ?>
-                                    <li class="page-item"><a class="page-link" href="admin-cars.php?page=<?php echo $page; ?>"><?php echo $page; ?></a></li>
-                                <?php endif; ?>
-                            <?php endfor; ?>
+                    <?php for ($page = 1; $page <= $number_of_page; $page++) : ?>
+                        <?php if ($page == $current_page) : ?>
+                            <li class="page-item active"><a class="page-link" href="#"><?php echo $page; ?></a></li>
+                        <?php else : ?>
+                            <li class="page-item"><a class="page-link" href="admin-bookings.php?page=<?php echo $page; ?>"><?php echo $page; ?></a></li>
+                        <?php endif; ?>
+                    <?php endfor; ?>
 
-                            <?php if ($current_page < $number_of_page) : ?>
-                                <li class="page-item"><a class="page-link" href="admin-cars.php?page=<?php echo $current_page + 1; ?>">Next</a></li>
-                            <?php else : ?>
-                                <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
-                            <?php endif; ?>
-                        </ul>
-                    </nav>
+                    <?php if ($current_page < $number_of_page) : ?>
+                        <li class="page-item"><a class="page-link" href="admin-bookings.php?page=<?php echo $current_page + 1; ?>">Next</a></li>
+                    <?php else : ?>
+                        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
         </div>
     </main>
 
