@@ -120,7 +120,9 @@ if ($_SESSION['logout'] == "") {
                                         <p>Start date: <?php echo $row1['start_date']; ?></p>
                                         <p>End date: <?php echo $row1['end_date']; ?></p>
                                         <p>Location: <?php echo $row1['drop_in_location']; ?></p>
+                                        <a href="car_booking_bill.php?booking_id=<?= $row1['booking_id'] ?>" class="btn btn-primary"><i class="fa fa-download"></i>  Download REPORT</a>
                                     </div>
+                                    
                                 </div>
                             </div>
                         </div>

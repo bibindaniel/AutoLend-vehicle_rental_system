@@ -45,8 +45,11 @@
                                                                                                             echo " active";
                                                                                                         } ?>"> <i class="fas fa-solid fa-car fa-fw me-3"></i><span>vehicles</span></a>
                     <a href="admin-bookings.php" class="list-group-item list-group-item-action py-2 ripple<?php if (basename($_SERVER['PHP_SELF']) == "admin-bookings.php") {
-                                                                                                            echo " active";
-                                                                                                        } ?>"> <i class="fas fa-solid fa-address-book fa-fw me-3"></i><span>View Bookings</span></a>
+                                                                                                                echo " active";
+                                                                                                            } ?>"> <i class="fas fa-solid fa-address-book fa-fw me-3"></i><span>View Bookings</span></a>
+                    <a href="admin_view_rating.php" class="list-group-item list-group-item-action py-2 ripple<?php if (basename($_SERVER['PHP_SELF']) == "admin_view_rating.php") {
+                                                                                                                echo " active";
+                                                                                                            } ?>"> <i class="fas fa-solid fa-star fa-fw me-3"></i><span>View Rating</span></a>
                 </div>
             </div>
         </nav>

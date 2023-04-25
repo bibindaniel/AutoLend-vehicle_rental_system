@@ -37,7 +37,7 @@ if ($_SESSION['logout'] == "") {
     </style>
     <script>
         $(document).ready(function() {
-            $(document).on('click',"#btn",function() {
+            $(document).on('click', "#btn", function() {
                 $('#exampleModal').modal('toggle')
             })
             var table = $('#mytable').DataTable({
@@ -50,7 +50,7 @@ if ($_SESSION['logout'] == "") {
             })
             $(document).ready(function() {
                 // toggle user status
-                $(document).on('click','.toggle-status',function(e) {
+                $(document).on('click', '.toggle-status', function(e) {
                     e.preventDefault();
                     var userId = $(this).data('user-id');
                     var statusElm = $('.user-status[data-user-id="' + userId + '"]');
@@ -79,7 +79,7 @@ if ($_SESSION['logout'] == "") {
                     });
                 });
             });
-            $(document).on('click','.view-btn',function(e) {
+            $(document).on('click', '.view-btn', function(e) {
                 e.preventDefault();
                 var userId = $(this).data('user-id');
                 $.ajax({
@@ -121,7 +121,7 @@ if ($_SESSION['logout'] == "") {
     $row = mysqli_fetch_array($result);
     $img = $row['image'];
     ?>
-   <?php
+    <?php
     include("adminsidebar.php");
     ?>
     <!--Main Navigation-->
@@ -129,6 +129,11 @@ if ($_SESSION['logout'] == "") {
     <!--Main layout-->
     <main style="margin-top: 58px">
         <div class="container pt-4">
+            <h4>OWNERS INFORMATION</h4>
+            <div class="d-flex align-items-end justify-content-end">
+                <a href="report_owners.php" class="btn btn-danger mb-2"><i class="fa fa-download"></i> Download REPORT</a>
+            </div>
+            <hr class="mt-0 mb-4">
             <table class="table align-middle mb-0 bg-white table-hover" id="mytable">
                 <thead class="bg-light">
                     <tr>

@@ -130,6 +130,14 @@ if ($_SESSION['logout'] == "") {
         .counter.blue .counter-icon {
             background: linear-gradient(45deg, #5DB3E4 49%, #7EBEE1 50%);
         }
+        .counter.red {
+            color: #FF7F7F;
+        }
+
+        .counter.red:after,
+        .counter.red .counter-icon {
+            background: linear-gradient(45deg, #FF7F7F 49%, #FFAFAF 50%);
+        }
 
         @media screen and (max-width:990px) {
             .counter {
@@ -172,6 +180,12 @@ if ($_SESSION['logout'] == "") {
     $query1 = "SELECT * FROM `tbl_user` where user_type =2";
     $result1 = mysqli_query($con, $query1);
     $count1 = mysqli_num_rows($result1);
+    $query1 = "SELECT * FROM `tbl_vehicle_booking`";
+    $result1 = mysqli_query($con, $query1);
+    $bookings = mysqli_num_rows($result1);
+    $query1 = "SELECT SUM(amount) / COUNT(DISTINCT payment_id ) as avg_revenue FROM tbl_payment";
+    $result1 = mysqli_query($con, $query1);
+    $rev = mysqli_fetch_array($result1);
     ?>
     <!--Main layout-->
     <main style="margin-top: 58px">
@@ -196,6 +210,25 @@ if ($_SESSION['logout'] == "") {
                             <span class="counter-value"><?= $count1 ?></span>
                         </div>
                     </div>
+                    <div class="col-md-3 col-sm-6 my-auto">
+                        <div class="counter orange">
+                            <div class="counter-icon">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <h3>Total Bookings</h3>
+                            <span class="counter-value"><?= $bookings ?></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 my-auto">
+                        <div class="counter red">
+                            <div class="counter-icon">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <h3>Average Revenue</h3>
+                            <span class="counter-value"><?= $rev['avg_revenue'] ?></span>
+                        </div>
+                    </div>
+                    
 
 
                 </div>

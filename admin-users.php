@@ -200,6 +200,11 @@ if ($_SESSION['logout'] == "") {
     <!--Main layout-->
     <main style="margin-top: 58px">
         <div class="container pt-4">
+        <h4>USERS INFORMATION</h4>
+        <div class="d-flex align-items-end justify-content-end">
+          <a href="report_users.php" class="btn btn-danger mb-2"><i class="fa fa-download"></i>  Download REPORT</a>
+        </div>
+            <hr class="mt-0 mb-4">
             <table class="table align-middle mb-0 bg-white table-hover" id="mytable">
                 <thead class="bg-light">
                     <tr>

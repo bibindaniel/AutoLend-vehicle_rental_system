@@ -23,6 +23,7 @@ if ($_SESSION['logout'] == "") {
     <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js" integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
     <!-- ajax -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -130,6 +131,15 @@ if ($_SESSION['logout'] == "") {
             background: linear-gradient(45deg, #5DB3E4 49%, #7EBEE1 50%);
         }
 
+        .counter.red {
+            color: #FF7F7F;
+        }
+
+        .counter.red:after,
+        .counter.red .counter-icon {
+            background: linear-gradient(45deg, #FF7F7F 49%, #FFAFAF 50%);
+        }
+
         @media screen and (max-width:990px) {
             .counter {
                 margin-bottom: 40px;
@@ -159,29 +169,37 @@ if ($_SESSION['logout'] == "") {
     $row = mysqli_fetch_array($result);
     $img = $row['image'];
     ?>
-     <!--Main Navigation-->
-     <?php
-        include("sidebar.php");
-        ?>
     <!--Main Navigation-->
     <?php
-            $query1 = "SELECT * FROM `tbl_vehicle` WHERE `user_id` =  $tmp_id";
-            $result1 = mysqli_query($con, $query1);
-            $count=mysqli_num_rows($result1);
-            $query1 = "SELECT * FROM `tbl_vehicle` WHERE `user_id` =  $tmp_id";
-            $result1 = mysqli_query($con, $query1);
-            $count2=mysqli_num_rows($result1);
-            $query3 = "SELECT COUNT(*) as total_bookings
+    include("sidebar.php");
+    ?>
+    <!--Main Navigation-->
+    <?php
+    $query1 = "SELECT * FROM `tbl_vehicle` WHERE `user_id` =  $tmp_id";
+    $result1 = mysqli_query($con, $query1);
+    $count = mysqli_num_rows($result1);
+    $query1 = "SELECT * FROM `tbl_vehicle` WHERE `user_id` =  $tmp_id";
+    $result1 = mysqli_query($con, $query1);
+    $count2 = mysqli_num_rows($result1);
+    $query3 = "SELECT COUNT(*) as total_bookings
             FROM tbl_vehicle_booking b
             JOIN tbl_vehicle v ON b.vehicle_id = v.vehicle_id
             WHERE v.user_id = $tmp_id";
-            $result3 = mysqli_query($con, $query3);
-            $row=mysqli_fetch_array($result3)
-            ?>
+    $result3 = mysqli_query($con, $query3);
+    $row = mysqli_fetch_array($result3);
+    $query="SELECT SUM(amount) as total_revenue,SUM(amount) / COUNT(DISTINCT tbl_vehicle_booking.booking_id) as avg_revenue
+    FROM tbl_payment
+    JOIN tbl_vehicle_booking ON tbl_payment.request_id = tbl_vehicle_booking.booking_id 
+    JOIN tbl_vehicle ON tbl_vehicle_booking.vehicle_id = tbl_vehicle.vehicle_id
+    WHERE tbl_vehicle.user_id = 21";
+    $result=mysqli_query($con, $query);
+    $rev=mysqli_fetch_array($result);
+    $total_revenue = $rev['total_revenue'];
+    ?>
     <!--Main layout-->
     <main style="margin-top: 58px">
         <div class="container pt-4">
-        <div class="container">
+            <div class="container">
                 <div class="row">
                     <div class="col-md-3 col-sm-6 my-4">
                         <div class="counter blue">
@@ -189,7 +207,7 @@ if ($_SESSION['logout'] == "") {
                                 <i class="fa fa-car"></i>
                             </div>
                             <h3>Total Cars</h3>
-                            <span class="counter-value"><?=$count?></span>
+                            <span class="counter-value"><?= $count ?></span>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 my-auto">
@@ -198,11 +216,27 @@ if ($_SESSION['logout'] == "") {
                                 <i class="fa fa-address-book"></i>
                             </div>
                             <h3>Total Bookings</h3>
-                            <span class="counter-value"><?=$row['total_bookings']?></span>
+                            <span class="counter-value"><?= $row['total_bookings'] ?></span>
                         </div>
                     </div>
-
-
+                    <div class="col-md-3 col-sm-6 my-auto">
+                        <div class="counter orange">
+                            <div class="counter-icon">
+                                <i class="fa fa-rupee"></i>
+                            </div>
+                            <h3>Average Revenue</h3>
+                            <span class="counter-value"><?= $rev['avg_revenue'] ?></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 my-auto">
+                        <div class="counter red">
+                            <div class="counter-icon">
+                                <i class="fa fa-rupee"></i>
+                            </div>
+                            <h3>Total Revenue</h3>
+                            <span class="counter-value"><?= $rev['total_revenue'] ?></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
