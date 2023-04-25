@@ -249,11 +249,11 @@ $row3 = mysqli_fetch_array($result3);
                             </div>
                             <div class="col-md-4 m-4">
                                 <div class="row m-0 bg-light">
-                                    <div class="d-flex align-items-end px-4 mt-4 mb-2">
-                                        <p class="h4 m-0"><span class="pe-1"><?= $row["brand_name"] ?></span><span class="pe-1"><?= $row["model_name"] ?></span><span class="pe-1"><?= $row["year"] ?></span></p>
-                                        <div class="m-2 h5"><i class="fa fa-rupee"></i> <?= $row["rate"] ?>/DAY</div>
+                                    <div class="d-flex align-items-end px-2 mt-4 mb-2">
+                                        <p class="h4 m-0"><span class="pe-1"><?= $row["brand_name"] ?></span><span class="pe-1"><?= $row["model_name"] ?></span><span class="pe-1"><?= $row["year"] ?></span></p> 
                                     </div>
-                                    <div class="d-flex align-items-center  mt-4 mb-2">
+                                    <div class="mt-1 h5"><i class="fa fa-rupee"></i> <?= $row["rate"] ?>/DAY</div>
+                                    <div class="d-flex align-items-center  mt-3 mb-2">
                                         <p class="text-dark"><?= $row["Features"] ?> </p>
                                     </div>
                                     <div class="col-md-4 col-6 ps-30 pe-0 my-2">
@@ -451,7 +451,7 @@ $row3 = mysqli_fetch_array($result3);
                 </div>
                 <div class="row mt-5">
                     <?php
-                    $sql2 = "SELECT tbl_review.*,tbl_user.* from tbl_review JOIN tbl_user on tbl_review.user_id=tbl_user.login_id limit 4";
+                    $sql2 = "SELECT tbl_review.*,tbl_user.* from tbl_review JOIN tbl_user on tbl_review.user_id=tbl_user.login_id WHERE `vehicle_id`='$id' limit 4";
                     $res2 = mysqli_query($con, $sql2);
                     while ($rev = mysqli_fetch_array($res2)) {
                     ?>

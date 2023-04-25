@@ -71,10 +71,12 @@ if ($_SESSION['logout'] == "") {
   $page_first_result = ($page - 1) * $results_per_page;
 
   //retrieve the selected results from database   
-  $query = "SELECT tbl_vehicle_booking.*, tbl_vehicle.image1,tbl_vehicle.brand_name,tbl_vehicle.model_name
-  FROM tbl_vehicle_booking
-  JOIN tbl_vehicle ON tbl_vehicle_booking.vehicle_id = tbl_vehicle.vehicle_id
-  WHERE tbl_vehicle.user_id = $tmp_id  LIMIT " . $page_first_result . ',' . $results_per_page;
+  $query = "SELECT tbl_vehicle_booking.*, tbl_vehicle.image1, tbl_vehicle.brand_name, tbl_vehicle.model_name
+FROM tbl_vehicle_booking
+JOIN tbl_vehicle ON tbl_vehicle_booking.vehicle_id = tbl_vehicle.vehicle_id
+WHERE tbl_vehicle.user_id = $tmp_id
+ORDER BY tbl_vehicle_booking.booking_id DESC
+LIMIT " . $page_first_result . "," . $results_per_page;
   $result = mysqli_query($con, $query);
   $count = mysqli_num_rows($result)
   ?>
@@ -92,6 +94,31 @@ if ($_SESSION['logout'] == "") {
                   <div class="hover-overlay">
                     <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
                   </div>
+                  <div class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
+                    <div class=" px-1  ">
+                      <?php
+                      if ($row['booking_status'] == 3) {
+                      ?>
+                        <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Service completed</span></h5>
+                      <?php
+                      }
+                       else if ($row['booking_status'] == 4) {
+                      ?>
+                        <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Service canceled</span></h5>
+                      <?php
+                      } elseif ($row['booking_status'] == 2){
+                        ?>
+                         <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Service Ongoing</span></h5>
+                        <?php
+                      }else{
+                        ?>
+                        <h5><span class="badge bg-light pt-2 ms-3 mt-3 text-dark">Service Booked</span></h5>
+                       <?php 
+                      }
+                      ?>
+                    </div>
+
+                  </div>
                 </div>
               </div>
               <div class="col-md-8">
@@ -99,12 +126,12 @@ if ($_SESSION['logout'] == "") {
                   <div class="d-flex justify-content-between">
                     <h5 class="card-title mb-0" data-vid="123"><?= $row['brand_name'] ?> <?= $row['model_name'] ?></h5>
                     <?php
-                    $id=$row['booking_id'];
-                     $rate_sql="SELECT * FROM `tbl_payment` WHERE `request_id`= $id";
-                     $ans=mysqli_query($con,$rate_sql);
-                     $row3=mysqli_fetch_array($ans);
+                    $id = $row['booking_id'];
+                    $rate_sql = "SELECT * FROM `tbl_payment` WHERE `request_id`= $id";
+                    $ans = mysqli_query($con, $rate_sql);
+                    $row3 = mysqli_fetch_array($ans);
                     ?>
-                    <p class="card-text mb-0"><strong>Total Amount:</strong> <?=$row3['amount']?></p>
+                    <p class="card-text mb-0"><strong>Total Amount:</strong> <?= $row3['amount'] ?></p>
                   </div>
                   <hr>
                   <p class="card-text mb-0"><strong>Dates:</strong> <?= $row['start_date'] ?> - <?= $row['end_date'] ?></p>
@@ -126,6 +153,7 @@ if ($_SESSION['logout'] == "") {
                     <div class="rounded-circle overflow-hidden" style="width: 40px; height: 40px;">
                       <img src="Uploads/<?php echo $row1['image'] ?>" class="w-100 h-100 object-fit-cover" />
                     </div>
+                    <a href="car_booking_bill.php?booking_id=<?= $row['booking_id'] ?>" class="btn btn-primary"><i class="fa fa-download"></i>  Download REPORT</a>
                   </div>
                   <hr>
                 </div>

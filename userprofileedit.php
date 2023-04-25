@@ -164,7 +164,7 @@ $row2 = mysqli_fetch_array($result2);
                                             <div class="col-6 mb-3">
                                                 <div class="form-outline">
                                                     <input type="text" id="firstName" name="fname" class="form-control form-control-lg" value="<?php echo $row['first_name'] ?>" />
-                                                    <label class="form-label" for="firstName">First Name</label>
+                                                    <label class="form-label" for="firstName">Name</label>
                                                 </div>
                                                 <div class="wr-msg" id="firstName1"></div>
                                             </div>

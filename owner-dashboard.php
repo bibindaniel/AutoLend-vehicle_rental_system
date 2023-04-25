@@ -171,6 +171,12 @@ if ($_SESSION['logout'] == "") {
             $query1 = "SELECT * FROM `tbl_vehicle` WHERE `user_id` =  $tmp_id";
             $result1 = mysqli_query($con, $query1);
             $count2=mysqli_num_rows($result1);
+            $query3 = "SELECT COUNT(*) as total_bookings
+            FROM tbl_vehicle_booking b
+            JOIN tbl_vehicle v ON b.vehicle_id = v.vehicle_id
+            WHERE v.user_id = $tmp_id";
+            $result3 = mysqli_query($con, $query3);
+            $row=mysqli_fetch_array($result3)
             ?>
     <!--Main layout-->
     <main style="margin-top: 58px">
@@ -192,7 +198,7 @@ if ($_SESSION['logout'] == "") {
                                 <i class="fa fa-address-book"></i>
                             </div>
                             <h3>Total Bookings</h3>
-                            <span class="counter-value">0</span>
+                            <span class="counter-value"><?=$row['total_bookings']?></span>
                         </div>
                     </div>
 
