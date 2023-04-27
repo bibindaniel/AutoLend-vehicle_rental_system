@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php
 session_start();
 if ($_SESSION['logout'] == "") {
     header("location:login.php");
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">

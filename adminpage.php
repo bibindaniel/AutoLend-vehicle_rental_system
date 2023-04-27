@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php
 session_start();
 if ($_SESSION['logout'] == "") {
     header("location:login.php");
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -24,6 +24,7 @@ if ($_SESSION['logout'] == "") {
     <!-- ajax -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <link rel="stylesheet" href="adminpanel.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1"></script>
 </head>
 
 <body>
@@ -130,6 +131,7 @@ if ($_SESSION['logout'] == "") {
         .counter.blue .counter-icon {
             background: linear-gradient(45deg, #5DB3E4 49%, #7EBEE1 50%);
         }
+
         .counter.red {
             color: #FF7F7F;
         }
@@ -213,7 +215,7 @@ if ($_SESSION['logout'] == "") {
                     <div class="col-md-3 col-sm-6 my-auto">
                         <div class="counter orange">
                             <div class="counter-icon">
-                                <i class="fa fa-user"></i>
+                                <i class="fa fa-address-book"></i>
                             </div>
                             <h3>Total Bookings</h3>
                             <span class="counter-value"><?= $bookings ?></span>
@@ -222,19 +224,133 @@ if ($_SESSION['logout'] == "") {
                     <div class="col-md-3 col-sm-6 my-auto">
                         <div class="counter red">
                             <div class="counter-icon">
-                                <i class="fa fa-user"></i>
+                                <i class="fa fa-rupee"></i>
                             </div>
                             <h3>Average Revenue</h3>
                             <span class="counter-value"><?= $rev['avg_revenue'] ?></span>
                         </div>
                     </div>
-                    
-
-
+                </div>
+                <div class="container m-3">
+                    <div class="row d-flex align-items-center">
+                        <div class="col-6">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                        <div class="col-6">
+                            <canvas id="myPieChart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
+    <?php
+    $sql = "SELECT tbl_vehicle.model_name 
+    FROM tbl_payment 
+    JOIN tbl_vehicle_booking ON tbl_payment.request_id = tbl_vehicle_booking.booking_id 
+    JOIN tbl_vehicle ON tbl_vehicle_booking.vehicle_id = tbl_vehicle.vehicle_id 
+    GROUP BY tbl_vehicle.vehicle_id 
+    ORDER BY SUM(tbl_payment.amount) DESC limit 6";
+    $result = mysqli_query($con, $sql);
+    $vehicles = array();
+
+    // Fetch the result row by row and add to the array
+    while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+        $vehicles[] = $row['model_name'];
+    }
+    $sql = "SELECT SUM(tbl_payment.amount) as revenue FROM tbl_payment JOIN tbl_vehicle_booking ON tbl_payment.request_id = tbl_vehicle_booking.booking_id JOIN tbl_vehicle ON tbl_vehicle_booking.vehicle_id = tbl_vehicle.vehicle_id  GROUP BY tbl_vehicle.vehicle_id ORDER BY revenue DESC limit 6";
+    $result = mysqli_query($con, $sql);
+    $revenue = array();
+    while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+        $revenue[] = $row['revenue'];
+    }
+    $sql = "SELECT tbl_user.first_name, COUNT(*) / (SELECT COUNT(*) FROM tbl_vehicle_booking) * 100 AS percentage 
+        FROM tbl_vehicle_booking 
+        JOIN tbl_user ON tbl_vehicle_booking.user_id = tbl_user.login_id
+        GROUP BY tbl_vehicle_booking.user_id 
+        ORDER BY percentage DESC 
+        LIMIT 6";
+
+    $result = $con->query($sql);
+    $name = array();
+    $per=array();
+    while ($row = mysqli_fetch_assoc($result)) {
+        $name[] = $row['first_name'];
+        $per[]=$row['percentage'];
+    }
+    ?>
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: <?php echo json_encode($vehicles) ?>,
+                datasets: [{
+                    label: 'Sales',
+                    data: <?php echo json_encode($revenue) ?>,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        var data = {
+            labels:<?php echo json_encode($name) ?>,
+            datasets: [{
+                label: '# of Votes',
+                data: <?php echo json_encode($per) ?>,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Create the pie chart
+        var ctx = document.getElementById('myPieChart').getContext('2d');
+        var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
     <!--Main layout-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 </body>

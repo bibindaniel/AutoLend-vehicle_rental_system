@@ -1,13 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+session_start();
 if ($_SESSION['logout'] == "") {
     header("location:login.php");
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+
 
 <head>
     <meta charset="UTF-8">
