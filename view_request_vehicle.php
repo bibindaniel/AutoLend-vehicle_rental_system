@@ -283,7 +283,7 @@ include "navbar_renter.php";
         $('.pay-button').click(function() {
             var itemId = $(this).data('id');
             var options = {
-                "key": "rzp_test_nySRUxQbtLzqmJ", // Enter the Key ID generated from the Dashboard
+                "key": "", // Enter the Key ID generated from the Dashboard
                 "amount": "<?= $total_rent * 100 ?>", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                 "currency": "INR",
                 "name": "AUTOLEND",
