@@ -1,0 +1,3 @@
+data base:AutoLend
+username:Autolend_owner
+pass:pP2IR-ZpB{[?OK}R
